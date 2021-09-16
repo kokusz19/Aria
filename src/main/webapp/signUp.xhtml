@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+<h:head>
+    <h1 align="center">Aria</h1>
+</h:head>
+<div align="center">
+    <h:form>
+        <h:panelGrid columns="2" columnClasses="p-col-12 p-col-12">
+
+           <h:outputLabel for="tipus" value="Típus:"/>
+            <p:selectOneRadio id="tipus" label="Típus"
+                              value="#{createController.tipus}"
+                              unselectable="true" required="true">
+                <f:selectItem itemLabel="Asszisztens" itemValue="Asszisztens"/>
+                <f:selectItem itemLabel="Orvos" itemValue="Orvos"/>
+                <f:selectItem itemLabel="Beteg" itemValue="Beteg"/>
+                <p:ajax update="@form" event="valueChange" />
+            </p:selectOneRadio>
+
+            <h:outputLabel for="username"  value="Felhasználónév:"/>
+            <p:inputText id="username" label="Felhasználónlv" value="#{createController.newAccount.loginName}" required="true"/>
+
+            <h:outputLabel for="firstName" value="Vezetéknév:"/>
+            <p:inputText id="firstName" label="Vezetéknév" value="#{createController.firstName}" required="true"/>
+
+            <h:outputLabel for="lastName" value="Keresztnév:"/>
+            <p:inputText id="lastName" label="Keresztnév" value="#{createController.lastName}" required="true"/>
+
+            <h:outputLabel for="birth" value="Születési dátum:"/>
+            <p:datePicker id="birth" label="Születési dátum" value="#{createController.dateOfBirth}" required="true"/>
+
+            <h:outputLabel for="phoneNumber" value="Telefonszám:"/>
+            <p:inputMask  id="phoneNumber" label="Telefonszám"
+                         mask="(99) 999-9999" validateMask="true" autoClear="false"
+                         value="#{createController.phoneNumber}"
+                         required="true"/>
+
+            <h:outputLabel for="email" value="Email cím:"/>
+            <p:inputText id="email" label="Email" value="#{createController.email}" required="true"/>
+
+            <h:outputLabel for="address" value="Cím:"/>
+            <p:inputText id="address" label="Cím" value="#{createController.address}" required="true" />
+
+            <h:outputLabel for="taj" value="Taj szám:" rendered="#{createController.tipus eq 'Beteg'}"/>
+            <p:inputMask  id="taj" label="Taj szám:" value="#{createController.taj}"
+                         mask="999-999-999" validateMask="true" autoClear="false"
+                         rendered="#{createController.tipus eq 'Beteg'}"
+                         required="true"/>
+
+            <h:outputLabel for="maidenNameOfMother" value="Anya leánykori neve:"
+                           rendered="#{createController.tipus eq 'Beteg'}"/>
+            <p:inputText id="maidenNameOfMother" label="Anya leánykori neve:"
+                         rendered="#{createController.tipus eq 'Beteg'}"
+
+                         value="#{createController.maidenNameOfMother}"
+                         required="true"/>
+
+            <h:outputLabel for="password" value="Jelszó:"/>
+            <p:password id="password" label="Jelszó"
+                        required="true"
+                        value="#{createController.password}"
+                        toggleMask="true" inline="true" feedback="true"/>
+
+        </h:panelGrid>
+        <p:commandButton action="#{createController.create}"
+                          value="Mentés" />
+
+        <p:messages id="messages" showDetail="true">
+            <p:autoUpdate/>
+        </p:messages>
+    </h:form>
+    <p:link outcome="/greet.xhtml">Vissza a kezdőoldalra!</p:link>
+</div>
+
+</html>

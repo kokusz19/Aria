@@ -7,8 +7,8 @@
     <artifactId>aria</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>war</packaging>
-    <name>Aria</name>
-    <description>Aria</description>
+    <name>aria</name>
+    <description>aria</description>
 
     <url>http://jboss.org/jbossas</url>
     <licenses>

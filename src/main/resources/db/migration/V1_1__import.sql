@@ -52,7 +52,7 @@ CREATE TABLE  person  (
 CREATE TABLE account (
                          accountId bigint not null,
                          loginName varchar unique not null,
-                         createdAd date not null,
+                         createdAt date not null,
                          password varchar not null,
                          personId bigint unique not null,
                          actId bigint not null,

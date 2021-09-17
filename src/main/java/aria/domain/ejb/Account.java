@@ -30,29 +30,10 @@ public class Account implements Serializable {
     private Act act;
     @Getter
     @Setter
-    @Column(name = "jelszo")
-    private String jelszo;
+    @Column(name = "password")
+    private String password;
     @Getter
     @Setter
-    @Column(name = "accountCreatedAt")
-    private LocalDate accountCreatedAt;
-    //TODO átgondolni itt ezeket ujra
-    /*
-    @Getter
-    @Setter
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "doctor")
-    private List<Patient> patients;
-    @Getter
-    @Setter
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "prescribedBy")
-    private List<Prescription> prescriptions;
-
-    @Getter
-    @Setter
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "recordedBy")
-    private List<Visit> visitsRecorded;
-    @Getter
-    @Setter
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "diagnosedBy")
-    private List<Visit> visitsDiagnosed;*/
+    @Column(name = "createdAt")
+    private LocalDate createdAt;
 }

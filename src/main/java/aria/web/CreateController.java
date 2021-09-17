@@ -62,25 +62,23 @@ public class CreateController implements Serializable {
     private String password;
     @Getter
     @Setter
-    private String tipus;
+    private String tipus = "default";
 
     public void create() {
         message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Message", " Sikerült létrehozni!");
         newAccount.setPerson(createPerson());
-        newAccount.setAccountCreatedAt(LocalDate.now());
-        String bcryptHashString = createPassword();
-        newAccount.setJelszo(bcryptHashString);
+        newAccount.setCreatedAt(LocalDate.now());
+        newAccount.setPassword(BCrypt.withDefaults().hashToString(12, password.toCharArray()));
         newAccount.setAct(actDao.getAct(tipus));
 
         try {
             if (accountDao.getForUsername(newAccount.getLoginName()) == null) {
                 personDao.createPerson(newAccount.getPerson());
                 accountDao.createUser(newAccount);
-                if (tipus.equals("Beteg")) {
-                    // TODO
-                }
+
                 message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Message", " Sikerült létrehozni!");
                 PrimeFaces.current().dialog().showMessageDynamic(message);
+                clearTextBoxes();
             } else {
                 message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Message", " Nem sikerült létrehozni, a megadott felhasználónév már foglalt!");
                 PrimeFaces.current().dialog().showMessageDynamic(message);
@@ -93,28 +91,23 @@ public class CreateController implements Serializable {
 
     private Person createPerson(){
         Person person = new Person();
-        person.setAddress(address);
-        person.setEmail(email);
-        person.setDateOfBirth(new java.sql.Date(dateOfBirth.getTime()).toLocalDate());
         person.setFirstName(firstName);
         person.setLastName(lastName);
+        person.setDateOfBirth(new java.sql.Date(dateOfBirth.getTime()).toLocalDate());
         person.setPhoneNumber(phoneNumber);
+        person.setEmail(email);
+        person.setAddress(address);
         return person;
     }
 
-    public String createPassword() {
-        String hash = null;
-        switch (tipus) {
-            case "Orvos":
-                hash = BCrypt.withDefaults().hashToString(12, password.toCharArray());
-                break;
-            case "Asszisztens":
-                hash = BCrypt.withDefaults().hashToString(10, password.toCharArray());
-                break;
-            case "Beteg":
-                hash = BCrypt.withDefaults().hashToString(8, password.toCharArray());
-                break;
-        }
-        return hash;
+    private void clearTextBoxes(){
+        setFirstName("");
+        setLastName("");
+        setPassword("");
+        setAddress("");
+        setDateOfBirth(null);
+        setEmail("");
+        setPhoneNumber("");
+        getNewAccount().setLoginName("");
     }
 }

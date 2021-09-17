@@ -40,16 +40,23 @@ public class LoginController implements Serializable {
         String retVal = "";
         try {
             account = accountDao.getForUsername(username);
-            BCrypt.Result result = BCrypt.verifyer().verify(password.toCharArray(), account.getJelszo());
+            BCrypt.Result result = BCrypt.verifyer().verify(password.toCharArray(), account.getPassword());
             if(result.verified){
                 Act role = account.getAct();
                 String roleName = role.getRoleName();
                 String url = null;
                 switch (roleName) {
-                    // TODO
+                    case "admin":
+                        url = "/admin/HomePage.xhtml";
+                        break;
+                    case "konyvator":
+                        url = "/konyvtaros/HomePage.xhtml";
+                        break;
+                    case "default":
+                        url = "/default/HomePage.xhtml";
+                        break;
                 }
 
-                //FacesContext.getCurrentInstance().getExternalContext().dispatch(url);
                 FacesContext context = FacesContext.getCurrentInstance();
                 NavigationHandler navigationHandler = context.getApplication().getNavigationHandler();
                 context.getExternalContext().getSessionMap().put("id", account.getAccountId());

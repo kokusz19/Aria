@@ -11,24 +11,20 @@
     <h:form>
         <h:panelGrid columns="2" columnClasses="p-col-12 p-col-12">
 
-           <h:outputLabel for="tipus" value="Típus:"/>
-            <p:selectOneRadio id="tipus" label="Típus"
-                              value="#{createController.tipus}"
-                              unselectable="true" required="true">
-                <f:selectItem itemLabel="Asszisztens" itemValue="Asszisztens"/>
-                <f:selectItem itemLabel="Orvos" itemValue="Orvos"/>
-                <f:selectItem itemLabel="Beteg" itemValue="Beteg"/>
-                <p:ajax update="@form" event="valueChange" />
-            </p:selectOneRadio>
-
             <h:outputLabel for="username"  value="Felhasználónév:"/>
             <p:inputText id="username" label="Felhasználónlv" value="#{createController.newAccount.loginName}" required="true"/>
 
+            <h:outputLabel for="password" value="Jelszó:"/>
+            <p:password id="password" label="Jelszó"
+                        required="true"
+                        value="#{createController.password}"
+                        toggleMask="true" inline="true" feedback="true"/>
+
             <h:outputLabel for="firstName" value="Vezetéknév:"/>
-            <p:inputText id="firstName" label="Vezetéknév" value="#{createController.firstName}" required="true"/>
+            <p:inputText id="firstName" label="Vezetéknév" value="#{createController.lastName}" required="true"/>
 
             <h:outputLabel for="lastName" value="Keresztnév:"/>
-            <p:inputText id="lastName" label="Keresztnév" value="#{createController.lastName}" required="true"/>
+            <p:inputText id="lastName" label="Keresztnév" value="#{createController.firstName}" required="true"/>
 
             <h:outputLabel for="birth" value="Születési dátum:"/>
             <p:datePicker id="birth" label="Születési dátum" value="#{createController.dateOfBirth}" required="true"/>
@@ -44,26 +40,6 @@
 
             <h:outputLabel for="address" value="Cím:"/>
             <p:inputText id="address" label="Cím" value="#{createController.address}" required="true" />
-
-            <h:outputLabel for="taj" value="Taj szám:" rendered="#{createController.tipus eq 'Beteg'}"/>
-            <p:inputMask  id="taj" label="Taj szám:" value="#{createController.taj}"
-                         mask="999-999-999" validateMask="true" autoClear="false"
-                         rendered="#{createController.tipus eq 'Beteg'}"
-                         required="true"/>
-
-            <h:outputLabel for="maidenNameOfMother" value="Anya leánykori neve:"
-                           rendered="#{createController.tipus eq 'Beteg'}"/>
-            <p:inputText id="maidenNameOfMother" label="Anya leánykori neve:"
-                         rendered="#{createController.tipus eq 'Beteg'}"
-
-                         value="#{createController.maidenNameOfMother}"
-                         required="true"/>
-
-            <h:outputLabel for="password" value="Jelszó:"/>
-            <p:password id="password" label="Jelszó"
-                        required="true"
-                        value="#{createController.password}"
-                        toggleMask="true" inline="true" feedback="true"/>
 
         </h:panelGrid>
         <p:commandButton action="#{createController.create}"

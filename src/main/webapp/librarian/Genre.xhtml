@@ -7,26 +7,35 @@
       xmlns:fn="http://java.sun.com/jsp/jstl/functions">
     <h:head/>
     <h:body>
-        <h:form rendered="#{pageHeaderController.actId != 1}">
+        <h:form id="formDataTable" rendered="#{pageHeaderController.actId != 1}">
             <f:view>
                 <ui:include src="/PageHeader.xhtml"/>
 
                 <p:dataTable var="genre" value="#{genreController.genres}" widgetVar="genreTable"
                              emptyMessage="No genres found with given criteria"
                              filteredValue="#{genreController.filteredGenres}"
-                             globalFilterFunction="#{genreController.globalFilterFunction}">
+                             globalFilterFunction="#{genreController.globalFilterFunction}"
+                             id="genreDataTable">
                     <f:facet name="header">
                         Genres
                         <div class="p-d-flex p-jc-end">
+                            <h:outputText value="Genres"/>
                             <p:inputText id="globalFilter" onkeyup="PF('genreTable').filter()" style="width:300px"
                                          placeholder="Search all fields using global function" />
+                            <p:commandButton type="button" onclick="PF('dlg').show();" icon="pi pi-plus-circle"/>
+
+                            <p:dialog header="Add genres" widgetVar="dlg" modal="true">
+                                <h:outputText value="Name: "/>
+                                <p:inputText value="#{genreController.newGenre}" id="genreNameInputText" placeholder="genre name"/>
+                                <p:commandButton value="Submit" action="#{genreController.addGenre}" onclick="PF('dlg').hide();"/>
+                            </p:dialog>
                         </div>
                     </f:facet>
 
-                    <p:column headerText="Genre ID" filterable="false" width="5%" style="text-align: right">
+                    <p:column id="columnGenreId" headerText="Genre ID" filterable="false" width="5%" style="text-align: right">
                         <h:outputText value="#{genre.genreId}" />
                     </p:column>
-                    <p:column headerText="Genre name" filterable="false" width="95%" style="text-align: left">
+                    <p:column id="columnGenreName" headerText="Genre name" filterable="false" width="95%" style="text-align: left">
                         <h:outputText value="#{genre.genreName}" />
                     </p:column>
 

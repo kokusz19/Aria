@@ -31,11 +31,26 @@ public class GenreController implements Serializable{
     @Getter
     private List<FilterMeta> filterBy;
 
+    @Getter
+    @Setter
+    private String newGenre;
+
     @PostConstruct
     public void init() {
         genres = new ArrayList<>(genreDao.getGenres());
         filterBy = new ArrayList<>();
         filteredGenres = new ArrayList<>(genres);
+    }
+
+    public void addGenre(){
+        Genre genre = new Genre();
+        genre.setGenreName(newGenre);
+        genreDao.createGenre(genre);
+        init();
+
+        FacesContext context = FacesContext.getCurrentInstance();
+        NavigationHandler navigationHandler = context.getApplication().getNavigationHandler();
+        navigationHandler.handleNavigation(context, null, "Genre.xhtml?faces-redirect=true&includeViewParams=true");
     }
 
     public GenreController() {

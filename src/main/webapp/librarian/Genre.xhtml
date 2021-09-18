@@ -1,0 +1,44 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+    <h:head/>
+    <h:body>
+        <h:form rendered="#{pageHeaderController.actId != 1}">
+            <f:view>
+                <ui:include src="/PageHeader.xhtml"/>
+
+                <p:dataTable var="genre" value="#{genreController.genres}" widgetVar="genreTable"
+                             emptyMessage="No genres found with given criteria"
+                             filteredValue="#{genreController.filteredGenres}"
+                             globalFilterFunction="#{genreController.globalFilterFunction}">
+                    <f:facet name="header">
+                        Genres
+                        <div class="p-d-flex p-jc-end">
+                            <p:inputText id="globalFilter" onkeyup="PF('genreTable').filter()" style="width:300px"
+                                         placeholder="Search all fields using global function" />
+                        </div>
+                    </f:facet>
+
+                    <p:column headerText="Genre ID" filterable="false" width="5%" style="text-align: right">
+                        <h:outputText value="#{genre.genreId}" />
+                    </p:column>
+                    <p:column headerText="Genre name" filterable="false" width="95%" style="text-align: left">
+                        <h:outputText value="#{genre.genreName}" />
+                    </p:column>
+
+                    <f:facet name="footer">
+                        <span class="p-text-bold">In total there are #{fn:length(genreController.genres)} genre(s).</span>
+                    </f:facet>
+                </p:dataTable>
+            </f:view>
+        </h:form>
+        <h:form rendered="#{pageHeaderController.actId == 1}">
+            <h:outputLabel value="You do not have the right access!"/>
+            <h:commandButton action="/default/HomePage.xhtml?faces-redirect=true" value="default page" rendered="#{pageHeaderController.actId == 1}"/>
+        </h:form>
+    </h:body>
+</html>

@@ -26,6 +26,6 @@ public class ActDao implements Serializable {
                 .select(act)
                 .where(act.roleName.eq(roleName))
                 .fetchOne();
-}
+    }
 
 }

@@ -1,3 +1,5 @@
+create sequence aria.hibernate_sequence;
+
 CREATE TABLE author (
                         authorId  bigint NOT NULL,
                         firstName VARCHAR NOT NULL,

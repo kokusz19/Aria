@@ -41,6 +41,9 @@ public class CreateController implements Serializable {
 
     @Getter
     @Setter
+    private String loginName;
+    @Getter
+    @Setter
     private String firstName;
     @Getter
     @Setter
@@ -66,11 +69,12 @@ public class CreateController implements Serializable {
 
     public void create() {
         message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Message", " Sikerült létrehozni!");
+        newAccount = new Account();
         newAccount.setPerson(createPerson());
         newAccount.setCreatedAt(LocalDate.now());
         newAccount.setPassword(BCrypt.withDefaults().hashToString(12, password.toCharArray()));
         newAccount.setAct(actDao.getAct(tipus));
-
+        newAccount.setLoginName(loginName);
         try {
             if (accountDao.getForUsername(newAccount.getLoginName()) == null) {
                 personDao.createPerson(newAccount.getPerson());
@@ -101,6 +105,7 @@ public class CreateController implements Serializable {
     }
 
     private void clearTextBoxes(){
+        setLoginName("");
         setFirstName("");
         setLastName("");
         setPassword("");

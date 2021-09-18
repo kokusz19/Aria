@@ -11,7 +11,7 @@ import java.time.LocalDate;
 public class Person {
     @Getter
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long personId;
     @Getter
     @Setter

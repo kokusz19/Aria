@@ -12,7 +12,7 @@ import javax.persistence.*;
 public class Act {
     @Getter
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long actId;
     @Getter
     @Setter

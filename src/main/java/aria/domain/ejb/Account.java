@@ -12,7 +12,7 @@ import java.time.LocalDate;
 public class Account implements Serializable {
     @Getter
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long accountId;
     @Getter
     @Setter

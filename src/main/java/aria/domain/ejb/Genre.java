@@ -12,7 +12,7 @@ import javax.persistence.*;
 public class Genre {
     @Getter
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long genreId;
     @Getter
     @Setter

@@ -1,0 +1,31 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+<h:head/>
+
+<ui:composition>
+    <h:form>
+        <p:toolbar>
+            <p:toolbarGroup name="left">
+                <p:menuButton value="Librarian" icon="pi pi-list" rendered="#{pageHeaderController.actId == 2 || pageHeaderController.actId == 3}">
+                    <p:menuitem value="Books" url="Book.xhtml" icon="pi pi-file"/>
+                    <p:menuitem value="Genres" url="Genre.xhtml" icon="pi pi-tags"/>
+                    <p:menuitem value="Authors" url="Author.xhtml" icon="pi pi-user-edit"/>
+                    <p:menuitem value="Users"  url="User.xhtml" icon="pi pi-users"/>
+                </p:menuButton>
+
+                <p:menuButton value="Admin" icon="pi pi-list" rendered="#{pageHeaderController.actId == 3}">
+                    <p:menuitem value="Edit Users"  url="EditUser.xhtml" icon="pi pi-pencil"/>
+                </p:menuButton>
+            </p:toolbarGroup>
+
+            <p:toolbarGroup name="right" align="right">
+                <p:commandButton action="#{pageHeaderController.signOut}" icon="pi pi-times" styleClass="rounded-button ui-button-danger ui-button-outlined" />
+            </p:toolbarGroup>
+        </p:toolbar>
+    </h:form>
+</ui:composition>
+</html>

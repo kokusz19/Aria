@@ -5,7 +5,11 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
-<f:view>
-    <h:outputLabel value="Hello, admin!"/>
-</f:view>
+    <h:head/>
+    <h:body>
+        <f:view>
+            <ui:include src="../PageHeader.xhtml"/>
+            <h:outputLabel value="Hello, admin!"/>
+        </f:view>
+    </h:body>
 </html>

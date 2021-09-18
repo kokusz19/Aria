@@ -6,9 +6,17 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:f="http://xmlns.jcp.org/jsf/core"><h:head/>
 <h:body>
-    <f:view>
-        <ui:include src="../PageHeader.xhtml"/>
-        <h:outputLabel value="Hello, konyvtaros!"/>
-    </f:view>
+    <h:form rendered="#{pageHeaderController.actId == 2}">
+        <f:view>
+            <ui:include src="../PageHeader.xhtml"/>
+            <h:outputLabel value="Hello, konyvtaros!"/>
+        </f:view>
+    </h:form>
+    <br/>
+    <h:form rendered="#{pageHeaderController.actId != 2}">
+        <h:outputLabel value="You do not have the right access!"/>
+        <h:commandButton action="/default/HomePage.xhtml?faces-redirect=true" value="default page" rendered="#{pageHeaderController.actId == 1}"/>
+        <h:commandButton action="/admin/HomePage.xhtml?faces-redirect=true" value="default page" rendered="#{pageHeaderController.actId == 3}"/>
+    </h:form>
 </h:body>
 </html>

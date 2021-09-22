@@ -27,5 +27,14 @@ public class ActDao implements Serializable {
                 .where(act.roleName.eq(roleName))
                 .fetchOne();
     }
+    public Act getAct(final long actId) {
+        JPAQueryFactory query = new JPAQueryFactory(em);
+        QAct act = QAct.act;
+        return query
+                .from(act)
+                .select(act)
+                .where(act.actId.eq(actId))
+                .fetchOne();
+    }
 
 }

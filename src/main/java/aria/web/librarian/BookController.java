@@ -1,12 +1,7 @@
 package aria.web.librarian;
 
-import aria.domain.dao.AuthorToBookDao;
-import aria.domain.dao.BookDao;
-import aria.domain.dao.GenreDao;
-import aria.domain.dao.GenreToBookDao;
-import aria.domain.ejb.Author;
-import aria.domain.ejb.Book;
-import aria.domain.ejb.Genre;
+import aria.domain.dao.*;
+import aria.domain.ejb.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.primefaces.model.FilterMeta;
@@ -19,10 +14,10 @@ import javax.enterprise.context.SessionScoped;
 import javax.faces.bean.ManagedBean;
 import javax.inject.Inject;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-
 
 @ManagedBean(name = "bookController", eager = true)
 @SessionScoped
@@ -30,6 +25,12 @@ public class BookController implements Serializable{
 
     @Inject
     BookDao bookDao ;
+    @Inject
+    GenreDao genreDao;
+    @Inject
+    AuthorDao authorDao;
+    @Inject
+    LanguageDao languageDao;
     @Inject
     GenreToBookDao genreToBookDao;
     @Inject
@@ -42,13 +43,44 @@ public class BookController implements Serializable{
 
     @Getter
     @Setter
+    private String title;
+    @Getter
+    @Setter
+    private String ISBN;
+    @Getter
+    @Setter
+    private LocalDate publishedAt;
+    @Getter
+    @Setter
+    private int maxItem;
+    @Getter
+    @Setter
+    private int availableItem;
+    @Getter
+    @Setter
+    private Language language;
+    @Getter
+    @Setter
+    private List<Language> allLanguages;
+    @Getter
+    @Setter
     private List<Genre> genres;
     @Getter
     @Setter
+    private List<Genre> allGenres;
+    @Getter
+    @Setter
     private List<Author> authors;
+    @Getter
+    @Setter
+    private List<Author> allAuthors;
 
     @PostConstruct
     public void init() {
+        allGenres = genreDao.getGenres();
+        allAuthors = authorDao.getAuthors();
+        allLanguages = languageDao.getLanguages();
+
         books = new ArrayList<>(bookDao.getBooks());
         for (Book book: books) {
             book.setGenres(genreToBookDao.getGenresForBookId(book.getBookId()));
@@ -68,10 +100,34 @@ public class BookController implements Serializable{
 
     public void addBook(){
         Book book = new Book();
+        book.setAvailableItems(availableItem);
+        book.setMaxItems(maxItem);
+        book.setBookTitle(title);
+        book.setIsbn(ISBN);
+        book.setPublishedAt(publishedAt);
+
+        // TODO: Genre, Author and Language picker to the dialog
         book.setGenres(genres);
         book.setAuthors(authors);
+        //book.setLanguage(language);
+        book.setLanguage(languageDao.getLanguages().get(1));
         bookDao.createBook(book);
-        init();
+
+        for (Genre genre: genres) {
+            GenreToBook genreToBook = new GenreToBook();
+            genreToBook.setBook(bookDao.getForBookId(book.getBookId()));
+            genreToBook.setGenre(genre);
+            genreToBookDao.createGenreToBook(genreToBook);
+        }
+
+        for (Author author: authors) {
+            AuthorToBook authorToBook = new AuthorToBook();
+            authorToBook.setBook(bookDao.getForBookId(book.getBookId()));
+            authorToBook.setAuthor(author);
+            authorToBookDao.createAuthorToBook(authorToBook);
+        }
+
+        clearSpaces();
 
         FacesContext context = FacesContext.getCurrentInstance();
         NavigationHandler navigationHandler = context.getApplication().getNavigationHandler();
@@ -108,4 +164,15 @@ public class BookController implements Serializable{
         return filteredBooks;
     }
 
+    public void clearSpaces(){
+        init();
+        title = "";
+        ISBN = "";
+        publishedAt = null;
+        maxItem = 0;
+        availableItem = 0;
+        language = null;
+        genres = null;
+        authors = null;
+    }
 }

@@ -23,7 +23,33 @@
                            placeholder="Search all fields using global function" />
               <p:commandButton type="button" onclick="PF('dlg').show();" icon="pi pi-plus-circle"/>
 
+              <p:dialog header="Add a book" widgetVar="dlg" modal="true">
+                <h:outputText value="Title: "/>
+                <p:inputText label="Title: " value="#{bookController.title}" /><br/>
+                <h:outputText value="ISBN: "/>
+                <p:inputText label="ISBN:" value="#{bookController.ISBN}" /><br/>
+                <h:outputText value="Published at: "/>
+                <p:datePicker label="Published at: " value="#{bookController.publishedAt}" /><br/>
 
+                <h:outputText value="Max item: "/>
+                <p:inputText label="Max item:: " value="#{bookController.maxItem}" /><br/>
+                <h:outputText value="Available item: "/>
+                <p:inputText label="Available item: " value="#{bookController.availableItem}" /><br/>
+
+                <p:selectCheckboxMenu title="Genre(s)" value="#{bookController.genres}" label="Genre(s)" style="min-width: 15rem"
+                                      multiple="true" filter="true" filterMatchMode="startsWith" panelStyle="width: 30rem" scrollHeight="250">
+                  <p:ajax event="itemUnselect" listener="#{bookController.onItemUnselect}"/>
+                  <f:selectItems value="#{bookController.allGenres}"/>
+                </p:selectCheckboxMenu><br/>
+
+                <p:selectCheckboxMenu title="Author(s)" value="#{bookController.authors}" label="Author(s)" style="min-width: 15rem"
+                                      multiple="true" filter="true" filterMatchMode="startsWith" panelStyle="width: 30rem" scrollHeight="250">
+                  <p:ajax event="itemUnselect" listener="#{bookController.onItemUnselect}"/>
+                  <f:selectItems value="#{bookController.allAuthors}"/>
+                </p:selectCheckboxMenu><br/>
+
+                <p:commandButton action="#{bookController.addBook}" value="Submit" onclick="PF('dlg').hide();"/>
+              </p:dialog>
             </div>
           </f:facet>
 

@@ -18,4 +18,9 @@ public class Language {
     @Setter
     @Column(name = "languageName")
     private String languageName;
+
+    @Override
+    public String toString() {
+        return languageName;
+    }
 }

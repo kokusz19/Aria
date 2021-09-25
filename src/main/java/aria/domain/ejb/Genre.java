@@ -18,4 +18,11 @@ public class Genre {
     @Setter
     @Column(name = "genreName")
     private String genreName;
+
+    @Override
+    public String toString() {
+        return genreName;
+    }
 }
+
+

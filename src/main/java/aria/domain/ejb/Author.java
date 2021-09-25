@@ -27,4 +27,9 @@ public class Author {
     @Setter
     @Column(name = "dateOfBirth")
     private LocalDate dateOfBirth;
+
+    @Override
+    public String toString() {
+        return firstName + " " + lastName;
+    }
 }

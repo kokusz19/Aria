@@ -77,9 +77,6 @@
           <p:column headerText="Available items" filterable="false" style="text-align: left">
             <h:outputText value="#{book.availableItems}" />
           </p:column>
-          <p:column headerText="Language" filterable="false" style="text-align: left">
-            <h:outputText value="#{book.language.languageName}" />
-          </p:column>
 
           <f:facet name="footer">
             <span class="p-text-bold">In total there are #{fn:length(bookController.books)} book(s).</span>

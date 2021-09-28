@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+<h:head/>
+<h:body>
+    <h:form>
+        <f:view>
+            <ui:include src="/PageHeader.xhtml"/>
+            <p:growl id="msg"/>
+
+            <p:dataTable var="book" value="#{userBookController.books}" widgetVar="bookTable"
+                         emptyMessage="No books found with given criteria"
+                         filteredValue="#{userBookController.filteredBooks}"
+                         globalFilterFunction="#{userBookController.globalFilterFunction}">
+                <f:facet name="header">
+                    Books
+                    <div class="p-d-flex p-jc-end">
+                        <h:outputText value="Books"/>
+                        <p:inputText id="globalFilter" onkeyup="PF('bookTable').filter()" style="width:300px"
+                                     placeholder="Search all fields using global function" />
+                    </div>
+                </f:facet>
+
+                <p:column style="width:2rem">
+                    <p:rowToggler/>
+                </p:column>
+                <p:column headerText="Book name" filterable="false" style="text-align: left">
+                    <h:outputText value="#{book.bookTitle}" />
+                </p:column>
+                <p:column headerText="Author(s)" filterable="false" style="text-align: left">
+                    <h:outputText value="#{book.authorsString}" />
+                </p:column>
+                <p:column headerText="Genre(s)" filterable="false" style="text-align: left">
+                    <h:outputText value="#{book.genresString}" />
+                </p:column>
+                <p:rowExpansion>
+                    <p:dataTable value="book">
+                        <p:column headerText="Book ID" filterable="false" width="5%" style="text-align: right">
+                            <h:outputText value="#{book.bookId}" />
+                        </p:column>
+                        <p:column headerText="ISBN" filterable="false" style="text-align: left">
+                            <h:outputText value="#{book.isbn}" />
+                        </p:column>
+                        <p:column headerText="Published at" filterable="false" style="text-align: left">
+                            <h:outputText value="#{book.publishedAt}" />
+                        </p:column>
+                        <p:column headerText="Max items" filterable="false" style="text-align: left">
+                            <h:outputText value="#{book.maxItems}" />
+                        </p:column>
+                        <p:column headerText="Available items" filterable="false" style="text-align: left">
+                            <h:outputText value="#{book.availableItems}" />
+                        </p:column>
+                        <p:column style="width:2rem">
+                            <p:linkButton icon="pi pi-shopping-cart" href="BorrowBook.xhtml" style="margin-right: 20px" styleClass="rounded-button ui-button-danger ui-button-outlined" >
+                                <f:param name="bookId" value="#{book.bookId}"/>
+                            </p:linkButton>
+                        </p:column>
+                    </p:dataTable>
+                </p:rowExpansion>
+
+                <f:facet name="footer">
+                    <span class="p-text-bold">In total there are #{fn:length(userBookController.books)} book(s).</span>
+                </f:facet>
+            </p:dataTable>
+        </f:view>
+    </h:form>
+</h:body>
+</html>

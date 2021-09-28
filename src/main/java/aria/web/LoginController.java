@@ -53,7 +53,7 @@ public class LoginController implements Serializable {
                         url = "/librarian/HomePage.xhtml";
                         break;
                     case "default":
-                        url = "/default/HomePage.xhtml";
+                        url = "/user/HomePage.xhtml";
                         break;
                 }
 

@@ -9,9 +9,13 @@
 <ui:composition>
     <p:toolbar>
         <p:toolbarGroup name="left">
-            <p:commandButton icon="pi pi-home" action="/default/HomePage.xhtml?faces-redirect=true" rendered="#{pageHeaderController.actId == 1}"/>
+            <p:commandButton icon="pi pi-home" action="/user/HomePage.xhtml?faces-redirect=true" rendered="#{pageHeaderController.actId == 1}"/>
             <p:commandButton icon="pi pi-home" action="/librarian/HomePage.xhtml?faces-redirect=true" rendered="#{pageHeaderController.actId == 2}"/>
             <p:commandButton icon="pi pi-home" action="/admin/HomePage.xhtml?faces-redirect=true" rendered="#{pageHeaderController.actId == 3}"/>
+
+            <p:menuButton value="Default" icon="pi pi-list" >
+                <p:menuitem value="Books" url="/aria/user/Book.xhtml" icon="pi pi-file"/>
+            </p:menuButton>
 
             <p:menuButton value="Librarian" icon="pi pi-list" rendered="#{pageHeaderController.actId == 2 || pageHeaderController.actId == 3}">
                 <p:menuitem value="Books" url="/aria/librarian/Book.xhtml" icon="pi pi-file"/>

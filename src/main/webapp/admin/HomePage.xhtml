@@ -16,7 +16,7 @@
         <br/>
         <h:form rendered="#{pageHeaderController.actId != 3}">
             <h:outputLabel value="You do not have the right access!"/>
-            <h:commandButton action="/default/HomePage.xhtml?faces-redirect=true" value="default page" rendered="#{pageHeaderController.actId == 1}"/>
+            <h:commandButton action="/user/HomePage.xhtml?faces-redirect=true" value="default page" rendered="#{pageHeaderController.actId == 1}"/>
             <h:commandButton action="/librarian/HomePage.xhtml?faces-redirect=true" value="default page" rendered="#{pageHeaderController.actId == 2}"/>
         </h:form>
     </h:body>

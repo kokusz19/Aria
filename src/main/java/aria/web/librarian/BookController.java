@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Locale;
 
 @ManagedBean(name = "bookController", eager = true)
-@SessionScoped
+@ViewScoped
 public class BookController implements Serializable{
 
     @Inject

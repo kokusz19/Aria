@@ -38,13 +38,11 @@
 
                 <p:selectCheckboxMenu title="Genre(s)" value="#{bookController.genres}" label="Genre(s)" style="min-width: 15rem"
                                       multiple="true" filter="true" filterMatchMode="startsWith" panelStyle="width: 30rem" scrollHeight="250">
-                  <p:ajax event="itemUnselect" listener="#{bookController.onItemUnselect}"/>
                   <f:selectItems value="#{bookController.allGenres}"/>
                 </p:selectCheckboxMenu><br/>
 
                 <p:selectCheckboxMenu title="Author(s)" value="#{bookController.authors}" label="Author(s)" style="min-width: 15rem"
                                       multiple="true" filter="true" filterMatchMode="startsWith" panelStyle="width: 30rem" scrollHeight="250">
-                  <p:ajax event="itemUnselect" listener="#{bookController.onItemUnselect}"/>
                   <f:selectItems value="#{bookController.allAuthors}"/>
                 </p:selectCheckboxMenu><br/>
 

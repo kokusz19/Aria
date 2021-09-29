@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Locale;
 
 @ManagedBean(name = "bookController", eager = true)
-@ViewScoped
+@SessionScoped
 public class BookController implements Serializable{
 
     @Inject
@@ -83,17 +83,8 @@ public class BookController implements Serializable{
         allLanguages = languageDao.getLanguages();
 
         books = new ArrayList<>(bookDao.getBooks());
-        for (Book book: books) {
-            book.setGenres(genreToBookDao.getGenresForBookId(book.getBookId()));
-            book.setGenresString(book.getGenres().toString());
-            book.setGenresString(book.getGenresString().replace("[", ""));
-            book.setGenresString(book.getGenresString().replace("]", ""));
 
-            book.setAuthors(authorToBookDao.getAuthorsForBookId(book.getBookId()));
-            book.setAuthorsString(book.getAuthors().toString());
-            book.setAuthorsString(book.getAuthorsString().replace("[", ""));
-            book.setAuthorsString(book.getAuthorsString().replace("]", ""));
-        }
+        generateStrings(books);
 
         filterBy = new ArrayList<>();
         filteredBooks = new ArrayList<>(books);
@@ -140,7 +131,9 @@ public class BookController implements Serializable{
     }
 
     public List<Book> getBooks(){
-        return new ArrayList<>(bookDao.getBooks());
+        List<Book> localBooks = bookDao.getBooks();
+        generateStrings(localBooks);
+        return new ArrayList<>(localBooks);
     }
 
     public boolean globalFilterFunction(Object value, Object filter, Locale locale) {
@@ -175,5 +168,19 @@ public class BookController implements Serializable{
         genres = null;
         authors = null;
         books = bookDao.getBooks();
+    }
+
+    public void generateStrings(List<Book> tmpBooks){
+        for (Book tmpBook: tmpBooks) {
+            tmpBook.setGenres(genreToBookDao.getGenresForBookId(tmpBook.getBookId()));
+            tmpBook.setGenresString(tmpBook.getGenres().toString());
+            tmpBook.setGenresString(tmpBook.getGenresString().replace("[", ""));
+            tmpBook.setGenresString(tmpBook.getGenresString().replace("]", ""));
+
+            tmpBook.setAuthors(authorToBookDao.getAuthorsForBookId(tmpBook.getBookId()));
+            tmpBook.setAuthorsString(tmpBook.getAuthors().toString());
+            tmpBook.setAuthorsString(tmpBook.getAuthorsString().replace("[", ""));
+            tmpBook.setAuthorsString(tmpBook.getAuthorsString().replace("]", ""));
+        }
     }
 }

@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+<h:head/>
+<h:body>
+    <h:form rendered="#{pageHeaderController.actId != 1}">
+        <f:view>
+            <ui:include src="/PageHeader.xhtml"/>
+
+            <p:dataTable var="borrowedBook" value="#{borrowedBookController.allBorrowedBook}" widgetVar="borrowedBookTable"
+                         emptyMessage="No books found with given criteria"
+                         filteredValue="#{borrowedBookController.filteredBorrowedBooks}"
+                         globalFilterFunction="#{borrowedBookController.globalFilterFunction}">
+                <f:facet name="header">
+                    Books
+                    <div class="p-d-flex p-jc-end">
+                        <h:outputText value="Borrowed Books"/>
+                        <p:inputText id="globalFilter" onkeyup="PF('borrowedBookTable').filter()" style="width:300px"
+                                     placeholder="Search all fields using global function" />
+                    </div>
+                </f:facet>
+
+                <p:column style="width:2rem">
+                    <p:rowToggler/>
+                </p:column>
+                <p:column headerText="Book name" filterable="false" style="text-align: left">
+                    <h:outputText value="#{borrowedBook.book.bookTitle}" />
+                </p:column>
+                <p:column headerText="Login name">
+                    <h:outputText value="#{borrowedBook.account.loginName}"/>
+                </p:column>
+                <p:column headerText="First name">
+                    <h:outputText value="#{borrowedBook.account.person.firstName}"/>
+                </p:column>
+                <p:column headerText="Last name">
+                    <h:outputText value="#{borrowedBook.account.person.lastName}"/>
+                </p:column>
+                <p:column headerText="E-mail">
+                    <h:outputText value="#{borrowedBook.account.person.email}"/>
+                </p:column>
+                <p:column headerText="Role name">
+                    <h:outputText value="#{borrowedBook.account.act.roleName}"/>
+                </p:column>
+                <p:column headerText="Date of borrow">
+                    <h:outputText value="#{borrowedBook.dateOfBorrow}"/>
+                </p:column>
+                <p:rowExpansion>
+                    <p:dataTable value="borrowedBook">
+                        <p:column headerText="Book ID" filterable="false" width="5%" style="text-align: right">
+                            <h:outputText value="#{borrowedBook.book.bookId}" />
+                        </p:column>
+                        <p:column headerText="Author(s)" filterable="false" style="text-align: left">
+                            <h:outputText value="#{borrowedBook.book.authorsString}" />
+                        </p:column>
+                        <p:column headerText="Genre(s)" filterable="false" style="text-align: left">
+                            <h:outputText value="#{borrowedBook.book.genresString}" />
+                        </p:column>
+                        <p:column headerText="ISBN" filterable="false" style="text-align: left">
+                            <h:outputText value="#{borrowedBook.book.isbn}" />
+                        </p:column>
+                    </p:dataTable>
+                </p:rowExpansion>
+
+                <f:facet name="footer">
+                </f:facet>
+                <span class="p-text-bold">In total there are #{fn:length(borrowedBookController.allBorrowedBook)} book(s).</span>
+            </p:dataTable>
+        </f:view>
+    </h:form>
+    <h:form rendered="#{pageHeaderController.actId == 1}">
+        <h:outputLabel value="You do not have the right access!"/>
+        <h:commandButton action="/user/HomePage.xhtml?faces-redirect=true" value="default page" rendered="#{pageHeaderController.actId == 1}"/>
+    </h:form>
+</h:body>
+</html>

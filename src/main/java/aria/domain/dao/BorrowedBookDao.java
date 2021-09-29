@@ -7,6 +7,7 @@ import javax.ejb.Stateful;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import java.io.Serializable;
+import java.util.List;
 
 @Stateful
 public class BorrowedBookDao implements Serializable {
@@ -26,9 +27,29 @@ public class BorrowedBookDao implements Serializable {
                 .where(borrowedBook.borrowedBookId.eq(borrowedBookId))
                 .fetchOne();
     }
+    public List<BorrowedBook> getForAccountId(final long accountId) {
+        JPAQueryFactory query = new JPAQueryFactory(em);
+        QBorrowedBook borrowedBook = QBorrowedBook.borrowedBook;
+        return query
+                .from(borrowedBook)
+                .select(borrowedBook)
+                .where(borrowedBook.account.accountId.eq(accountId))
+                .fetch();
+    }
+    public List<BorrowedBook> getBorrowedBooks(){
+        JPAQueryFactory query = new JPAQueryFactory(em);
+        QBorrowedBook borrowedBook = QBorrowedBook.borrowedBook;
+        return query
+                .from(borrowedBook)
+                .select(borrowedBook)
+                .fetch();
+    }
 
     public void createBorrowedBook(BorrowedBook borrowedBook) {
         em.persist(borrowedBook);
     }
 
+    public void updateBorrowedBook(BorrowedBook borrowedBook) {
+        em.merge(borrowedBook);
+    }
 }

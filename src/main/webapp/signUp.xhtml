@@ -20,11 +20,11 @@
                         value="#{createController.password}"
                         toggleMask="true" inline="true" feedback="true"/>
 
-            <h:outputLabel for="firstName" value="Vezetéknév:"/>
-            <p:inputText id="firstName" label="Vezetéknév" value="#{createController.lastName}" required="true"/>
+            <h:outputLabel for="firstName" value="Keresztnév:"/>
+            <p:inputText id="firstName" label="Keresztnév" value="#{createController.firstName}" required="true"/>
 
-            <h:outputLabel for="lastName" value="Keresztnév:"/>
-            <p:inputText id="lastName" label="Keresztnév" value="#{createController.firstName}" required="true"/>
+            <h:outputLabel for="lastName" value="Vezetéknév:"/>
+            <p:inputText id="lastName" label="Vezetéknév" value="#{createController.lastName}" required="true"/>
 
             <h:outputLabel for="birth" value="Születési dátum:"/>
             <p:datePicker id="birth" label="Születési dátum" value="#{createController.dateOfBirth}" required="true"/>

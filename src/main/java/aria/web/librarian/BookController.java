@@ -9,6 +9,7 @@ import org.primefaces.util.LangUtils;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.NavigationHandler;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.bean.ManagedBean;
@@ -20,7 +21,7 @@ import java.util.List;
 import java.util.Locale;
 
 @ManagedBean(name = "bookController", eager = true)
-@SessionScoped
+@ViewScoped
 public class BookController implements Serializable{
 
     @Inject
@@ -110,7 +111,8 @@ public class BookController implements Serializable{
         book.setGenres(genres);
         book.setAuthors(authors);
         //book.setLanguage(language);
-        book.setLanguage(languageDao.getLanguages().get(1));
+        Language localLang = languageDao.getLanguages().get(0);
+        book.setLanguage(localLang);
         bookDao.createBook(book);
 
         for (Genre genre: genres) {
@@ -138,8 +140,7 @@ public class BookController implements Serializable{
     }
 
     public List<Book> getBooks(){
-        init();
-        return new ArrayList<>(books);
+        return new ArrayList<>(bookDao.getBooks());
     }
 
     public boolean globalFilterFunction(Object value, Object filter, Locale locale) {
@@ -165,7 +166,6 @@ public class BookController implements Serializable{
     }
 
     public void clearSpaces(){
-        init();
         title = "";
         ISBN = "";
         publishedAt = null;
@@ -174,5 +174,6 @@ public class BookController implements Serializable{
         language = null;
         genres = null;
         authors = null;
+        books = bookDao.getBooks();
     }
 }

@@ -76,14 +76,14 @@ CREATE TABLE borrowingPrices (
                                  PRIMARY KEY(borrowingPricesId)
 );
 
-CREATE TABLE borrowedBooks (
-                               borrowingId bigint not null,
+CREATE TABLE borrowedBook (
+                               borrowedBookId bigint not null,
                                bookId bigint not null,
                                accountId bigint not null,
                                dateOfBorrow date not null,
-                               borrowingDays bigint,
-                               PRIMARY KEY(borrowingId)
+                               dateOfReturn date,
+                               PRIMARY KEY(borrowedBookId)
 );
 
-ALTER TABLE borrowedBooks ADD FOREIGN KEY (bookId) REFERENCES book (bookId);
-ALTER TABLE borrowedBooks ADD FOREIGN KEY (accountId) REFERENCES account (accountId);
+ALTER TABLE borrowedBook ADD FOREIGN KEY (bookId) REFERENCES book (bookId);
+ALTER TABLE borrowedBook ADD FOREIGN KEY (accountId) REFERENCES account (accountId);

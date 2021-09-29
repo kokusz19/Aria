@@ -60,6 +60,11 @@ public class BookDao implements Serializable {
                 .fetchOne().getGenres();
     }
 
+    public void updateBook(final Book book) {
+        em.merge(book);
+    }
+
+
     public void createBook(Book book) {
         em.persist(book);
     }

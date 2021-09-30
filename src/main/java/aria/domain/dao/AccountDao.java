@@ -53,5 +53,8 @@ public class AccountDao implements Serializable {
     public void createUser(Account account) {
         entityManager.persist(account);
     }
+    public void updateUser(Account account) {
+        entityManager.merge(account);
+    }
 
 }

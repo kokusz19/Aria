@@ -7,6 +7,7 @@ import aria.domain.ejb.Account;
 import lombok.Getter;
 import lombok.Setter;
 import org.primefaces.PrimeFaces;
+import org.primefaces.context.PrimeFacesContext;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.util.LangUtils;
 
@@ -14,10 +15,13 @@ import javax.annotation.PostConstruct;
 import javax.faces.application.NavigationHandler;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.*;
+import javax.servlet.http.*;
 
 @ManagedBean(name = "userController", eager = true)
 @RequestScoped
@@ -71,7 +75,6 @@ public class UserController implements Serializable {
         filterBy = new ArrayList<>();
 
         FacesContext context = FacesContext.getCurrentInstance();
-        NavigationHandler navigationHandler = context.getApplication().getNavigationHandler();
         if(context.getExternalContext().getSessionMap().containsKey("chosenAccountId")){
             getBooksForAccount(Long.parseLong(context.getExternalContext().getSessionMap().get("chosenAccountId").toString()));
         }
@@ -118,6 +121,21 @@ public class UserController implements Serializable {
                     if(admin.getAccountId() == accountId) chosenAccount = admin;
                 break;
         }
+    }
+
+    public void demotePromote(long accountId, int action) throws IOException {
+        if (action == 2) {
+            Account account = accountDao.getForAccountId(accountId);
+            account.setAct(actDao.getAct(account.getAct().getActId() + 1));
+            accountDao.updateUser(account);
+        }
+        else if(action == 1){
+            Account account = accountDao.getForAccountId(accountId);
+            account.setAct(actDao.getAct(account.getAct().getActId() - 1));
+            accountDao.updateUser(account);
+        }
+        ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
+        ec.redirect(((HttpServletRequest) ec.getRequest()).getRequestURI());
     }
 
     public UserController(){

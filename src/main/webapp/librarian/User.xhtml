@@ -64,10 +64,8 @@
                                 <p:column headerText="Books returned" filterable="false" style="text-align: right">
                                     <h:outputText value="#{defaultUser.booksReturned.size()}" />
                                 </p:column>
-                                <p:column headerText="Show borrowed books" style="text-align: center">
-                                    <p:commandButton value="Show" icon="pi pi-search" action="#{userController.showBorrowedBooks}">
-                                        <f:param name="accountId" value="#{defaultUser.accountId}"/>
-                                    </p:commandButton>
+                                <p:column headerText="Borrowed books" style="text-align: center">
+                                    <p:commandButton value="Show" icon="pi pi-search" action="#{userController.showBorrowedBooks(defaultUser.accountId)}"/>
                                 </p:column>
                             </p:dataTable>
                         </p:rowExpansion>
@@ -128,6 +126,9 @@
                                 <p:column headerText="Books returned" filterable="false" style="text-align: right">
                                     <h:outputText value="#{librarian.booksReturned.size()}" />
                                 </p:column>
+                                <p:column headerText="Borrowed books" style="text-align: center">
+                                    <p:commandButton value="Show" icon="pi pi-search" action="#{userController.showBorrowedBooks(librarian.accountId)}"/>
+                                </p:column>
                             </p:dataTable>
                         </p:rowExpansion>
 
@@ -186,6 +187,9 @@
                                 </p:column>
                                 <p:column headerText="Books returned" filterable="false" style="text-align: right">
                                     <h:outputText value="#{admin.booksReturned.size()}" />
+                                </p:column>
+                                <p:column headerText="Borrowed books" style="text-align: center">
+                                    <p:commandButton value="Show" icon="pi pi-search" action="#{userController.showBorrowedBooks(admin.accountId)}"/>
                                 </p:column>
                             </p:dataTable>
                         </p:rowExpansion>

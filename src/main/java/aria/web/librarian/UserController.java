@@ -4,8 +4,6 @@ import aria.domain.dao.AccountDao;
 import aria.domain.dao.ActDao;
 import aria.domain.dao.BorrowedBookDao;
 import aria.domain.ejb.Account;
-import aria.domain.ejb.BorrowedBook;
-import aria.domain.ejb.Genre;
 import lombok.Getter;
 import lombok.Setter;
 import org.primefaces.PrimeFaces;
@@ -13,6 +11,7 @@ import org.primefaces.model.FilterMeta;
 import org.primefaces.util.LangUtils;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.NavigationHandler;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
@@ -70,6 +69,13 @@ public class UserController implements Serializable {
         filteredAdmins = new ArrayList<>(admins);
 
         filterBy = new ArrayList<>();
+
+        FacesContext context = FacesContext.getCurrentInstance();
+        NavigationHandler navigationHandler = context.getApplication().getNavigationHandler();
+        if(context.getExternalContext().getSessionMap().containsKey("chosenAccountId")){
+            getBooksForAccount(Long.parseLong(context.getExternalContext().getSessionMap().get("chosenAccountId").toString()));
+        }
+
     }
 
     public void setBorrowedBooks(List<Account> accounts){
@@ -79,18 +85,25 @@ public class UserController implements Serializable {
         }
     }
 
-    public void showBorrowedBooks(){
+    public void showBorrowedBooks(long accountId){
         Map<String,Object> options = new HashMap<String, Object>();
         options.put("modal", true);
         options.put("width", 640);
-        options.put("height", 340);
+        options.put("height", 700);
         options.put("contentWidth", "100%");
         options.put("contentHeight", "100%");
         options.put("headerElement", "customheader");
 
-        long accountId = Long.parseLong(FacesContext.getCurrentInstance().
-                getExternalContext().getRequestParameterMap().get("accountId"));
+        FacesContext context = FacesContext.getCurrentInstance();
+        NavigationHandler navigationHandler = context.getApplication().getNavigationHandler();
+        context.getExternalContext().getSessionMap().put("chosenAccountId", accountId);
 
+        PrimeFaces.current().dialog().openDynamic("ViewBorrowedBooks.xhtml", options, null);
+
+        init();
+    }
+
+    public void getBooksForAccount(long accountId){
         switch(accountDao.getForAccountId(accountId).getAct().getRoleName()){
             case "default":
                 for (Account user: defaults)
@@ -105,9 +118,6 @@ public class UserController implements Serializable {
                     if(admin.getAccountId() == accountId) chosenAccount = admin;
                 break;
         }
-
-        PrimeFaces.current().dialog().openDynamic("ViewBorrowedBooks.xhtml", options, null);
-        // TODO ViewBorrowedBooks.xhtml can't see chosenAccount
     }
 
     public UserController(){

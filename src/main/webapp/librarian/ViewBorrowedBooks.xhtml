@@ -4,7 +4,7 @@
       xmlns:p="http://primefaces.org/ui" xmlns:f="http://java.sun.com/jsf/core">
 
 <h:head>
-    <title>Cars</title>
+    <title>Books</title>
     <style type="text/css">
         .ui-widget {
             font-size: 90%;
@@ -15,9 +15,8 @@
 <h:body>
     <i id="customheader" class="pi pi-book" style="display:none"></i>
 
-    <!--h:outputText value="test"/-->
-    <h:outputText value="#{userController.chosenAccount.accountId}"/>
-    <h:outputText value="#{userController.chosenAccount.person.firstName}"/>
+    <h:outputText value="#{userController.chosenAccount.person.firstName} #{userController.chosenAccount.person.lastName}'s borrows"/>
+    <br/>
 
     <p:tabView dynamic="true" cache="true">
         <p:tab title="Not yet returned books">

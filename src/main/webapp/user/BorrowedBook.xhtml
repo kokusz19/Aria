@@ -1,0 +1,56 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+<h:head/>
+<h:body>
+    <h:form>
+        <f:view>
+            <ui:include src="/PageHeader.xhtml"/>
+
+            <p:dataTable var="borrowedBook" value="#{userBorrowedBookController.allBorrowedBook}" widgetVar="borrowedBookTable"
+                         emptyMessage="No books found with given criteria"
+                         filteredValue="#{userBorrowedBookController.filteredBorrowedBooks}"
+                         globalFilterFunction="#{userBorrowedBookController.globalFilterFunction}">
+                <f:facet name="header">
+                    Books
+                    <div class="p-d-flex p-jc-end">
+                        <h:outputText value="Borrowed Books"/>
+                        <p:inputText id="globalFilter" onkeyup="PF('borrowedBookTable').filter()" style="width:300px"
+                                     placeholder="Search all fields using global function" />
+                    </div>
+                </f:facet>
+
+                <p:column headerText="Book ID" filterable="false" width="5%" style="text-align: right">
+                    <h:outputText value="#{borrowedBook.book.bookId}" />
+                </p:column>
+                <p:column headerText="Book name" filterable="false" style="text-align: left">
+                    <h:outputText value="#{borrowedBook.book.bookTitle}" />
+                </p:column>
+                <p:column headerText="Date of borrow">
+                    <h:outputText value="#{borrowedBook.dateOfBorrow}"/>
+                </p:column>
+                <p:column headerText="Date of return">
+                    <h:outputText value="#{borrowedBook.dateOfReturn}"/>
+                </p:column>
+                <p:column headerText="Author(s)" filterable="false" style="text-align: left">
+                    <h:outputText value="#{borrowedBook.book.authorsString}" />
+                </p:column>
+                <p:column headerText="Genre(s)" filterable="false" style="text-align: left">
+                    <h:outputText value="#{borrowedBook.book.genresString}" />
+                </p:column>
+                <p:column headerText="ISBN" filterable="false" style="text-align: left">
+                    <h:outputText value="#{borrowedBook.book.isbn}" />
+                </p:column>
+
+                <f:facet name="footer">
+                </f:facet>
+                <span class="p-text-bold">In total there are #{fn:length(userBorrowedBookController.allBorrowedBook)} book(s).</span>
+            </p:dataTable>
+        </f:view>
+    </h:form>
+</h:body>
+</html>

@@ -1,26 +1,27 @@
-package aria.web.user;
+package aria.web.librarian;
 
+import aria.domain.dao.BookDao;
 import aria.domain.dao.BorrowedBookDao;
 import aria.domain.ejb.Book;
 import aria.domain.ejb.BorrowedBook;
-import aria.web.librarian.BookController;
 import lombok.Getter;
 import lombok.Setter;
+import org.primefaces.PrimeFaces;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.util.LangUtils;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.application.NavigationHandler;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import java.time.LocalDate;
+import java.util.*;
 
-@ManagedBean(name = "userBorrowedBookController", eager = true)
+@ManagedBean(name = "borrowedBookController", eager = true)
 @ViewScoped
 public class BorrowedBookController implements Serializable {
 
@@ -28,6 +29,8 @@ public class BorrowedBookController implements Serializable {
     BorrowedBookDao borrowedBookDao;
     @Inject
     BookController bookController;
+    @Inject
+    BookDao bookDao;
 
     @Getter
     @Setter
@@ -40,12 +43,7 @@ public class BorrowedBookController implements Serializable {
 
     @PostConstruct
     public void init(){
-        long userId;
-        FacesContext context = FacesContext.getCurrentInstance();
-        NavigationHandler navigationHandler = context.getApplication().getNavigationHandler();
-        userId = Long.parseLong(context.getExternalContext().getSessionMap().get("id").toString());
-
-        allBorrowedBook = borrowedBookDao.getForAccountId(userId);
+        allBorrowedBook = borrowedBookDao.getBorrowedBooks();
         filterBy = new ArrayList<>();
         filteredBorrowedBooks = new ArrayList<>(allBorrowedBook);
 
@@ -54,6 +52,13 @@ public class BorrowedBookController implements Serializable {
             books.add(borrowedBook.getBook());
         }
         bookController.generateStrings(books);
+
+
+        if(FacesContext.getCurrentInstance().getExternalContext().getSessionMap().containsKey("showMsg") && Boolean.getBoolean(FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("showMsg").toString()) == true){
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Return successful!", "User has returned the book."));
+            PrimeFaces.current().ajax().update("form:growl");
+            FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("showMsg");
+        }
     }
     public BorrowedBookController(){
 
@@ -85,5 +90,21 @@ public class BorrowedBookController implements Serializable {
     public void setFilteredBooks(List<BorrowedBook> filteredBorrowedBooks) { this.filteredBorrowedBooks = filteredBorrowedBooks; }
     public List<BorrowedBook> getFilteredBorrowedBooks() {
         return filteredBorrowedBooks;
+    }
+
+    public void returned(long borrowedBookId){
+        BorrowedBook borrowedBook = borrowedBookDao.getForBorrowedBookId(borrowedBookId);
+        borrowedBook.setDateOfReturn(LocalDate.now());
+        borrowedBookDao.updateBorrowedBook(borrowedBook);
+
+        Book book = borrowedBook.getBook();
+        book.setAvailableItems(book.getAvailableItems()+1);
+        bookDao.updateBook(book);
+
+        FacesContext context = FacesContext.getCurrentInstance();
+        NavigationHandler navigationHandler = context.getApplication().getNavigationHandler();
+        navigationHandler
+                .handleNavigation(context, null, "BorrowedBook.xhtml?faces-redirect=true&includeViewParams=true");
+        context.getExternalContext().getSessionMap().put("showMsg", true);
     }
 }

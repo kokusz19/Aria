@@ -7,9 +7,11 @@
       xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 <h:head/>
 <h:body>
-    <h:form rendered="#{pageHeaderController.actId != 1}">
+    <h:form rendered="#{pageHeaderController.actId != 1}" id="form">
         <f:view>
             <ui:include src="/PageHeader.xhtml"/>
+
+            <p:growl id="growl" showDetail="true" />
 
             <p:dataTable var="borrowedBook" value="#{borrowedBookController.allBorrowedBook}" widgetVar="borrowedBookTable"
                          emptyMessage="No books found with given criteria"
@@ -48,6 +50,9 @@
                 <p:column headerText="Date of borrow">
                     <h:outputText value="#{borrowedBook.dateOfBorrow}"/>
                 </p:column>
+                <p:column headerText="Date of return">
+                    <h:outputText value="#{borrowedBook.dateOfReturn}"/>
+                </p:column>
                 <p:rowExpansion>
                     <p:dataTable value="borrowedBook">
                         <p:column headerText="Book ID" filterable="false" width="5%" style="text-align: right">
@@ -61,6 +66,9 @@
                         </p:column>
                         <p:column headerText="ISBN" filterable="false" style="text-align: left">
                             <h:outputText value="#{borrowedBook.book.isbn}" />
+                        </p:column>
+                        <p:column headerText="Returned" rendered="#{borrowedBook.dateOfReturn == null}">
+                            <p:commandButton action="#{borrowedBookController.returned(borrowedBook.borrowedBookId)}" icon="pi pi-file" update="form:growl"/>
                         </p:column>
                     </p:dataTable>
                 </p:rowExpansion>

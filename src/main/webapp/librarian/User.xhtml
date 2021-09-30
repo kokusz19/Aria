@@ -1,0 +1,197 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+<h:head/>
+<h:body>
+    <h:form rendered="#{pageHeaderController.actId != 1}">
+        <f:view>
+            <ui:include src="/PageHeader.xhtml"/>
+
+
+            <p:tabView dynamic="true" cache="true">
+                <p:tab title="Default users">
+                    <p:dataTable var="defaultUser" value="#{userController.defaults}" widgetVar="defaultUserTable"
+                                 emptyMessage="No users found with given criteria"
+                                 filteredValue="#{userController.filteredDefaults}"
+                                 globalFilterFunction="#{userController.globalFilterFunction}">
+                        <f:facet name="header">
+                            <div class="p-d-flex p-jc-end">
+                                <h:outputText value="Default Users"/>
+                                <p:inputText onkeyup="PF('defaultUserTable').filter()" style="width:300px"
+                                             placeholder="Search all fields using global function" />
+                            </div>
+                        </f:facet>
+
+                        <p:column style="width:2rem">
+                            <p:rowToggler/>
+                        </p:column>
+                        <p:column headerText="User ID" filterable="false" style="text-align: left">
+                            <h:outputText value="#{defaultUser.accountId}" />
+                        </p:column>
+                        <p:column headerText="Login name" filterable="false" style="text-align: left">
+                            <h:outputText value="#{defaultUser.loginName}" />
+                        </p:column>
+                        <p:column headerText="First name" filterable="false" style="text-align: left">
+                            <h:outputText value="#{defaultUser.person.firstName}" />
+                        </p:column>
+                        <p:column headerText="Last name" filterable="false" style="text-align: left">
+                            <h:outputText value="#{defaultUser.person.lastName}" />
+                        </p:column>
+                        <p:rowExpansion>
+                            <p:dataTable value="defaultUser">
+                                <p:column headerText="Address" filterable="false" style="text-align: right">
+                                    <h:outputText value="#{defaultUser.person.address}" />
+                                </p:column>
+                                <p:column headerText="Date of birth" filterable="false" style="text-align: right">
+                                    <h:outputText value="#{defaultUser.person.dateOfBirth}" />
+                                </p:column>
+                                <p:column headerText="E-mail" filterable="false" style="text-align: right">
+                                    <h:outputText value="#{defaultUser.person.email}" />
+                                </p:column>
+                                <p:column headerText="Phone number" filterable="false" style="text-align: right">
+                                    <h:outputText value="#{defaultUser.person.phoneNumber}" />
+                                </p:column>
+                                <p:column headerText="Books borrowed total #" filterable="false" style="text-align: right">
+                                    <h:outputText value="#{defaultUser.totalBooksBorrowed}" />
+                                </p:column>
+                                <p:column headerText="Books yet to be returned" filterable="false" style="text-align: right">
+                                    <h:outputText value="#{defaultUser.booksNotReturnedYet}" />
+                                </p:column>
+                                <p:column headerText="Books returned" filterable="false" style="text-align: right">
+                                    <h:outputText value="#{defaultUser.booksReturned}" />
+                                </p:column>
+                            </p:dataTable>
+                        </p:rowExpansion>
+
+                        <f:facet name="footer">
+                        </f:facet>
+                        <span class="p-text-bold">In total there are #{fn:length(userController.defaults)} book(s).</span>
+                    </p:dataTable>
+                </p:tab>
+                <p:tab title="Librarians">
+                    <p:dataTable var="librarian" value="#{userController.librarians}" widgetVar="defaultLibrarianTable"
+                                 emptyMessage="No librarian found with given criteria"
+                                 filteredValue="#{userController.filteredLibrarians}"
+                                 globalFilterFunction="#{userController.globalFilterFunction}">
+                        <f:facet name="header">
+                            <div class="p-d-flex p-jc-end">
+                                <h:outputText value="Librarians"/>
+                                <p:inputText onkeyup="PF('defaultLibrarianTable').filter()" style="width:300px"
+                                             placeholder="Search all fields using global function" />
+                            </div>
+                        </f:facet>
+
+                        <p:column style="width:2rem">
+                            <p:rowToggler/>
+                        </p:column>
+                        <p:column headerText="User ID" filterable="false" style="text-align: left">
+                            <h:outputText value="#{librarian.accountId}" />
+                        </p:column>
+                        <p:column headerText="Login name" filterable="false" style="text-align: left">
+                            <h:outputText value="#{librarian.loginName}" />
+                        </p:column>
+                        <p:column headerText="First name" filterable="false" style="text-align: left">
+                            <h:outputText value="#{librarian.person.firstName}" />
+                        </p:column>
+                        <p:column headerText="Last name" filterable="false" style="text-align: left">
+                            <h:outputText value="#{librarian.person.lastName}" />
+                        </p:column>
+                        <p:rowExpansion>
+                            <p:dataTable value="librarian">
+                                <p:column headerText="Address" filterable="false" style="text-align: right">
+                                    <h:outputText value="#{librarian.person.address}" />
+                                </p:column>
+                                <p:column headerText="Date of birth" filterable="false" style="text-align: right">
+                                    <h:outputText value="#{librarian.person.dateOfBirth}" />
+                                </p:column>
+                                <p:column headerText="E-mail" filterable="false" style="text-align: right">
+                                    <h:outputText value="#{librarian.person.email}" />
+                                </p:column>
+                                <p:column headerText="Phone number" filterable="false" style="text-align: right">
+                                    <h:outputText value="#{librarian.person.phoneNumber}" />
+                                </p:column>
+                                <p:column headerText="Books borrowed total #" filterable="false" style="text-align: right">
+                                    <h:outputText value="#{librarian.totalBooksBorrowed}" />
+                                </p:column>
+                                <p:column headerText="Books yet to be returned" filterable="false" style="text-align: right">
+                                    <h:outputText value="#{librarian.booksNotReturnedYet}" />
+                                </p:column>
+                                <p:column headerText="Books returned" filterable="false" style="text-align: right">
+                                    <h:outputText value="#{librarian.booksReturned}" />
+                                </p:column>
+                            </p:dataTable>
+                        </p:rowExpansion>
+
+                        <f:facet name="footer">
+                        </f:facet>
+                        <span class="p-text-bold">In total there are #{fn:length(userController.librarians)} book(s).</span>
+                    </p:dataTable>
+                </p:tab>
+                <p:tab title="Admins">
+                    <p:dataTable var="admin" value="#{userController.admins}" widgetVar="defaultAdminTable"
+                                 emptyMessage="No admins found with given criteria"
+                                 filteredValue="#{userController.filteredAdmins}"
+                                 globalFilterFunction="#{userController.globalFilterFunction}">
+                        <f:facet name="header">
+                            <div class="p-d-flex p-jc-end">
+                                <h:outputText value="Admins"/>
+                                <p:inputText onkeyup="PF('defaultAdminTable').filter()" style="width:300px"
+                                             placeholder="Search all fields using global function" />
+                            </div>
+                        </f:facet>
+
+                        <p:column style="width:2rem">
+                            <p:rowToggler/>
+                        </p:column>
+                        <p:column headerText="User ID" filterable="false" style="text-align: left">
+                            <h:outputText value="#{admin.accountId}" />
+                        </p:column>
+                        <p:column headerText="Login name" filterable="false" style="text-align: left">
+                            <h:outputText value="#{admin.loginName}" />
+                        </p:column>
+                        <p:column headerText="First name" filterable="false" style="text-align: left">
+                            <h:outputText value="#{admin.person.firstName}" />
+                        </p:column>
+                        <p:column headerText="Last name" filterable="false" style="text-align: left">
+                            <h:outputText value="#{admin.person.lastName}" />
+                        </p:column>
+                        <p:rowExpansion>
+                            <p:dataTable value="admin">
+                                <p:column headerText="Address" filterable="false" style="text-align: right">
+                                    <h:outputText value="#{admin.person.address}" />
+                                </p:column>
+                                <p:column headerText="Date of birth" filterable="false" style="text-align: right">
+                                    <h:outputText value="#{admin.person.dateOfBirth}" />
+                                </p:column>
+                                <p:column headerText="E-mail" filterable="false" style="text-align: right">
+                                    <h:outputText value="#{admin.person.email}" />
+                                </p:column>
+                                <p:column headerText="Phone number" filterable="false" style="text-align: right">
+                                    <h:outputText value="#{admin.person.phoneNumber}" />
+                                </p:column>
+                                <p:column headerText="Books borrowed total #" filterable="false" style="text-align: right">
+                                    <h:outputText value="#{admin.totalBooksBorrowed}" />
+                                </p:column>
+                                <p:column headerText="Books yet to be returned" filterable="false" style="text-align: right">
+                                    <h:outputText value="#{admin.booksNotReturnedYet}" />
+                                </p:column>
+                                <p:column headerText="Books returned" filterable="false" style="text-align: right">
+                                    <h:outputText value="#{admin.booksReturned}" />
+                                </p:column>
+                            </p:dataTable>
+                        </p:rowExpansion>
+
+                        <f:facet name="footer">
+                        </f:facet>
+                        <span class="p-text-bold">In total there are #{fn:length(userController.admins)} book(s).</span>
+                    </p:dataTable>
+                </p:tab>
+            </p:tabView>
+        </f:view>
+    </h:form>
+</h:body>
+</html>

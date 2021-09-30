@@ -36,4 +36,16 @@ public class Account implements Serializable {
     @Setter
     @Column(name = "createdAt")
     private LocalDate createdAt;
+    @Getter
+    @Setter
+    @Transient
+    private int totalBooksBorrowed;
+    @Getter
+    @Setter
+    @Transient
+    private int booksNotReturnedYet;
+    @Getter
+    @Setter
+    @Transient
+    private int booksReturned;
 }

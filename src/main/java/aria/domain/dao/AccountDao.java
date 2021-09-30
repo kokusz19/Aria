@@ -9,6 +9,7 @@ import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import java.io.Serializable;
+import java.util.List;
 
 @Stateful
 @Alternative
@@ -38,6 +39,15 @@ public class AccountDao implements Serializable {
                 .select(account)
                 .where(account.accountId.eq(accountId))
                 .fetchOne();
+    }
+    public List<Account> getForRoleName(String roleName) {
+        JPAQueryFactory query = new JPAQueryFactory(entityManager);
+        QAccount account = QAccount.account;
+        return query
+                .from(account)
+                .select(account)
+                .where(account.act.roleName.eq(roleName))
+                .fetch();
     }
 
     public void createUser(Account account) {

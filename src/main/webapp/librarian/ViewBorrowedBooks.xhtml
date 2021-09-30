@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui" xmlns:f="http://java.sun.com/jsf/core">
+
+<h:head>
+    <title>Cars</title>
+    <style type="text/css">
+        .ui-widget {
+            font-size: 90%;
+        }
+    </style>
+</h:head>
+
+<h:body>
+    <i id="customheader" class="pi pi-book" style="display:none"></i>
+
+    <!--h:outputText value="test"/-->
+    <h:outputText value="#{userController.chosenAccount.accountId}"/>
+    <h:outputText value="#{userController.chosenAccount.person.firstName}"/>
+
+    <p:tabView dynamic="true" cache="true">
+        <p:tab title="Not yet returned books">
+            <p:dataTable var="booksNotYetReturned" value="#{userController.chosenAccount.booksNotReturnedYet}">
+                <f:facet name="header">
+                    <div class="p-d-flex p-jc-end">
+                        <h:outputText value="Not returned books"/>
+                    </div>
+                </f:facet>
+                <p:column headerText="Book ID" filterable="false" width="5%" style="text-align: right">
+                    <h:outputText value="#{booksNotYetReturned.book.bookId}" />
+                </p:column>
+                <p:column headerText="Author(s)" filterable="false" style="text-align: left">
+                    <h:outputText value="#{booksNotYetReturned.book.authorsString}" />
+                </p:column>
+                <p:column headerText="Book name" filterable="false" style="text-align: left">
+                    <h:outputText value="#{booksNotYetReturned.book.bookTitle}" />
+                </p:column>
+                <p:column headerText="Date of borrow">
+                    <h:outputText value="#{booksNotYetReturned.dateOfBorrow}"/>
+                </p:column>
+                <p:column headerText="Genre(s)" filterable="false" style="text-align: left">
+                    <h:outputText value="#{booksNotYetReturned.book.genresString}" />
+                </p:column>
+                <p:column headerText="ISBN" filterable="false" style="text-align: left">
+                    <h:outputText value="#{booksNotYetReturned.book.isbn}" />
+                </p:column>
+            </p:dataTable>
+        </p:tab>
+
+        <p:tab title="Already returned books">
+            <p:dataTable var="booksReturned" value="#{userController.chosenAccount.booksReturned}">
+                <f:facet name="header">
+                    <div class="p-d-flex p-jc-end">
+                        <h:outputText value="Returned books"/>
+                    </div>
+                </f:facet>
+                <p:column headerText="Book ID" filterable="false" width="5%" style="text-align: right">
+                    <h:outputText value="#{booksReturned.book.bookId}" />
+                </p:column>
+                <p:column headerText="Author(s)" filterable="false" style="text-align: left">
+                    <h:outputText value="#{booksReturned.book.authorsString}" />
+                </p:column>
+                <p:column headerText="Book name" filterable="false" style="text-align: left">
+                    <h:outputText value="#{booksReturned.book.bookTitle}" />
+                </p:column>
+                <p:column headerText="Date of borrow">
+                    <h:outputText value="#{booksReturned.dateOfBorrow}"/>
+                </p:column>
+                <p:column headerText="Date of return">
+                    <h:outputText value="#{booksReturned.dateOfReturn}"/>
+                </p:column>
+                <p:column headerText="Genre(s)" filterable="false" style="text-align: left">
+                    <h:outputText value="#{booksReturned.book.genresString}" />
+                </p:column>
+                <p:column headerText="ISBN" filterable="false" style="text-align: left">
+                    <h:outputText value="#{booksReturned.book.isbn}" />
+                </p:column>
+            </p:dataTable>
+        </p:tab>
+    </p:tabView>
+</h:body>
+
+</html>

@@ -56,13 +56,18 @@
                                     <h:outputText value="#{defaultUser.person.phoneNumber}" />
                                 </p:column>
                                 <p:column headerText="Books borrowed total #" filterable="false" style="text-align: right">
-                                    <h:outputText value="#{defaultUser.totalBooksBorrowed}" />
+                                    <h:outputText value="#{defaultUser.booksReturned.size() + defaultUser.booksNotReturnedYet.size()}" />
                                 </p:column>
                                 <p:column headerText="Books yet to be returned" filterable="false" style="text-align: right">
-                                    <h:outputText value="#{defaultUser.booksNotReturnedYet}" />
+                                    <h:outputText value="#{defaultUser.booksNotReturnedYet.size()}" />
                                 </p:column>
                                 <p:column headerText="Books returned" filterable="false" style="text-align: right">
-                                    <h:outputText value="#{defaultUser.booksReturned}" />
+                                    <h:outputText value="#{defaultUser.booksReturned.size()}" />
+                                </p:column>
+                                <p:column headerText="Show borrowed books" style="text-align: center">
+                                    <p:commandButton value="Show" icon="pi pi-search" action="#{userController.showBorrowedBooks}">
+                                        <f:param name="accountId" value="#{defaultUser.accountId}"/>
+                                    </p:commandButton>
                                 </p:column>
                             </p:dataTable>
                         </p:rowExpansion>
@@ -115,13 +120,13 @@
                                     <h:outputText value="#{librarian.person.phoneNumber}" />
                                 </p:column>
                                 <p:column headerText="Books borrowed total #" filterable="false" style="text-align: right">
-                                    <h:outputText value="#{librarian.totalBooksBorrowed}" />
+                                    <h:outputText value="#{librarian.booksNotReturnedYet.size() + librarian.booksReturned.size()}" />
                                 </p:column>
                                 <p:column headerText="Books yet to be returned" filterable="false" style="text-align: right">
-                                    <h:outputText value="#{librarian.booksNotReturnedYet}" />
+                                    <h:outputText value="#{librarian.booksNotReturnedYet.size()}" />
                                 </p:column>
                                 <p:column headerText="Books returned" filterable="false" style="text-align: right">
-                                    <h:outputText value="#{librarian.booksReturned}" />
+                                    <h:outputText value="#{librarian.booksReturned.size()}" />
                                 </p:column>
                             </p:dataTable>
                         </p:rowExpansion>
@@ -174,13 +179,13 @@
                                     <h:outputText value="#{admin.person.phoneNumber}" />
                                 </p:column>
                                 <p:column headerText="Books borrowed total #" filterable="false" style="text-align: right">
-                                    <h:outputText value="#{admin.totalBooksBorrowed}" />
+                                    <h:outputText value="#{admin.booksReturned.size() + admin.booksNotReturnedYet.size()}" />
                                 </p:column>
                                 <p:column headerText="Books yet to be returned" filterable="false" style="text-align: right">
-                                    <h:outputText value="#{admin.booksNotReturnedYet}" />
+                                    <h:outputText value="#{admin.booksNotReturnedYet.size()}" />
                                 </p:column>
                                 <p:column headerText="Books returned" filterable="false" style="text-align: right">
-                                    <h:outputText value="#{admin.booksReturned}" />
+                                    <h:outputText value="#{admin.booksReturned.size()}" />
                                 </p:column>
                             </p:dataTable>
                         </p:rowExpansion>

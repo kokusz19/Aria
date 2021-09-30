@@ -6,6 +6,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name="account")
@@ -39,13 +40,9 @@ public class Account implements Serializable {
     @Getter
     @Setter
     @Transient
-    private int totalBooksBorrowed;
+    private List<BorrowedBook> booksNotReturnedYet;
     @Getter
     @Setter
     @Transient
-    private int booksNotReturnedYet;
-    @Getter
-    @Setter
-    @Transient
-    private int booksReturned;
+    private List<BorrowedBook> booksReturned;
 }

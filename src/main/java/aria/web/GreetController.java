@@ -16,15 +16,73 @@
  */
 package aria.web;
 
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Named;
+import aria.domain.dao.*;
+import aria.domain.ejb.Notification;
+import lombok.Getter;
+import lombok.Setter;
 
-@Named
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.SessionScoped;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.RequestScoped;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+@ManagedBean(name = "greetController", eager = true)
 @RequestScoped
 public class GreetController {
 
+    @Inject
+    AccountDao accountDao;
+    @Inject
+    BookDao bookDao;
+    @Inject
+    NotificationDao notificationDao;
+    @Inject
+    AuthorToBookDao authorToBookDao;
+
+    @Getter
+    @Setter
+    private long accountId;
+    @Getter
+    @Setter
+    private List<Notification> notifications;
+    @Getter
+    @Setter
+    private String userName;
+
+    @PostConstruct
+    public void init(){
+        accountId = Long.parseLong(FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("id").toString());
+        userName = accountDao.getForAccountId(accountId).getLoginName();
+        notifications = new ArrayList<>();
+        getNotifications(accountId);
+    }
+
     public void greet() {
 
+    }
+
+    public void getNotifications(long accountId) {
+        List<Notification> allNotifications = notificationDao.getForAccountId(accountId);
+        for (Notification tempNotification : allNotifications)
+            if (bookDao.getForBookId(tempNotification.getBook().getBookId()).getAvailableItems() > 0) {
+                tempNotification.getBook().setAuthors(authorToBookDao.getAuthorsForBookId(tempNotification.getBook().getBookId()));
+                tempNotification.getBook().setAuthorsString(tempNotification.getBook().getAuthors().toString().replace("[", "").replace("]", "").trim());
+                notifications.add(tempNotification);
+            }
+    }
+
+    public void dismissNotification(long notificationId) throws IOException {
+        notificationDao.removeNotification(notificationDao.getForNotificationId(notificationId));
+        ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
+        ec.redirect(((HttpServletRequest) ec.getRequest()).getRequestURI());
     }
 
 

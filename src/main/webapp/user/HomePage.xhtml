@@ -1,22 +1,40 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:f="http://xmlns.jcp.org/jsf/core"><h:head/>
-<h:body>
-    <h:form rendered="#{pageHeaderController.actId == 1}">
-        <f:view>
-            <ui:include src="../PageHeader.xhtml"/>
-            <h:outputLabel value="Hello, default user!"/>
-        </f:view>
-    </h:form>
-    <br/>
-    <h:form rendered="#{pageHeaderController.actId != 1}">
-        <h:outputLabel value="You do not have the right access!"/>
-        <h:commandButton action="/librarian/HomePage.xhtml?faces-redirect=true" value="default page" rendered="#{pageHeaderController.actId == 2}"/>
-        <h:commandButton action="/admin/HomePage.xhtml?faces-redirect=true" value="default page" rendered="#{pageHeaderController.actId == 3}"/>
-    </h:form>
-</h:body>
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+    <h:head/>
+    <h:body>
+        <h:form rendered="#{pageHeaderController.actId == 1}">
+            <f:view>
+                <ui:include src="../PageHeader.xhtml"/>
+                <h:outputLabel value="Hello, #{greetController.userName}!"/>
+
+                <div>
+                    <br/>
+                    <h1>Notifications</h1>
+                    <p:dataTable var="notification" value="#{greetController.notifications}" tableStyle="width:auto">
+                        <p:column headerText="Book" width="auto">
+                            <h:outputText value="#{notification.book.authorsString} - #{notification.book.bookTitle}"/>
+                        </p:column>
+                        <p:column headerText="Borrow book" width="auto">
+                            <p:linkButton value="Take me to the book!" outcome="BorrowBook.xhtml?bookId=#{notification.book.bookId}"/>
+                        </p:column>
+                        <p:column headerText="Dismiss notification" width="auto">
+                            <p:commandButton value="Dismiss" action="#{greetController.dismissNotification(notification.notificationId)}"/>
+                        </p:column>
+                    </p:dataTable>
+                </div>
+
+            </f:view>
+        </h:form>
+        <br/>
+        <h:form rendered="#{pageHeaderController.actId != 1}">
+            <h:outputLabel value="You do not have the right access!"/>
+            <h:commandButton action="/librarian/HomePage.xhtml?faces-redirect=true" value="default page" rendered="#{pageHeaderController.actId == 2}"/>
+            <h:commandButton action="/admin/HomePage.xhtml?faces-redirect=true" value="default page" rendered="#{pageHeaderController.actId == 3}"/>
+        </h:form>
+    </h:body>
 </html>

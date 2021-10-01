@@ -3,8 +3,10 @@ package aria.web.user;
 import aria.domain.dao.*;
 import aria.domain.ejb.Book;
 import aria.domain.ejb.BorrowedBook;
+import aria.domain.ejb.Notification;
 import lombok.Getter;
 import lombok.Setter;
+import org.primefaces.PrimeFaces;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
@@ -32,6 +34,8 @@ public class BorrowBookController implements Serializable{
     BorrowedBookDao borrowedBookDao;
     @Inject
     AccountDao accountDao;
+    @Inject
+    NotificationDao notificationDao;
 
     @Getter
     private Long bookId;
@@ -45,7 +49,7 @@ public class BorrowBookController implements Serializable{
     @PostConstruct
     public void init() {
         Map<String, String> map = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
-        bookId = Long.parseLong(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("bookId"));
+        bookId = Long.parseLong(map.get("bookId"));
         book = bookDao.getForBookId(bookId);
 
         if(book.getAvailableItems() > 0)
@@ -79,7 +83,26 @@ public class BorrowBookController implements Serializable{
             book.setAvailableItems(book.getAvailableItems()-1);
             bookDao.updateBook(book);
 
+            if(!notificationDao.getForAccountId(accountId).isEmpty()) {
+                for (Notification notification: notificationDao.getForAccountId(accountId))
+                    if (notification.getBook().getBookId() == bookId) {
+                        notificationDao.removeNotification(notification);
+                    }
+            }
             navigationHandler.handleNavigation(context, null, "Book.xhtml?faces-redirect=true&includeViewParams=true");
         }
+    }
+
+    public void notify(long bookId){
+        long accountId = Long.parseLong(FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("id").toString());
+
+        Notification notification = new Notification();
+        notification.setBook(bookDao.getForBookId(bookId));
+        notification.setAccount(accountDao.getForAccountId(accountId));
+
+        notificationDao.createNotification(notification);
+
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Notification has been set", "Notification has been set for your account."));
+        PrimeFaces.current().ajax().update("form:msg");
     }
 }

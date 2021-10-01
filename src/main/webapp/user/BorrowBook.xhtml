@@ -9,10 +9,13 @@
     <title>Borrowing</title>
 </h:head>
 <h:body>
-    <h:form>
+    <h:form id="form">
+        <ui:include src="/PageHeader.xhtml"/>
+        <p:growl id="msg"/>
+
         <h1>Borrowing #{borrowBookController.book.bookTitle}</h1>
 
-        <h:outputLabel value="!!! There is no available book of this currently. Please check back later."/>
+        <h:outputLabel value="!!! There is no available book of this currently. Please check back later or set a notification for it." rendered="#{!borrowBookController.exist}"/>
 
         <p:panelGrid columns="2">
             <p:outputLabel value="Title: "/>
@@ -42,13 +45,12 @@
                     <p:commandButton action="#{borrowBookController.borrowBook}" value="Borrow book"/>
                 </p:column>
                 <p:column colspan="2" rendered="#{!borrowBookController.exist}">
-                    <p:outputLabel value="The book is not available currently. Please check back later."/>
+                    <p:outputLabel value="The book is not available currently. Please check back later or set a notification for it."/>
+                    <p:commandButton value="Notify me!" action="#{borrowBookController.notify(borrowBookController.bookId)}" icon="pi pi-flag" update="form:msg"/>
                 </p:column>
             </p:row>
-
-
-
         </p:panelGrid>
+        <p:linkButton outcome="Book.xhtml" value="Take me back to the books." style="margin-right:20px"/>
     </h:form>
 </h:body>
 </html>

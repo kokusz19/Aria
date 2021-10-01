@@ -1,9 +1,9 @@
 package aria.web.librarian;
 
-import aria.domain.dao.AccountDao;
-import aria.domain.dao.ActDao;
-import aria.domain.dao.BorrowedBookDao;
+import aria.domain.dao.*;
 import aria.domain.ejb.Account;
+import aria.domain.ejb.Book;
+import aria.domain.ejb.BorrowedBook;
 import lombok.Getter;
 import lombok.Setter;
 import org.primefaces.PrimeFaces;
@@ -33,6 +33,10 @@ public class UserController implements Serializable {
     AccountDao accountDao;
     @Inject
     ActDao actDao;
+    @Inject
+    GenreToBookDao genreToBookDao;
+    @Inject
+    AuthorToBookDao authorToBookDao;
 
     @Getter
     @Setter
@@ -57,6 +61,9 @@ public class UserController implements Serializable {
     @Getter
     @Setter
     private Account chosenAccount;
+    @Getter
+    @Setter
+    private List<Book> chosenAccountsBooks;
 
     @PostConstruct
     public void init(){
@@ -120,6 +127,26 @@ public class UserController implements Serializable {
                 for (Account admin: admins)
                     if(admin.getAccountId() == accountId) chosenAccount = admin;
                 break;
+        }
+        setGenresAuthors();
+    }
+    public void setGenresAuthors(){
+        chosenAccountsBooks = new ArrayList<>();
+        for (BorrowedBook borrowedBook: chosenAccount.getBooksNotReturnedYet())
+            chosenAccountsBooks.add(borrowedBook.getBook());
+        for (BorrowedBook borrowedBook: chosenAccount.getBooksReturned())
+            chosenAccountsBooks.add(borrowedBook.getBook());
+
+        for (Book tmpBook: chosenAccountsBooks) {
+            tmpBook.setGenres(genreToBookDao.getGenresForBookId(tmpBook.getBookId()));
+            tmpBook.setGenresString(tmpBook.getGenres().toString());
+            tmpBook.setGenresString(tmpBook.getGenresString().replace("[", ""));
+            tmpBook.setGenresString(tmpBook.getGenresString().replace("]", ""));
+
+            tmpBook.setAuthors(authorToBookDao.getAuthorsForBookId(tmpBook.getBookId()));
+            tmpBook.setAuthorsString(tmpBook.getAuthors().toString());
+            tmpBook.setAuthorsString(tmpBook.getAuthorsString().replace("[", ""));
+            tmpBook.setAuthorsString(tmpBook.getAuthorsString().replace("]", ""));
         }
     }
 

@@ -8,8 +8,14 @@
 <h:body>
     <h:form rendered="#{pageHeaderController.actId == 2}">
         <f:view>
-            <ui:include src="../PageHeader.xhtml"/>
-            <h:outputLabel value="Hello, konyvtaros!"/>
+            <ui:include src="/PageHeader.xhtml"/>
+            <h:outputLabel value="Hello, #{greetController.userName}!"/>
+
+            <div>
+                <br/>
+                <h1>Notifications</h1>
+                <ui:include src="/Notification.xhtml"/>
+            </div>
         </f:view>
     </h:form>
     <br/>

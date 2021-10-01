@@ -9,23 +9,13 @@
     <h:body>
         <h:form rendered="#{pageHeaderController.actId == 1}">
             <f:view>
-                <ui:include src="../PageHeader.xhtml"/>
+                <ui:include src="/PageHeader.xhtml"/>
                 <h:outputLabel value="Hello, #{greetController.userName}!"/>
 
                 <div>
                     <br/>
                     <h1>Notifications</h1>
-                    <p:dataTable var="notification" value="#{greetController.notifications}" tableStyle="width:auto">
-                        <p:column headerText="Book" width="auto">
-                            <h:outputText value="#{notification.book.authorsString} - #{notification.book.bookTitle}"/>
-                        </p:column>
-                        <p:column headerText="Borrow book" width="auto">
-                            <p:linkButton value="Take me to the book!" outcome="BorrowBook.xhtml?bookId=#{notification.book.bookId}"/>
-                        </p:column>
-                        <p:column headerText="Dismiss notification" width="auto">
-                            <p:commandButton value="Dismiss" action="#{greetController.dismissNotification(notification.notificationId)}"/>
-                        </p:column>
-                    </p:dataTable>
+                    <ui:include src="/Notification.xhtml"/>
                 </div>
 
             </f:view>

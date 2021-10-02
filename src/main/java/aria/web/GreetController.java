@@ -56,12 +56,16 @@ public class GreetController {
     @Getter
     @Setter
     private String userName;
+    @Getter
+    @Setter
+    private List<Notification> allNotifications;
 
     @PostConstruct
     public void init(){
         accountId = Long.parseLong(FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("id").toString());
         userName = accountDao.getForAccountId(accountId).getLoginName();
         notifications = new ArrayList<>();
+        getAllNotifications(accountId);
         getNotifications(accountId);
     }
 
@@ -69,8 +73,15 @@ public class GreetController {
 
     }
 
+    public void getAllNotifications(long accountId) {
+        allNotifications = notificationDao.getForAccountId(accountId);
+        for (Notification tempNotification : allNotifications) {
+            tempNotification.getBook().setAuthors(authorToBookDao.getAuthorsForBookId(tempNotification.getBook().getBookId()));
+            tempNotification.getBook().setAuthorsString(tempNotification.getBook().getAuthors().toString().replace("[", "").replace("]", "").trim());
+        }
+    }
+
     public void getNotifications(long accountId) {
-        List<Notification> allNotifications = notificationDao.getForAccountId(accountId);
         for (Notification tempNotification : allNotifications)
             if (bookDao.getForBookId(tempNotification.getBook().getBookId()).getAvailableItems() > 0) {
                 tempNotification.getBook().setAuthors(authorToBookDao.getAuthorsForBookId(tempNotification.getBook().getBookId()));

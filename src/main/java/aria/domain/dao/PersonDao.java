@@ -33,5 +33,8 @@ public class PersonDao implements Serializable {
     public void createPerson(Person person) {
         entityManager.persist(person);
     }
+    public void updatePerson(Person person) {
+        entityManager.merge(person);
+    }
 
 }

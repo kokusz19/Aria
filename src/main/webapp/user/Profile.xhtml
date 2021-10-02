@@ -1,0 +1,96 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+<h:head/>
+<h:body>
+    <h:form id="form">
+        <f:view>
+            <ui:include src="/PageHeader.xhtml"/>
+            <p:growl id="growl" showDetail="true" showSummary="true"/>
+
+            <h1>Own information</h1>
+
+            <p:panelGrid columns="2">
+                <h:outputText value="First name"/>
+                <h:panelGroup rendered="#{!profileController.editable}">
+                    <p:inputText style="background-color: #e0e0e0" readonly="true" value="#{profileController.account.person.firstName}"/>
+                </h:panelGroup>
+                <h:panelGroup rendered="#{profileController.editable}">
+                    <p:inputText value="#{profileController.account.person.firstName}"/>
+                </h:panelGroup>
+
+                <h:outputText value="Last name"/>
+                <h:panelGroup rendered="#{!profileController.editable}">
+                    <p:inputText style="background-color: #e0e0e0" readonly="true"  value="#{profileController.account.person.lastName}"/>
+                </h:panelGroup>
+                <h:panelGroup rendered="#{profileController.editable}">
+                    <p:inputText value="#{profileController.account.person.lastName}"/>
+                </h:panelGroup>
+
+                <h:outputText value="Date of birth"/>
+                <h:panelGroup rendered="#{!profileController.editable}">
+                    <p:inputText style="background-color: #e0e0e0" readonly="true"  value="#{profileController.account.person.dateOfBirth.toString()}"/>
+                </h:panelGroup>
+                <h:panelGroup rendered="#{profileController.editable}">
+                    <p:datePicker value="#{profileController.account.person.dateOfBirth}"/>
+                </h:panelGroup>
+
+                <h:outputText value="Phone number"/>
+                <h:panelGroup rendered="#{!profileController.editable}">
+                    <p:inputText style="background-color: #e0e0e0" readonly="true"  value="#{profileController.account.person.phoneNumber}"/>
+                </h:panelGroup>
+                <h:panelGroup rendered="#{profileController.editable}">
+                    <p:inputMask  mask="(99) 999-9999" validateMask="true" autoClear="false"
+                                  value="#{profileController.account.person.phoneNumber}"
+                                  required="true"/>
+                </h:panelGroup>
+
+                <h:outputText value="E-mail"/>
+                <h:panelGroup rendered="#{!profileController.editable}">
+                    <p:inputText style="background-color: #e0e0e0" readonly="true"  value="#{profileController.account.person.email}"/>
+                </h:panelGroup>
+                <h:panelGroup rendered="#{profileController.editable}">
+                    <p:inputText value="#{profileController.account.person.email}"/>
+                </h:panelGroup>
+
+                <h:outputText value="Address"/>
+                <h:panelGroup rendered="#{!profileController.editable}">
+                    <p:inputText style="background-color: #e0e0e0" readonly="true"  value="#{profileController.account.person.address}"/>
+                </h:panelGroup>
+                <h:panelGroup rendered="#{profileController.editable}">
+                    <p:inputText value="#{profileController.account.person.address}"/>
+                </h:panelGroup>
+
+            </p:panelGrid>
+            <p:commandButton
+                    value="#{profileController.editable ? 'Confirm value' : 'Change value'}"
+                    update="@form" action="#{profileController.changeEditable}" />
+
+            <p:commandButton value="Save value" ajax="false"
+                             action="#{profileController.saveValue}" />
+
+            <br/><br/>
+
+            <p:commandButton value="Edit password" action="#{profileController.changeEditPassword}" update="@form"/>
+            <br/>
+            <p:panelGrid columns="2" rendered="#{profileController.editPassword}">
+                <h:outputText value="Current password"/>
+                <p:password value="#{profileController.currentPassword}"/>
+
+                <h:outputText value="New password"/>
+                <p:password id="pwd1" value="#{profileController.newPassword1}"/>
+
+                <h:outputText value="Repeat new password"/>
+                <p:password id="pwd2" value="#{profileController.newPassword2}"/>
+
+                <p:commandButton value="Update password" ajax="false"
+                                 action="#{profileController.savePassword}" />
+            </p:panelGrid>
+        </f:view>
+    </h:form>
+</h:body>
+</html>

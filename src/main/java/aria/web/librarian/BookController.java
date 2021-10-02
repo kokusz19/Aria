@@ -9,10 +9,8 @@ import org.primefaces.util.LangUtils;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.NavigationHandler;
-import javax.faces.bean.ViewScoped;
+import javax.faces.bean.*;
 import javax.faces.context.FacesContext;
-import javax.enterprise.context.SessionScoped;
-import javax.faces.bean.ManagedBean;
 import javax.inject.Inject;
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -56,9 +54,6 @@ public class BookController implements Serializable{
     private int maxItem;
     @Getter
     @Setter
-    private int availableItem;
-    @Getter
-    @Setter
     private Language language;
     @Getter
     @Setter
@@ -92,7 +87,7 @@ public class BookController implements Serializable{
 
     public void addBook(){
         Book book = new Book();
-        book.setAvailableItems(availableItem);
+        book.setAvailableItems(maxItem);
         book.setMaxItems(maxItem);
         book.setBookTitle(title);
         book.setIsbn(ISBN);
@@ -101,9 +96,7 @@ public class BookController implements Serializable{
         // TODO: Genre, Author and Language picker to the dialog
         book.setGenres(genres);
         book.setAuthors(authors);
-        //book.setLanguage(language);
-        Language localLang = languageDao.getLanguages().get(0);
-        book.setLanguage(localLang);
+        book.setLanguage(language);
         bookDao.createBook(book);
 
         for (Genre genre: genres) {
@@ -163,7 +156,6 @@ public class BookController implements Serializable{
         ISBN = "";
         publishedAt = null;
         maxItem = 0;
-        availableItem = 0;
         language = null;
         genres = null;
         authors = null;

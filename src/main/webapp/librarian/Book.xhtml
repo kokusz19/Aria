@@ -4,7 +4,9 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+      xmlns:o="http://omnifaces.org/ui"
+      xmlns:of="http://omnifaces.org/functions">
   <h:head/>
   <h:body>
     <h:form rendered="#{pageHeaderController.actId != 1}">
@@ -33,8 +35,6 @@
 
                 <h:outputText value="Max item: "/>
                 <p:inputText label="Max item:: " value="#{bookController.maxItem}" /><br/>
-                <h:outputText value="Available item: "/>
-                <p:inputText label="Available item: " value="#{bookController.availableItem}" /><br/>
 
                 <p:selectCheckboxMenu title="Genre(s)" value="#{bookController.genres}" label="Genre(s)" style="min-width: 15rem"
                                       multiple="true" filter="true" filterMatchMode="startsWith" panelStyle="width: 30rem" scrollHeight="250">
@@ -45,6 +45,11 @@
                                       multiple="true" filter="true" filterMatchMode="startsWith" panelStyle="width: 30rem" scrollHeight="250">
                   <f:selectItems value="#{bookController.allAuthors}"/>
                 </p:selectCheckboxMenu><br/>
+
+                <p:selectOneMenu value="#{bookController.language}" converter="omnifaces.SelectItemsConverter">
+                  <f:selectItem itemValue="" itemLabel="Choose one" />
+                  <f:selectItems value="#{bookController.allLanguages}" var="tmpLanguage" itemValue="#{tmpLanguage}" itemLabel="#{tmpLanguage.languageName}" />
+                </p:selectOneMenu>
 
                 <p:commandButton action="#{bookController.addBook}" value="Submit" onclick="PF('dlg').hide();"/>
               </p:dialog>
@@ -75,6 +80,10 @@
           <p:column headerText="Available items" filterable="false" style="text-align: left">
             <h:outputText value="#{book.availableItems}" />
           </p:column>
+          <p:column headerText="Language" filterable="false" style="text-align: left">
+            <h:outputText value="#{book.language.languageName}" />
+          </p:column>
+
 
           <f:facet name="footer">
             <span class="p-text-bold">In total there are #{fn:length(bookController.books)} book(s).</span>

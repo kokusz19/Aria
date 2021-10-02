@@ -200,6 +200,12 @@
             <scope>provided</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.omnifaces</groupId>
+            <artifactId>omnifaces</artifactId>
+            <version>3.11.1</version>
+        </dependency>
+
 
     </dependencies>
 

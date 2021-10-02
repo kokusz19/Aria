@@ -43,6 +43,9 @@ public class UserController implements Serializable {
     private List<Account> defaults;
     @Getter
     @Setter
+    private List<Account> carriers;
+    @Getter
+    @Setter
     private List<Account> librarians;
     @Getter
     @Setter
@@ -50,6 +53,9 @@ public class UserController implements Serializable {
     @Getter
     @Setter
     private List<Account> filteredDefaults;
+    @Getter
+    @Setter
+    private List<Account> filteredCarriers;
     @Getter
     @Setter
     private List<Account> filteredLibrarians;
@@ -68,6 +74,7 @@ public class UserController implements Serializable {
     @PostConstruct
     public void init(){
         defaults = accountDao.getForRoleName("default");
+        carriers = accountDao.getForRoleName("carrier");
         librarians = accountDao.getForRoleName("konyvtaros");
         admins = accountDao.getForRoleName("admin");
 
@@ -76,6 +83,7 @@ public class UserController implements Serializable {
         setBorrowedBooks(admins);
 
         filteredDefaults = new ArrayList<>(defaults);
+        filteredCarriers = new ArrayList<>(carriers);
         filteredLibrarians = new ArrayList<>(librarians);
         filteredAdmins = new ArrayList<>(admins);
 
@@ -119,6 +127,10 @@ public class UserController implements Serializable {
                 for (Account user: defaults)
                     if(user.getAccountId() == accountId) chosenAccount = user;
                 break;
+            case "carrier":
+                for (Account carrier: carriers)
+                    if(carrier.getAccountId() == accountId) chosenAccount = carrier;
+                break;
             case "konyvtaros":
                 for (Account librarian: librarians)
                     if(librarian.getAccountId() == accountId) chosenAccount = librarian;
@@ -153,12 +165,22 @@ public class UserController implements Serializable {
     public void demotePromote(long accountId, int action) throws IOException {
         if (action == 2) {
             Account account = accountDao.getForAccountId(accountId);
-            account.setAct(actDao.getAct(account.getAct().getActId() + 1));
+            if(account.getAct().getActId() == 1)
+                account.setAct(actDao.getAct(4));
+            else if(account.getAct().getActId() == 4)
+                account.setAct(actDao.getAct(2));
+            else
+                account.setAct(actDao.getAct(account.getAct().getActId() + 1));
             accountDao.updateUser(account);
         }
         else if(action == 1){
             Account account = accountDao.getForAccountId(accountId);
-            account.setAct(actDao.getAct(account.getAct().getActId() - 1));
+            if(account.getAct().getActId() == 2)
+                account.setAct(actDao.getAct(4));
+            else if(account.getAct().getActId() == 4)
+                account.setAct(actDao.getAct(1));
+            else
+                account.setAct(actDao.getAct(account.getAct().getActId() - 1));
             accountDao.updateUser(account);
         }
         ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();

@@ -75,6 +75,62 @@
                         <span class="p-text-bold">In total there are #{fn:length(userController.defaults)} book(s).</span>
                     </p:dataTable>
                 </p:tab>
+                <p:tab title="Carriers">
+                    <p:dataTable var="carrier" value="#{userController.carriers}" widgetVar="carrierTable"
+                                 emptyMessage="No users found with given criteria"
+                                 filteredValue="#{userController.filteredCarriers}"
+                                 globalFilterFunction="#{userController.globalFilterFunction}">
+                        <f:facet name="header">
+                            <div class="p-d-flex p-jc-end">
+                                <h:outputText value="Carriers"/>
+                                <p:inputText onkeyup="PF('carrierTable').filter()" style="width:300px"
+                                             placeholder="Search all fields using global function" />
+                            </div>
+                        </f:facet>
+
+                        <p:column style="width:2rem">
+                            <p:rowToggler/>
+                        </p:column>
+                        <p:column headerText="User ID" filterable="false" style="text-align: left">
+                            <h:outputText value="#{carrier.accountId}" />
+                        </p:column>
+                        <p:column headerText="Login name" filterable="false" style="text-align: left">
+                            <h:outputText value="#{carrier.loginName}" />
+                        </p:column>
+                        <p:column headerText="First name" filterable="false" style="text-align: left">
+                            <h:outputText value="#{carrier.person.firstName}" />
+                        </p:column>
+                        <p:column headerText="Last name" filterable="false" style="text-align: left">
+                            <h:outputText value="#{carrier.person.lastName}" />
+                        </p:column>
+                        <p:rowExpansion>
+                            <p:dataTable value="carrier">
+                                <p:column headerText="Address" filterable="false" style="text-align: right">
+                                    <h:outputText value="#{carrier.person.address}" />
+                                </p:column>
+                                <p:column headerText="Date of birth" filterable="false" style="text-align: right">
+                                    <h:outputText value="#{carrier.person.dateOfBirth}" />
+                                </p:column>
+                                <p:column headerText="E-mail" filterable="false" style="text-align: right">
+                                    <h:outputText value="#{carrier.person.email}" />
+                                </p:column>
+                                <p:column headerText="Phone number" filterable="false" style="text-align: right">
+                                    <h:outputText value="#{carrier.person.phoneNumber}" />
+                                </p:column>
+                                <p:column headerText="Demote" style="text-align: center">
+                                    <p:commandButton value="Demote" icon="pi pi-angle-double-up" action="#{userController.demotePromote(carrier.accountId, 1)}"/>
+                                </p:column>
+                                <p:column headerText="Promote" style="text-align: center">
+                                    <p:commandButton value="Promote" icon="pi pi-angle-double-up" action="#{userController.demotePromote(carrier.accountId, 2)}"/>
+                                </p:column>
+                            </p:dataTable>
+                        </p:rowExpansion>
+
+                        <f:facet name="footer">
+                        </f:facet>
+                        <span class="p-text-bold">In total there are #{fn:length(userController.defaults)} book(s).</span>
+                    </p:dataTable>
+                </p:tab>
                 <p:tab title="Librarians">
                     <p:dataTable var="librarian" value="#{userController.librarians}" widgetVar="defaultLibrarianTable"
                                  emptyMessage="No librarian found with given criteria"

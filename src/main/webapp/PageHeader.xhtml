@@ -14,10 +14,15 @@
             <p:commandButton icon="pi pi-home" action="/admin/HomePage.xhtml?faces-redirect=true" rendered="#{pageHeaderController.actId == 3}"/>
 
             <p:menuButton value="Default" icon="pi pi-list" >
-                <p:menuitem value="Books" url="/aria/user/Book.xhtml" icon="pi pi-file"/>
-                <p:menuitem value="My borrowed books" url="/aria/user/BorrowedBook.xhtml" icon="pi pi-shopping-cart"/>
+                <p:menuitem value="Books" url="/aria/user/Book.xhtml" icon="pi pi-file" rendered="#{pageHeaderController.actId != 4}"/>
+                <p:menuitem value="My borrowed books" url="/aria/user/BorrowedBook.xhtml" icon="pi pi-shopping-cart" rendered="#{pageHeaderController.actId != 4}" />
                 <p:menuitem value="Profile" url="/aria/user/Profile.xhtml" icon="pi pi-pencil"/>
-                <p:menuitem value="Notifications" url="/aria/user/Notification.xhtml" icon="pi pi-comment"/>
+                <p:menuitem value="Notifications" url="/aria/user/Notification.xhtml" icon="pi pi-comment" rendered="#{pageHeaderController.actId != 4}"/>
+            </p:menuButton>
+
+            <p:menuButton value="Carrier" icon="pi pi-list" rendered="#{pageHeaderController.actId != 1}">
+                <p:menuitem value="Show deliverable books" url="/aria/carrier/DeliverableBooks.xhtml" icon="pi pi-file" />
+                <p:menuitem value="My delivered books" url="/aria/carrier/MyDeliveredBooks.xhtml" icon="pi pi-file" />
             </p:menuButton>
 
             <p:menuButton value="Librarian" icon="pi pi-list" rendered="#{pageHeaderController.actId == 2 || pageHeaderController.actId == 3}">

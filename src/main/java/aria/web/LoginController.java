@@ -52,6 +52,9 @@ public class LoginController implements Serializable {
                     case "konyvtaros":
                         url = "/librarian/HomePage.xhtml";
                         break;
+                    case "carrier":
+                        url = "/carrier/HomePage.xhtml";
+                        break;
                     case "default":
                         url = "/user/HomePage.xhtml";
                         break;

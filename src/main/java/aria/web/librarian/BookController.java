@@ -93,7 +93,6 @@ public class BookController implements Serializable{
         book.setIsbn(ISBN);
         book.setPublishedAt(publishedAt);
 
-        // TODO: Genre, Author and Language picker to the dialog
         book.setGenres(genres);
         book.setAuthors(authors);
         book.setLanguage(language);

@@ -6,10 +6,11 @@ create table borrowStatus (
                               PRIMARY KEY(borrowstatusid)
 );
 create table borrowStatusToBorrowedBook (
-                                            borrowStatusToBorrowedBook bigint not null unique,
+                                            borrowStatusToBorrowedBookId bigint not null unique,
                                             borrowStatusId bigint not null,
                                             borrowedBookId bigint not null,
-                                            PRIMARY KEY(borrowStatusToBorrowedBook)
+                                            updateDate date not null,
+                                            PRIMARY KEY(borrowStatusToBorrowedBookId)
 );
 
 ALTER TABLE borrowStatusToBorrowedBook ADD FOREIGN KEY (borrowedBookId) REFERENCES borrowedBook (borrowedBookId);

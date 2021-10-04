@@ -33,12 +33,10 @@
             <p:outputLabel/>
             <p:outputLabel/>
 
-            <p:row>
-                <p:column colspan="2" >
-                    <p:outputLabel value="!!! Warning !!!"/>
-                    <p:outputLabel value="If you do not return the book in 2 weeks, then additional charges will be  applied!"/>
-                </p:column>
-            </p:row>
+            <p:selectOneMenu value="#{borrowBookController.pickUpOrDeliver}">
+                <f:selectItem itemValue="1" itemLabel="I'll pick it up" />
+                <f:selectItem itemValue="2" itemLabel="Deliver it" />
+            </p:selectOneMenu>
 
             <p:row>
                 <p:column colspan="2" rendered="#{borrowBookController.exist}">

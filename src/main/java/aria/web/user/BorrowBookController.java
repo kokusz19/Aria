@@ -2,6 +2,7 @@ package aria.web.user;
 
 import aria.domain.dao.*;
 import aria.domain.ejb.Book;
+import aria.domain.ejb.BorrowStatusToBorrowedBook;
 import aria.domain.ejb.BorrowedBook;
 import aria.domain.ejb.Notification;
 import lombok.Getter;
@@ -36,6 +37,10 @@ public class BorrowBookController implements Serializable{
     AccountDao accountDao;
     @Inject
     NotificationDao notificationDao;
+    @Inject
+    BorrowStatusToBorrowedBookDao borrowStatusToBorrowedBookDao;
+    @Inject
+    BorrowStatusDao borrowStatusDao;
 
     @Getter
     private Long bookId;
@@ -45,6 +50,9 @@ public class BorrowBookController implements Serializable{
     @Getter
     @Setter
     private boolean exist = false;
+    @Getter
+    @Setter
+    private String pickUpOrDeliver = "";
 
     @PostConstruct
     public void init() {
@@ -89,6 +97,16 @@ public class BorrowBookController implements Serializable{
                         notificationDao.removeNotification(notification);
                     }
             }
+
+            BorrowStatusToBorrowedBook borrowStatusToBorrowedBook = new BorrowStatusToBorrowedBook();
+            borrowStatusToBorrowedBook.setBorrowedBook(borrowedBook);
+            if(pickUpOrDeliver.equals("1"))
+                borrowStatusToBorrowedBook.setBorrowStatus(borrowStatusDao.getBorrowStatus(1));
+            else if(pickUpOrDeliver.equals("2"))
+                borrowStatusToBorrowedBook.setBorrowStatus(borrowStatusDao.getBorrowStatus(3));
+            borrowStatusToBorrowedBook.setUpdateDate(LocalDate.now());
+            borrowStatusToBorrowedBookDao.createBorrowStatusToBorrowedBook(borrowStatusToBorrowedBook);
+
             navigationHandler.handleNavigation(context, null, "Book.xhtml?faces-redirect=true&includeViewParams=true");
         }
     }

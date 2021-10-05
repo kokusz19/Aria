@@ -8,6 +8,7 @@ import javax.ejb.Stateful;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import java.io.Serializable;
+import java.util.List;
 
 @Stateful
 public class ActDao implements Serializable {
@@ -36,5 +37,15 @@ public class ActDao implements Serializable {
                 .where(act.actId.eq(actId))
                 .fetchOne();
     }
+
+    public List<Act> getAllActs() {
+        JPAQueryFactory query = new JPAQueryFactory(em);
+        QAct act = QAct.act;
+        return query
+                .from(act)
+                .select(act)
+                .fetch();
+    }
+
 
 }

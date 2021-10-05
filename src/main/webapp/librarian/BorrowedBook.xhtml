@@ -13,62 +13,74 @@
 
             <p:growl id="growl" showDetail="true" />
 
-            <p:dataTable var="borrowedBook" value="#{borrowedBookController.allBorrowedBook}" widgetVar="borrowedBookTable"
-                         emptyMessage="No books found with given criteria"
+            <p:dataTable var="allBorrowedBook" value="#{borrowedBookController.allBorrowedBook}"
                          filteredValue="#{borrowedBookController.filteredBorrowedBooks}"
+                         widgetVar="allBorrowedBookTable"
                          globalFilterFunction="#{borrowedBookController.globalFilterFunction}">
                 <f:facet name="header">
-                    Books
-                    <div class="p-d-flex p-jc-end">
-                        <h:outputText value="Borrowed Books"/>
-                        <p:inputText id="globalFilter" onkeyup="PF('borrowedBookTable').filter()" style="width:300px"
-                                     placeholder="Search all fields using global function" />
-                    </div>
+                    <span>Overview</span>
+                    <p:inputText id="globalFilter" onkeyup="PF('allBorrowedBookTable').filter()" style="width:300px"
+                                 placeholder="Search all fields using global function" />
                 </f:facet>
 
                 <p:column style="width:2rem">
                     <p:rowToggler/>
                 </p:column>
-                <p:column headerText="Book name" filterable="false" style="text-align: left">
-                    <h:outputText value="#{borrowedBook.book.bookTitle}" />
+                <p:column headerText="Book name" style="text-align: left" filterBy="#{allBorrowedBook.book.bookTitle}">
+                    <h:outputText value="#{allBorrowedBook.book.bookTitle}" />
                 </p:column>
-                <p:column headerText="Login name">
-                    <h:outputText value="#{borrowedBook.account.loginName}"/>
+                <p:column headerText="Login name" filterBy="#{allBorrowedBook.account.loginName}" >
+                    <h:outputText value="#{allBorrowedBook.account.loginName}"/>
                 </p:column>
-                <p:column headerText="First name">
-                    <h:outputText value="#{borrowedBook.account.person.firstName}"/>
+                <p:column headerText="First name" filterBy="#{allBorrowedBook.account.person.firstName}" >
+                    <h:outputText value="#{allBorrowedBook.account.person.firstName}"/>
                 </p:column>
-                <p:column headerText="Last name">
-                    <h:outputText value="#{borrowedBook.account.person.lastName}"/>
+                <p:column headerText="Last name" filterBy="#{allBorrowedBook.account.person.lastName}">
+                    <h:outputText value="#{allBorrowedBook.account.person.lastName}"/>
                 </p:column>
-                <p:column headerText="E-mail">
-                    <h:outputText value="#{borrowedBook.account.person.email}"/>
+                <p:column headerText="E-mail" filterBy="#{allBorrowedBook.account.person.email}">
+                    <h:outputText value="#{allBorrowedBook.account.person.email}"/>
                 </p:column>
-                <p:column headerText="Role name">
-                    <h:outputText value="#{borrowedBook.account.act.roleName}"/>
+                <p:column headerText="Role name" field="roleName" filterBy="#{allBorrowedBook.account.act.roleName}" filterMatchMode="exact">
+                    <f:facet name="filter">
+                        <p:selectOneMenu onchange="PF('allBorrowedBookTable').filter()" converter="omnifaces.SelectItemsConverter">
+                            <f:selectItem itemLabel="All" itemValue="#{null}" noSelectionOption="true"/>
+                            <f:selectItems value="#{borrowedBookController.allRoles}" var="role" itemValue="#{role.roleName}" itemLabel="#{role.roleName}"/>
+                        </p:selectOneMenu>
+                    </f:facet>
+                    <h:outputText value="#{allBorrowedBook.account.act.roleName}"/>
                 </p:column>
-                <p:column headerText="Date of borrow">
-                    <h:outputText value="#{borrowedBook.dateOfBorrow}"/>
+                <p:column headerText="Date of borrow" filterBy="#{allBorrowedBook.dateOfBorrow}">
+                    <h:outputText value="#{allBorrowedBook.dateOfBorrow}"/>
                 </p:column>
-                <p:column headerText="Date of return">
-                    <h:outputText value="#{borrowedBook.dateOfReturn}"/>
+                <p:column headerText="Date of return" filterBy="#{allBorrowedBook.dateOfReturn}">
+                    <h:outputText value="#{allBorrowedBook.dateOfReturn}"/>
+                </p:column>
+                <p:column headerText="Status" field="status" filterBy="#{allBorrowedBook.currentStatus.borrowStatusName}">
+                    <f:facet name="filter">
+                        <p:selectOneMenu onchange="PF('allBorrowedBookTable').filter()" converter="omnifaces.SelectItemsConverter">
+                            <f:selectItem itemLabel="All" itemValue="#{null}" noSelectionOption="true"/>
+                            <f:selectItems value="#{borrowedBookController.allStatuses}" var="status" itemValue="#{status.borrowStatusName}" itemLabel="#{status.borrowStatusName}"/>
+                        </p:selectOneMenu>
+                    </f:facet>
+                    <h:outputText value="#{allBorrowedBook.currentStatus.borrowStatusName}"/>
                 </p:column>
                 <p:rowExpansion>
                     <p:dataTable value="borrowedBook">
                         <p:column headerText="Book ID" filterable="false" width="5%" style="text-align: right">
-                            <h:outputText value="#{borrowedBook.book.bookId}" />
+                            <h:outputText value="#{allBorrowedBook.book.bookId}" />
                         </p:column>
                         <p:column headerText="Author(s)" filterable="false" style="text-align: left">
-                            <h:outputText value="#{borrowedBook.book.authorsString}" />
+                            <h:outputText value="#{allBorrowedBook.book.authorsString}" />
                         </p:column>
                         <p:column headerText="Genre(s)" filterable="false" style="text-align: left">
-                            <h:outputText value="#{borrowedBook.book.genresString}" />
+                            <h:outputText value="#{allBorrowedBook.book.genresString}" />
                         </p:column>
                         <p:column headerText="ISBN" filterable="false" style="text-align: left">
-                            <h:outputText value="#{borrowedBook.book.isbn}" />
+                            <h:outputText value="#{allBorrowedBook.book.isbn}" />
                         </p:column>
-                        <p:column headerText="Returned" rendered="#{borrowedBook.dateOfReturn == null}">
-                            <p:commandButton action="#{borrowedBookController.returned(borrowedBook.borrowedBookId)}" icon="pi pi-file" update="form:growl"/>
+                        <p:column headerText="Returned" rendered="#{allBorrowedBook.dateOfReturn == null}">
+                            <p:commandButton action="#{borrowedBookController.returned(allBorrowedBook.borrowedBookId)}" icon="pi pi-file" update="form:growl"/>
                         </p:column>
                     </p:dataTable>
                 </p:rowExpansion>

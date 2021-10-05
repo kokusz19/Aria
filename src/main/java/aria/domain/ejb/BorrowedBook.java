@@ -38,4 +38,8 @@ public class BorrowedBook {
     @Setter
     @Transient
     private int price;
+    @Getter
+    @Setter
+    @Transient
+    private BorrowStatus currentStatus;
 }

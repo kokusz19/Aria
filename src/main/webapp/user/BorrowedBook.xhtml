@@ -11,7 +11,7 @@
         <f:view>
             <ui:include src="/PageHeader.xhtml"/>
 
-            <p:dataTable var="borrowedBook" value="#{userBorrowedBookController.allBorrowedBook}" widgetVar="borrowedBookTable"
+            <p:dataTable var="allBorrowedBook" value="#{userBorrowedBookController.allBorrowedBook}" widgetVar="borrowedBookTable"
                          emptyMessage="No books found with given criteria"
                          filteredValue="#{userBorrowedBookController.filteredBorrowedBooks}"
                          globalFilterFunction="#{userBorrowedBookController.globalFilterFunction}">
@@ -25,25 +25,25 @@
                 </f:facet>
 
                 <p:column headerText="Book ID" filterable="false" width="5%" style="text-align: right">
-                    <h:outputText value="#{borrowedBook.book.bookId}" />
+                    <h:outputText value="#{allBorrowedBook.book.bookId}" />
                 </p:column>
                 <p:column headerText="Book name" filterable="false" style="text-align: left">
-                    <h:outputText value="#{borrowedBook.book.bookTitle}" />
+                    <h:outputText value="#{allBorrowedBook.book.bookTitle}" />
                 </p:column>
                 <p:column headerText="Date of borrow">
-                    <h:outputText value="#{borrowedBook.dateOfBorrow}"/>
+                    <h:outputText value="#{allBorrowedBook.dateOfBorrow}"/>
                 </p:column>
                 <p:column headerText="Date of return">
-                    <h:outputText value="#{borrowedBook.dateOfReturn}"/>
+                    <h:outputText value="#{allBorrowedBook.dateOfReturn}"/>
                 </p:column>
                 <p:column headerText="Author(s)" filterable="false" style="text-align: left">
-                    <h:outputText value="#{borrowedBook.book.authorsString}" />
+                    <h:outputText value="#{allBorrowedBook.book.authorsString}" />
                 </p:column>
                 <p:column headerText="Genre(s)" filterable="false" style="text-align: left">
-                    <h:outputText value="#{borrowedBook.book.genresString}" />
+                    <h:outputText value="#{allBorrowedBook.book.genresString}" />
                 </p:column>
                 <p:column headerText="ISBN" filterable="false" style="text-align: left">
-                    <h:outputText value="#{borrowedBook.book.isbn}" />
+                    <h:outputText value="#{allBorrowedBook.book.isbn}" />
                 </p:column>
 
                 <f:facet name="footer">

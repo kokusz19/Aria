@@ -27,6 +27,16 @@ public class BorrowStatusToBorrowedBookDao implements Serializable {
                 .where(borrowStatusToBorrowedBook.borrowedBook.borrowedBookId.eq(borrowedBookId))
                 .fetch();
     }
+    public BorrowStatusToBorrowedBook getLatestStatusForBorrowedBookId (final long borrowedBookId) {
+        JPAQueryFactory query = new JPAQueryFactory(em);
+        QBorrowStatusToBorrowedBook borrowStatusToBorrowedBook = QBorrowStatusToBorrowedBook.borrowStatusToBorrowedBook;
+        return query
+                .from(borrowStatusToBorrowedBook)
+                .select(borrowStatusToBorrowedBook)
+                .where(borrowStatusToBorrowedBook.borrowedBook.borrowedBookId.eq(borrowedBookId))
+                .orderBy(borrowStatusToBorrowedBook.borrowStatus.borrowStatusId.desc())
+                .fetchOne();
+    }
 
     public void createBorrowStatusToBorrowedBook(BorrowStatusToBorrowedBook borrowStatusToBorrowedBook){em.persist(borrowStatusToBorrowedBook);}
 }

@@ -21,7 +21,8 @@
             </p:menuButton>
 
             <p:menuButton value="Carrier" icon="pi pi-list" rendered="#{pageHeaderController.actId != 1}">
-                <p:menuitem value="Show all delivery" url="/aria/carrier/AllDelivery.xhtml" icon="pi pi-file" />
+                <p:menuitem value="Show all deliveries" url="/aria/carrier/AllDelivery.xhtml" icon="pi pi-file" />
+                <p:menuitem value="Show my deliveries" url="/aria/carrier/MyDeliveries.xhtml" rendered="#{pageHeaderController.actId == 4}" icon="pi pi-file" />
             </p:menuButton>
 
             <p:menuButton value="Librarian" icon="pi pi-list" rendered="#{pageHeaderController.actId == 2 || pageHeaderController.actId == 3}">

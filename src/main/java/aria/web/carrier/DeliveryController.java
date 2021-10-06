@@ -46,6 +46,9 @@ public class DeliveryController implements Serializable{
     private List<BorrowedBook> allBorrowedBook;
     @Getter
     @Setter
+    private List<BorrowedBook> myBorrowedBook;
+    @Getter
+    @Setter
     private List<BorrowedBook> filteredAllBorrowedBooks;
     @Getter
     private List<FilterMeta> filterBy;
@@ -58,6 +61,9 @@ public class DeliveryController implements Serializable{
     @Getter
     @Setter
     private Map<Long, Account> carriers;
+    @Getter
+    @Setter
+    private Map<Long, Account> myCarriers;
 
     @Getter
     @Setter
@@ -80,11 +86,17 @@ public class DeliveryController implements Serializable{
         bookController.generateStrings(books);
         allBorrowedBook = allBorrowedBook.stream().filter(b -> b.getCurrentStatus().getBorrowStatusId() == 4 || b.getCurrentStatus().getBorrowStatusId() == 5 || b.getCurrentStatus().getBorrowStatusId() == 6 || b.getCurrentStatus().getBorrowStatusId() == 10).collect(Collectors.toList());
         filteredAllBorrowedBooks = new ArrayList<>(allBorrowedBook);
-
         carriedBooks = carriedBookDao.getAllCarriedBooks();
         carriers = new TreeMap<Long, Account>();
+        myCarriers = new TreeMap<Long, Account>();
+        myBorrowedBook = new ArrayList<>();
         for (CarriedBook tmpCarried: carriedBooks) {
             carriers.put(tmpCarried.getBorrowedBook().getBorrowedBookId(), tmpCarried.getCarrier());
+            if(tmpCarried.getCarrier().getAccountId() == id) {
+                myCarriers.put(tmpCarried.getBorrowedBook().getBorrowedBookId(), tmpCarried.getCarrier());
+                tmpCarried.getBorrowedBook().setCurrentStatus(borrowStatusToBorrowedBookDao.getLatestStatusForBorrowedBookId(tmpCarried.getBorrowedBook().getBorrowedBookId()).getBorrowStatus());
+                myBorrowedBook.add(tmpCarried.getBorrowedBook());
+            }
         }
 
         allStatuses = borrowStatusDao.getBorrowStatuses();

@@ -24,6 +24,9 @@
                     </div>
                 </f:facet>
 
+                <p:column style="width:2rem">
+                    <p:rowToggler/>
+                </p:column>
                 <p:column headerText="Book ID" filterable="false" width="5%" style="text-align: right">
                     <h:outputText value="#{allBorrowedBook.book.bookId}" />
                 </p:column>
@@ -32,6 +35,9 @@
                 </p:column>
                 <p:column headerText="Date of borrow">
                     <h:outputText value="#{allBorrowedBook.dateOfBorrow}"/>
+                </p:column>
+                <p:column headerText="Date to be returned">
+                    <h:outputText value="#{allBorrowedBook.dateToBeReturned}"/>
                 </p:column>
                 <p:column headerText="Date of return">
                     <h:outputText value="#{allBorrowedBook.dateOfReturn}"/>
@@ -45,6 +51,14 @@
                 <p:column headerText="ISBN" filterable="false" style="text-align: left">
                     <h:outputText value="#{allBorrowedBook.book.isbn}" />
                 </p:column>
+                <p:column headerText="Status" filterable="false" style="text-align: left">
+                    <h:outputText value="#{allBorrowedBook.currentStatus.borrowStatusName}" />
+                </p:column>
+                <p:rowExpansion>
+                    <p:column headerText="Action">
+                        <p:commandButton value="Cancel booking" rendered="#{allBorrowedBook.currentStatus.borrowStatusId == 1 || allBorrowedBook.currentStatus.borrowStatusId == 3 || allBorrowedBook.currentStatus.borrowStatusId == 4}" action="#{userBorrowedBookController.action(allBorrowedBook.borrowedBookId, 1)}" icon="pi pi-file"/>
+                    </p:column>
+                </p:rowExpansion>
 
                 <f:facet name="footer">
                 </f:facet>

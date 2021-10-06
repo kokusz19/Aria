@@ -62,10 +62,14 @@ public class DeliveryController implements Serializable{
     @Getter
     @Setter
     private long id;
+    @Getter
+    @Setter
+    private String roleName;
 
     @PostConstruct
     public void init(){
         id = Long.parseLong(FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("id").toString());
+        roleName = accountDao.getForAccountId(id).getAct().getRoleName();
 
         List<Book> books = new ArrayList<>();
         allBorrowedBook = borrowedBookDao.getBorrowedBooks();

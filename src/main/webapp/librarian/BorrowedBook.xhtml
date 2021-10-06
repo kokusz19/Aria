@@ -76,6 +76,9 @@
                         <p:column headerText="Genre(s)" filterable="false" style="text-align: left">
                             <h:outputText value="#{allBorrowedBook.book.genresString}" />
                         </p:column>
+                        <p:column headerText="Language">
+                            <h:outputText value="#{allBorrowedBook.book.language.languageName}"/>
+                        </p:column>
                         <p:column headerText="ISBN" filterable="false" style="text-align: left">
                             <h:outputText value="#{allBorrowedBook.book.isbn}" />
                         </p:column>

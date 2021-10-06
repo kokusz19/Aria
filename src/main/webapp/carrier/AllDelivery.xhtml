@@ -1,0 +1,103 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+<h:head/>
+<h:body>
+    <h:form rendered="#{pageHeaderController.actId != 1}" id="form">
+        <f:view>
+            <ui:include src="/PageHeader.xhtml"/>
+
+            <p:growl id="growl" showDetail="true" />
+
+            <p:dataTable var="allBorrowedBook" value="#{deliveryController.allBorrowedBook}"
+                         filteredValue="#{deliveryController.filteredAllBorrowedBooks}"
+                         widgetVar="allBorrowedBookTable"
+                         globalFilterFunction="#{deliveryController.globalFilterFunction}">
+                <f:facet name="header">
+                    <span>Overview</span>
+                    <p:inputText id="globalFilter" onkeyup="PF('allBorrowedBookTable').filter()" style="width:300px"
+                                 placeholder="Search all fields using global function" />
+                </f:facet>
+
+                <p:column style="width:2rem">
+                    <p:rowToggler/>
+                </p:column>
+                <p:column headerText="id">
+                    <h:outputText value="#{allBorrowedBook.borrowedBookId}"/>
+                </p:column>
+                <p:column headerText="Carrier" filterMatchMode="contains" filterBy="#{deliveryController.carriers.containsKey(allBorrowedBook.borrowedBookId) ? deliveryController.carriers.get(allBorrowedBook.borrowedBookId).person.firstName.concat(' ').concat(deliveryController.carriers.get(allBorrowedBook.borrowedBookId).person.lastName) : ''}">
+                    <h:outputText value="#{deliveryController.carriers.containsKey(allBorrowedBook.borrowedBookId) ? deliveryController.carriers.get(allBorrowedBook.borrowedBookId).person.firstName.concat(' ').concat(deliveryController.carriers.get(allBorrowedBook.borrowedBookId).person.lastName) : 'Not assigned'}"/>
+                </p:column>
+                <p:column headerText="First name" filterBy="#{allBorrowedBook.account.person.firstName}" >
+                    <h:outputText value="#{allBorrowedBook.account.person.firstName}"/>
+                </p:column>
+                <p:column headerText="Last name" filterBy="#{allBorrowedBook.account.person.lastName}">
+                    <h:outputText value="#{allBorrowedBook.account.person.lastName}"/>
+                </p:column>
+                <p:column headerText="Last name" filterBy="#{allBorrowedBook.account.person.address}">
+                    <h:outputText value="#{allBorrowedBook.account.person.address}"/>
+                </p:column>
+                <p:column headerText="E-mail" filterBy="#{allBorrowedBook.account.person.email}">
+                    <h:outputText value="#{allBorrowedBook.account.person.email}"/>
+                </p:column>
+                <p:column headerText="Phone number" filterBy="#{allBorrowedBook.account.person.phoneNumber}">
+                    <h:outputText value="#{allBorrowedBook.account.person.phoneNumber}"/>
+                </p:column>
+                <p:column headerText="Book name" style="text-align: left" filterBy="#{allBorrowedBook.book.bookTitle}">
+                    <h:outputText value="#{allBorrowedBook.book.bookTitle}" />
+                </p:column>
+                <p:column headerText="Date of borrow" filterBy="#{allBorrowedBook.dateOfBorrow}">
+                    <h:outputText value="#{allBorrowedBook.dateOfBorrow}"/>
+                </p:column>
+                <p:column headerText="Status" field="status" filterBy="#{allBorrowedBook.currentStatus.borrowStatusName}">
+                    <f:facet name="filter">
+                        <p:selectOneMenu onchange="PF('allBorrowedBookTable').filter()" converter="omnifaces.SelectItemsConverter">
+                            <f:selectItem itemLabel="All" itemValue="#{null}" noSelectionOption="true"/>
+                            <f:selectItems value="#{deliveryController.allStatuses}" var="status" itemValue="#{status.borrowStatusName}" itemLabel="#{status.borrowStatusName}"/>
+                        </p:selectOneMenu>
+                    </f:facet>
+                    <h:outputText value="#{allBorrowedBook.currentStatus.borrowStatusName}"/>
+                </p:column>
+
+                <p:column headerText="Action">
+                    <p:commandButton value="Deliver" action="#{deliveryController.action(allBorrowedBook.borrowedBookId, 1)}" rendered="#{allBorrowedBook.currentStatus.borrowStatusId == 4 || allBorrowedBook.currentStatus.borrowStatusId == 10}"/>
+                    <p:commandButton value="Delivered" action="#{deliveryController.action(allBorrowedBook.borrowedBookId, 2)}" icon="pi pi-file" update="form:growl" rendered="#{allBorrowedBook.currentStatus.borrowStatusId == 5 and deliveryController.carriers.get(allBorrowedBook.borrowedBookId).accountId == deliveryController.id}"/>
+                    <p:commandButton value="Could not be delivered" action="#{deliveryController.action(allBorrowedBook.borrowedBookId, 3)}" icon="pi pi-file" update="form:growl" rendered="#{allBorrowedBook.currentStatus.borrowStatusId == 5 and deliveryController.carriers.get(allBorrowedBook.borrowedBookId).accountId == deliveryController.id}"/>
+                    <h:outputText value="Carrier already assigned" rendered="#{allBorrowedBook.currentStatus.borrowStatusId == 5 and deliveryController.carriers.get(allBorrowedBook.borrowedBookId).accountId != deliveryController.id}"/>
+                    <h:outputText value="There's no action" rendered="#{allBorrowedBook.currentStatus.borrowStatusId == 6}"/>
+                </p:column>
+
+                <p:rowExpansion>
+                    <p:dataTable value="borrowedBook">
+                        <p:column headerText="Book ID" filterable="false" width="5%" style="text-align: right">
+                            <h:outputText value="#{allBorrowedBook.book.bookId}" />
+                        </p:column>
+                        <p:column headerText="Author(s)" filterable="false" style="text-align: left">
+                            <h:outputText value="#{allBorrowedBook.book.authorsString}" />
+                        </p:column>
+                        <p:column headerText="Genre(s)" filterable="false" style="text-align: left">
+                            <h:outputText value="#{allBorrowedBook.book.genresString}" />
+                        </p:column>
+                        <p:column headerText="ISBN" filterable="false" style="text-align: left">
+                            <h:outputText value="#{allBorrowedBook.book.isbn}" />
+                        </p:column>
+                    </p:dataTable>
+                </p:rowExpansion>
+
+                <f:facet name="footer">
+                </f:facet>
+                <span class="p-text-bold">In total there are #{fn:length(deliveryController.allBorrowedBook)} book(s).</span>
+            </p:dataTable>
+        </f:view>
+    </h:form>
+    <h:form rendered="#{pageHeaderController.actId == 1}">
+        <h:outputLabel value="You do not have the right access!"/>
+        <h:commandButton action="/user/HomePage.xhtml?faces-redirect=true" value="default page" rendered="#{pageHeaderController.actId == 1}"/>
+    </h:form>
+</h:body>
+</html>

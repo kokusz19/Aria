@@ -36,6 +36,10 @@ public class BorrowedBook {
     private LocalDate dateOfReturn;
     @Getter
     @Setter
+    @Column(name = "dateToBeReturned")
+    private LocalDate dateToBeReturned;
+    @Getter
+    @Setter
     @Transient
     private int price;
     @Getter

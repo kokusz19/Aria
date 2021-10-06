@@ -38,9 +38,6 @@
                 <p:column headerText="Last name" filterBy="#{allBorrowedBook.account.person.lastName}">
                     <h:outputText value="#{allBorrowedBook.account.person.lastName}"/>
                 </p:column>
-                <p:column headerText="E-mail" filterBy="#{allBorrowedBook.account.person.email}">
-                    <h:outputText value="#{allBorrowedBook.account.person.email}"/>
-                </p:column>
                 <p:column headerText="Role name" field="roleName" filterBy="#{allBorrowedBook.account.act.roleName}" filterMatchMode="exact">
                     <f:facet name="filter">
                         <p:selectOneMenu onchange="PF('allBorrowedBookTable').filter()" converter="omnifaces.SelectItemsConverter">
@@ -52,6 +49,9 @@
                 </p:column>
                 <p:column headerText="Date of borrow" filterBy="#{allBorrowedBook.dateOfBorrow}">
                     <h:outputText value="#{allBorrowedBook.dateOfBorrow}"/>
+                </p:column>
+                <p:column headerText="Date to be returned" filterBy="#{allBorrowedBook.dateToBeReturned}">
+                    <h:outputText value="#{allBorrowedBook.dateToBeReturned}"/>
                 </p:column>
                 <p:column headerText="Date of return" filterBy="#{allBorrowedBook.dateOfReturn}">
                     <h:outputText value="#{allBorrowedBook.dateOfReturn}"/>
@@ -79,8 +79,20 @@
                         <p:column headerText="ISBN" filterable="false" style="text-align: left">
                             <h:outputText value="#{allBorrowedBook.book.isbn}" />
                         </p:column>
-                        <p:column headerText="Returned" rendered="#{allBorrowedBook.dateOfReturn == null}">
-                            <p:commandButton action="#{borrowedBookController.returned(allBorrowedBook.borrowedBookId)}" icon="pi pi-file" update="form:growl"/>
+                        <p:column headerText="User's e-mail">
+                            <h:outputText value="#{allBorrowedBook.account.person.email}"/>
+                        </p:column>
+                        <p:column headerText="Hand over" rendered="#{allBorrowedBook.currentStatus.borrowStatusId == 1}">
+                            <p:commandButton value="Hand over to user" action="#{borrowedBookController.action(allBorrowedBook.borrowedBookId, 1)}" icon="pi pi-file" update="form:growl"/>
+                        </p:column>
+                        <p:column headerText="Remove" rendered="#{allBorrowedBook.currentStatus.borrowStatusId == 1}">
+                            <p:commandButton value="Remove booking" action="#{borrowedBookController.action(allBorrowedBook.borrowedBookId, 2)}" icon="pi pi-file" update="form:growl"/>
+                        </p:column>
+                        <p:column headerText="Hand over" rendered="#{allBorrowedBook.currentStatus.borrowStatusId == 3}">
+                            <p:commandButton value="Hand over to carrier" action="#{borrowedBookController.action(allBorrowedBook.borrowedBookId, 3)}" icon="pi pi-file" update="form:growl"/>
+                        </p:column>
+                        <p:column headerText="Return" rendered="#{allBorrowedBook.currentStatus.borrowStatusId == 2 || allBorrowedBook.currentStatus.borrowStatusId == 6}">
+                            <p:commandButton value="Book returned" action="#{borrowedBookController.action(allBorrowedBook.borrowedBookId, 4)}" icon="pi pi-file" update="form:growl"/>
                         </p:column>
                     </p:dataTable>
                 </p:rowExpansion>

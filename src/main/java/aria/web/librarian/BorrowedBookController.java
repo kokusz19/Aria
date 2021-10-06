@@ -1,10 +1,7 @@
 package aria.web.librarian;
 
 import aria.domain.dao.*;
-import aria.domain.ejb.Act;
-import aria.domain.ejb.Book;
-import aria.domain.ejb.BorrowStatus;
-import aria.domain.ejb.BorrowedBook;
+import aria.domain.ejb.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.primefaces.PrimeFaces;
@@ -83,13 +80,6 @@ public class BorrowedBookController implements Serializable {
             books.add(borrowedBook.getBook());
         }
         bookController.generateStrings(books);
-
-
-        if(FacesContext.getCurrentInstance().getExternalContext().getSessionMap().containsKey("showMsg") && Boolean.getBoolean(FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("showMsg").toString()) == true){
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Return successful!", "User has returned the book."));
-            PrimeFaces.current().ajax().update("form:growl");
-            FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("showMsg");
-        }
     }
     public BorrowedBookController(){
 
@@ -125,19 +115,45 @@ public class BorrowedBookController implements Serializable {
         return filteredBorrowedBooks;
     }
 
-    public void returned(long borrowedBookId){
+    public void action(long borrowedBookId, int actionId){
         BorrowedBook borrowedBook = borrowedBookDao.getForBorrowedBookId(borrowedBookId);
-        borrowedBook.setDateOfReturn(LocalDate.now());
-        borrowedBookDao.updateBorrowedBook(borrowedBook);
 
-        Book book = borrowedBook.getBook();
-        book.setAvailableItems(book.getAvailableItems()+1);
-        bookDao.updateBook(book);
+        BorrowStatusToBorrowedBook tmp = new BorrowStatusToBorrowedBook();
+        tmp.setUpdateDate(LocalDate.now());
+        tmp.setBorrowedBook(borrowedBook);
 
+        if(actionId == 1){
+            // Hand over to user
+            borrowedBook.setDateToBeReturned(LocalDate.now().plusWeeks(2));
+            borrowedBookDao.updateBorrowedBook(borrowedBook);
+            tmp.setBorrowStatus(borrowStatusDao.getBorrowStatus(2));
+        } else if(actionId == 2){
+            // Remove booking
+            borrowedBook.setDateToBeReturned(null);
+            borrowedBook.setDateOfReturn(null);
+            borrowedBookDao.updateBorrowedBook(borrowedBook);
+
+            Book book = borrowedBook.getBook();
+            book.setAvailableItems(book.getAvailableItems()+1);
+            bookDao.updateBook(book);
+            tmp.setBorrowStatus(borrowStatusDao.getBorrowStatus(8));
+        } else if(actionId == 3){
+            // Hand over to carrier
+            tmp.setBorrowStatus(borrowStatusDao.getBorrowStatus(4));
+        } else if(actionId == 4){
+            // Book returned
+            borrowedBook.setDateOfReturn(LocalDate.now());
+            borrowedBookDao.updateBorrowedBook(borrowedBook);
+            tmp.setBorrowStatus(borrowStatusDao.getBorrowStatus(9));
+
+            Book book = borrowedBook.getBook();
+            book.setAvailableItems(book.getAvailableItems()+1);
+            bookDao.updateBook(book);
+        }
+        borrowStatusToBorrowedBookDao.createBorrowStatusToBorrowedBook(tmp);
         FacesContext context = FacesContext.getCurrentInstance();
         NavigationHandler navigationHandler = context.getApplication().getNavigationHandler();
         navigationHandler
                 .handleNavigation(context, null, "BorrowedBook.xhtml?faces-redirect=true&includeViewParams=true");
-        context.getExternalContext().getSessionMap().put("showMsg", true);
     }
 }

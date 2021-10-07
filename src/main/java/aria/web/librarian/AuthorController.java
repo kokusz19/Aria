@@ -2,6 +2,7 @@ package aria.web.librarian;
 
 import aria.domain.dao.AuthorDao;
 import aria.domain.ejb.Author;
+import aria.web.HelperController;
 import lombok.Getter;
 import lombok.Setter;
 import org.primefaces.model.FilterMeta;
@@ -27,6 +28,8 @@ public class AuthorController implements Serializable{
 
     @Inject
     AuthorDao authorDao;
+    @Inject
+    HelperController helperController;
 
     private List<Author> authors;
     private List<Author> filteredAuthors;
@@ -83,7 +86,8 @@ public class AuthorController implements Serializable{
 
         Author author = (Author) value;
         boolean check = author.getAuthorId().toString().contains(filterText)
-                || author.getFirstName().toLowerCase().concat(' ' + author.getLastName().toLowerCase()).contains(filterText);
+                || author.getFirstName().toLowerCase().concat(' ' + author.getLastName().toLowerCase()).contains(filterText)
+                || helperController.localDateFilterCheck(author.getDateOfBirth(), filterText);
 
         return check;
     }

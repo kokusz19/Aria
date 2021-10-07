@@ -7,6 +7,7 @@ import aria.domain.dao.BorrowedBookDao;
 import aria.domain.ejb.Book;
 import aria.domain.ejb.BorrowStatusToBorrowedBook;
 import aria.domain.ejb.BorrowedBook;
+import aria.web.HelperController;
 import aria.web.librarian.BookController;
 import lombok.Getter;
 import lombok.Setter;
@@ -42,6 +43,8 @@ public class BorrowedBookController implements Serializable {
     BookDao bookDao;
     @Inject
     BorrowStatusDao borrowStatusDao;
+    @Inject
+    HelperController helperController;
 
     @Getter
     @Setter
@@ -113,7 +116,11 @@ public class BorrowedBookController implements Serializable {
                 || borrowedBook.getBook().getBookTitle().toLowerCase().contains(filterText)
                 || borrowedBook.getBook().getGenres().toString().toLowerCase().contains(filterText)
                 || borrowedBook.getBook().getIsbn().toString().toLowerCase().contains(filterText)
-                || borrowedBook.getBook().getLanguage().getLanguageName().toLowerCase().contains(filterText);
+                || borrowedBook.getBook().getLanguage().getLanguageName().toLowerCase().contains(filterText)
+                || borrowedBook.getCurrentStatus().getBorrowStatusName().toLowerCase().contains(filterText)
+                || helperController.localDateFilterCheck(borrowedBook.getDateOfBorrow(), filterText)
+                || helperController.localDateFilterCheck(borrowedBook.getDateOfReturn(), filterText)
+                || helperController.localDateFilterCheck(borrowedBook.getDateToBeReturned(), filterText);
 
         return check;
     }

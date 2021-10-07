@@ -2,6 +2,7 @@ package aria.web.librarian;
 
 import aria.domain.dao.*;
 import aria.domain.ejb.*;
+import aria.web.HelperController;
 import lombok.Getter;
 import lombok.Setter;
 import org.primefaces.PrimeFaces;
@@ -36,6 +37,8 @@ public class BorrowedBookController implements Serializable {
     BorrowStatusDao borrowStatusDao;
     @Inject
     ActDao actDao;
+    @Inject
+    HelperController helperController;
 
     @Getter
     @Setter
@@ -99,13 +102,17 @@ public class BorrowedBookController implements Serializable {
         boolean check = borrowedBook.getAccount().getLoginName().toLowerCase().contains(filterText)
                 || borrowedBook.getAccount().getPerson().getFirstName().toLowerCase().contains(filterText)
                 || borrowedBook.getAccount().getPerson().getLastName().toLowerCase().contains(filterText)
+                || borrowedBook.getAccount().getPerson().getFirstName().toLowerCase().concat(" ").concat(borrowedBook.getAccount().getPerson().getLastName().toLowerCase()).contains(filterText)
                 || borrowedBook.getBook().getAuthors().toString().toLowerCase().contains(filterText)
                 || borrowedBook.getBook().getBookTitle().toLowerCase().contains(filterText)
                 || borrowedBook.getBook().getGenres().toString().toLowerCase().contains(filterText)
                 || borrowedBook.getBook().getIsbn().toString().toLowerCase().contains(filterText)
                 || borrowedBook.getBook().getLanguage().getLanguageName().toLowerCase().contains(filterText)
                 || borrowedBook.getBook().getBookId().toString().toLowerCase().contains(filterText)
-                || borrowedBook.getCurrentStatus().getBorrowStatusName().toLowerCase().contains(filterText);
+                || borrowedBook.getCurrentStatus().getBorrowStatusName().toLowerCase().contains(filterText)
+                || helperController.localDateFilterCheck(borrowedBook.getDateOfBorrow(), filterText)
+                || helperController.localDateFilterCheck(borrowedBook.getDateOfReturn(), filterText)
+                || helperController.localDateFilterCheck(borrowedBook.getDateToBeReturned(), filterText);
 
         return check;
     }

@@ -2,6 +2,7 @@ package aria.web.librarian;
 
 import aria.domain.dao.*;
 import aria.domain.ejb.*;
+import aria.web.HelperController;
 import lombok.Getter;
 import lombok.Setter;
 import org.primefaces.model.FilterMeta;
@@ -34,6 +35,8 @@ public class BookController implements Serializable{
     GenreToBookDao genreToBookDao;
     @Inject
     AuthorToBookDao authorToBookDao;
+    @Inject
+    HelperController helperController;
 
     private List<Book> books;
     private List<Book> filteredBooks;
@@ -140,10 +143,12 @@ public class BookController implements Serializable{
                 || book.getBookTitle().toLowerCase().trim().contains(filterText)
                 || book.getGenres().toString().trim().toLowerCase().contains(filterText)
                 || book.getIsbn().toString().toLowerCase().trim().contains(filterText)
-                || book.getLanguage().getLanguageName().toLowerCase().trim().contains(filterText);
+                || book.getLanguage().getLanguageName().toLowerCase().trim().contains(filterText)
+                || helperController.localDateFilterCheck(book.getPublishedAt(), filterText);
 
         return check;
     }
+
 
     public void setFilteredBooks(List<Book> filteredBooks) { this.filteredBooks = filteredBooks; }
     public List<Book> getFilteredBooks() {

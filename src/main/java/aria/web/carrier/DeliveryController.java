@@ -113,10 +113,12 @@ public class DeliveryController implements Serializable{
         if(actionId == 1){
             // Delivering
             tmp.setBorrowStatus(borrowStatusDao.getBorrowStatus(5));
-            CarriedBook tmpCarriedBook = new CarriedBook();
-            tmpCarriedBook.setBorrowedBook(borrowedBook);
-            tmpCarriedBook.setCarrier(accountDao.getForAccountId(id));
-            carriedBookDao.createCarriedBook(tmpCarriedBook);
+            if(!myCarriers.containsKey(borrowedBook.getBorrowedBookId())){
+                CarriedBook tmpCarriedBook = new CarriedBook();
+                tmpCarriedBook.setBorrowedBook(borrowedBook);
+                tmpCarriedBook.setCarrier(accountDao.getForAccountId(id));
+                carriedBookDao.createCarriedBook(tmpCarriedBook);
+            }
         } else if(actionId == 2){
             // Delivered
             tmp.setBorrowStatus(borrowStatusDao.getBorrowStatus(6));

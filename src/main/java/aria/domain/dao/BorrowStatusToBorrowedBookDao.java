@@ -34,7 +34,7 @@ public class BorrowStatusToBorrowedBookDao implements Serializable {
                 .from(borrowStatusToBorrowedBook)
                 .select(borrowStatusToBorrowedBook)
                 .where(borrowStatusToBorrowedBook.borrowedBook.borrowedBookId.eq(borrowedBookId))
-                .orderBy(borrowStatusToBorrowedBook.borrowStatus.borrowStatusId.desc())
+                .orderBy(borrowStatusToBorrowedBook.borrowStatusToBorrowedBookId.desc())
                 .fetchFirst();
     }
 

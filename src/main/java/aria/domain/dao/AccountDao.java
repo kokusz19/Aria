@@ -49,6 +49,14 @@ public class AccountDao implements Serializable {
                 .where(account.act.roleName.eq(roleName))
                 .fetch();
     }
+    public List<Account> getAll() {
+        JPAQueryFactory query = new JPAQueryFactory(entityManager);
+        QAccount account = QAccount.account;
+        return query
+                .from(account)
+                .select(account)
+                .fetch();
+    }
 
     public void createUser(Account account) {
         entityManager.persist(account);

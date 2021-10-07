@@ -4,27 +4,28 @@ import aria.domain.dao.*;
 import aria.domain.ejb.Account;
 import aria.domain.ejb.Book;
 import aria.domain.ejb.BorrowedBook;
+import aria.web.HelperController;
 import lombok.Getter;
 import lombok.Setter;
 import org.primefaces.PrimeFaces;
-import org.primefaces.context.PrimeFacesContext;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.util.LangUtils;
 
 import javax.annotation.PostConstruct;
-import javax.faces.application.NavigationHandler;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.*;
+import java.util.stream.Collectors;
 import javax.servlet.http.*;
 
 @ManagedBean(name = "userController", eager = true)
-@RequestScoped
+@ViewScoped
 public class UserController implements Serializable {
 
     @Inject
@@ -37,31 +38,17 @@ public class UserController implements Serializable {
     GenreToBookDao genreToBookDao;
     @Inject
     AuthorToBookDao authorToBookDao;
+    @Inject
+    BorrowStatusToBorrowedBookDao borrowStatusToBorrowedBookDao;
+    @Inject
+    HelperController helperController;
 
     @Getter
     @Setter
-    private List<Account> defaults;
+    private List<Account> users;
     @Getter
     @Setter
-    private List<Account> carriers;
-    @Getter
-    @Setter
-    private List<Account> librarians;
-    @Getter
-    @Setter
-    private List<Account> admins;
-    @Getter
-    @Setter
-    private List<Account> filteredDefaults;
-    @Getter
-    @Setter
-    private List<Account> filteredCarriers;
-    @Getter
-    @Setter
-    private List<Account> filteredLibrarians;
-    @Getter
-    @Setter
-    private List<Account> filteredAdmins;
+    private List<Account> filteredUsers;
     @Getter
     private List<FilterMeta> filterBy;
     @Getter
@@ -73,27 +60,16 @@ public class UserController implements Serializable {
 
     @PostConstruct
     public void init(){
-        defaults = accountDao.getForRoleName("default");
-        carriers = accountDao.getForRoleName("carrier");
-        librarians = accountDao.getForRoleName("konyvtaros");
-        admins = accountDao.getForRoleName("admin");
-
-        setBorrowedBooks(defaults);
-        setBorrowedBooks(librarians);
-        setBorrowedBooks(admins);
-
-        filteredDefaults = new ArrayList<>(defaults);
-        filteredCarriers = new ArrayList<>(carriers);
-        filteredLibrarians = new ArrayList<>(librarians);
-        filteredAdmins = new ArrayList<>(admins);
-
+        users = accountDao.getAll();
+        filteredUsers = new ArrayList<>(users);
         filterBy = new ArrayList<>();
+        setBorrowedBooks(users);
 
         FacesContext context = FacesContext.getCurrentInstance();
         if(context.getExternalContext().getSessionMap().containsKey("chosenAccountId")){
-            getBooksForAccount(Long.parseLong(context.getExternalContext().getSessionMap().get("chosenAccountId").toString()));
+            chosenAccount = users.stream().filter(u->u.getAccountId() == context.getExternalContext().getSessionMap().get("chosenAccountId")).collect(Collectors.toList()).get(0);
+            setGenresAuthors();
         }
-
     }
 
     public void setBorrowedBooks(List<Account> accounts){
@@ -106,49 +82,29 @@ public class UserController implements Serializable {
     public void showBorrowedBooks(long accountId){
         Map<String,Object> options = new HashMap<String, Object>();
         options.put("modal", true);
-        options.put("width", 640);
+        options.put("width", 800);
         options.put("height", 700);
         options.put("contentWidth", "100%");
         options.put("contentHeight", "100%");
         options.put("headerElement", "customheader");
 
         FacesContext context = FacesContext.getCurrentInstance();
-        NavigationHandler navigationHandler = context.getApplication().getNavigationHandler();
         context.getExternalContext().getSessionMap().put("chosenAccountId", accountId);
 
         PrimeFaces.current().dialog().openDynamic("ViewBorrowedBooks.xhtml", options, null);
 
         init();
     }
-
-    public void getBooksForAccount(long accountId){
-        switch(accountDao.getForAccountId(accountId).getAct().getRoleName()){
-            case "default":
-                for (Account user: defaults)
-                    if(user.getAccountId() == accountId) chosenAccount = user;
-                break;
-            case "carrier":
-                for (Account carrier: carriers)
-                    if(carrier.getAccountId() == accountId) chosenAccount = carrier;
-                break;
-            case "konyvtaros":
-                for (Account librarian: librarians)
-                    if(librarian.getAccountId() == accountId) chosenAccount = librarian;
-                break;
-            case "admin":
-                for (Account admin: admins)
-                    if(admin.getAccountId() == accountId) chosenAccount = admin;
-                break;
-        }
-        setGenresAuthors();
-    }
-    public void setGenresAuthors(){
+    public void setGenresAuthors() {
         chosenAccountsBooks = new ArrayList<>();
-        for (BorrowedBook borrowedBook: chosenAccount.getBooksNotReturnedYet())
+        for (BorrowedBook borrowedBook : chosenAccount.getBooksNotReturnedYet()) {
             chosenAccountsBooks.add(borrowedBook.getBook());
-        for (BorrowedBook borrowedBook: chosenAccount.getBooksReturned())
+            borrowedBook.setCurrentStatus(borrowStatusToBorrowedBookDao.getLatestStatusForBorrowedBookId(borrowedBook.getBorrowedBookId()).getBorrowStatus());
+        }
+        for (BorrowedBook borrowedBook : chosenAccount.getBooksReturned()){
             chosenAccountsBooks.add(borrowedBook.getBook());
-
+            borrowedBook.setCurrentStatus(borrowStatusToBorrowedBookDao.getLatestStatusForBorrowedBookId(borrowedBook.getBorrowedBookId()).getBorrowStatus());
+        }
         for (Book tmpBook: chosenAccountsBooks) {
             tmpBook.setGenres(genreToBookDao.getGenresForBookId(tmpBook.getBookId()));
             tmpBook.setGenresString(tmpBook.getGenres().toString());
@@ -190,7 +146,6 @@ public class UserController implements Serializable {
     public UserController(){
 
     }
-
     public boolean globalFilterFunction(Object value, Object filter, Locale locale) {
         String filterText = (filter == null) ? null : filter.toString().trim().toLowerCase();
         if (LangUtils.isValueBlank(filterText)) {
@@ -199,37 +154,23 @@ public class UserController implements Serializable {
 
         Account account = (Account) value;
         boolean check = account.getAccountId().toString().toLowerCase().contains(filterText)
+                || account.getAct().getRoleName().toLowerCase().contains(filterText)
                 || account.getLoginName().toLowerCase().contains(filterText)
                 || account.getPerson().getFirstName().toLowerCase().contains(filterText)
                 || account.getPerson().getLastName().toLowerCase().contains(filterText)
-                || account.getPerson().getPhoneNumber().toLowerCase().contains(filterText)
+                || account.getPerson().getFirstName().toLowerCase().concat(" ").concat(account.getPerson().getLastName().toLowerCase()).contains(filterText)
+                || account.getPerson().getAddress().toLowerCase().contains(filterText)
                 || account.getPerson().getEmail().toLowerCase().contains(filterText)
-                || account.getPerson().getAddress().toLowerCase().contains(filterText);
+                || account.getPerson().getPhoneNumber().toLowerCase().contains(filterText)
+                || helperController.localDateFilterCheck(account.getPerson().getDateOfBirth(), filterText);
 
         return check;
     }
-
-    public List<Account> getDefaults(){
-        return new ArrayList<Account>(defaults);
+    public List<Account> getUsers(){
+        return new ArrayList<Account>(users);
     }
-    public void setFilteredDefaults(List<Account> filteredDefaults) { this.filteredDefaults = filteredDefaults; }
-    public List<Account> getFilteredDefaults() {
-        return filteredDefaults;
-    }
-
-    public List<Account> getLibrarians(){
-        return new ArrayList<Account>(librarians);
-    }
-    public void setFilteredLibrarians(List<Account> filteredLibrarians) { this.filteredLibrarians = filteredLibrarians; }
-    public List<Account> getFilteredLibrarians() {
-        return filteredLibrarians;
-    }
-
-    public List<Account> getAdmins(){
-        return new ArrayList<Account>(admins);
-    }
-    public void setFilteredAdmins(List<Account> filteredAdmins) { this.filteredAdmins = filteredAdmins; }
-    public List<Account> getFilteredAdmins() {
-        return filteredAdmins;
+    public void setFilteredUsers(List<Account> filteredUsers) { this.filteredUsers = filteredUsers; }
+    public List<Account> getFilteredUsers() {
+        return filteredUsers;
     }
 }

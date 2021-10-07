@@ -38,11 +38,17 @@
                 <p:column headerText="Date of borrow">
                     <h:outputText value="#{booksNotYetReturned.dateOfBorrow}"/>
                 </p:column>
+                <p:column headerText="Date of to be returned">
+                    <h:outputText value="#{booksNotYetReturned.dateToBeReturned}"/>
+                </p:column>
                 <p:column headerText="Genre(s)" filterable="false" style="text-align: left">
                     <h:outputText value="#{booksNotYetReturned.book.genresString}" />
                 </p:column>
                 <p:column headerText="ISBN" filterable="false" style="text-align: left">
                     <h:outputText value="#{booksNotYetReturned.book.isbn}" />
+                </p:column>
+                <p:column headerText="Status" filterable="false" style="text-align: left">
+                    <h:outputText value="#{booksNotYetReturned.currentStatus.borrowStatusName}" />
                 </p:column>
             </p:dataTable>
         </p:tab>

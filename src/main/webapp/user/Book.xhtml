@@ -25,13 +25,13 @@
                 <p:column style="width:2rem">
                     <p:rowToggler/>
                 </p:column>
-                <p:column headerText="Book title" filterable="false">
+                <p:column headerText="Book title" filterMatchMode="contains" filterBy="#{book.bookTitle}">
                     <h:outputText value="#{book.bookTitle}"/>
                 </p:column>
-                <p:column headerText="Author(s)" filterable="false">
+                <p:column headerText="Author(s)" filterMatchMode="contains" filterBy="#{book.authorsString}">
                     <h:outputText value="#{book.authorsString}"/>
                 </p:column>
-                <p:column headerText="Genre(s)" filterable="false">
+                <p:column headerText="Genre(s)" filterMatchMode="contains" filterBy="#{book.genresString}">
                     <h:outputText value="#{book.genresString}"/>
                 </p:column>
                 <p:rowExpansion>

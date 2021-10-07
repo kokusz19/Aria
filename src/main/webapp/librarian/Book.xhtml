@@ -56,31 +56,31 @@
             </div>
           </f:facet>
 
-          <p:column headerText="Book ID" filterable="false" width="5%" style="text-align: right">
+          <p:column headerText="Book ID" filterBy="#{book.bookId}" filterMatchMode="contains" width="5%" style="text-align: right">
             <h:outputText value="#{book.bookId}" />
           </p:column>
-          <p:column headerText="Book name" filterable="false" style="text-align: left">
+          <p:column headerText="Book name" filterBy="#{book.bookTitle}" filterMatchMode="contains"  style="text-align: left">
             <h:outputText value="#{book.bookTitle}" />
           </p:column>
-          <p:column headerText="Author(s)" filterable="false" style="text-align: left">
+          <p:column headerText="Author(s)" filterBy="#{book.authorsString}" filterMatchMode="contains"  style="text-align: left">
             <h:outputText value="#{book.authorsString}" />
           </p:column>
-          <p:column headerText="Genre(s)" filterable="false" style="text-align: left">
+          <p:column headerText="Genre(s)" filterBy="#{book.genresString}" filterMatchMode="contains"  style="text-align: left">
             <h:outputText value="#{book.genresString}" />
           </p:column>
-          <p:column headerText="ISBN" filterable="false" style="text-align: left">
+          <p:column headerText="ISBN" filterBy="#{book.isbn}" filterMatchMode="contains"  style="text-align: left">
             <h:outputText value="#{book.isbn}" />
           </p:column>
-          <p:column headerText="Published at" filterable="false" style="text-align: left">
+          <p:column headerText="Published at" filterBy="#{book.publishedAt}" filterMatchMode="contains"  style="text-align: left">
             <h:outputText value="#{book.publishedAt}" />
           </p:column>
-          <p:column headerText="Max items" filterable="false" style="text-align: left">
+          <p:column headerText="Max items" filterBy="#{book.maxItems}" filterMatchMode="contains"  style="text-align: left">
             <h:outputText value="#{book.maxItems}" />
           </p:column>
-          <p:column headerText="Available items" filterable="false" style="text-align: left">
+          <p:column headerText="Available items" filterBy="#{book.availableItems}" filterMatchMode="contains"  style="text-align: left">
             <h:outputText value="#{book.availableItems}" />
           </p:column>
-          <p:column headerText="Language" filterable="false" style="text-align: left">
+          <p:column headerText="Language" filterBy="#{book.language.languageName}" filterMatchMode="contains" style="text-align: left">
             <h:outputText value="#{book.language.languageName}" />
           </p:column>
 

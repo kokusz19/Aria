@@ -2,6 +2,7 @@ package aria.web.librarian;
 
 import aria.domain.dao.*;
 import aria.domain.ejb.Account;
+import aria.domain.ejb.Act;
 import aria.domain.ejb.Book;
 import aria.domain.ejb.BorrowedBook;
 import aria.web.HelperController;
@@ -57,6 +58,9 @@ public class UserController implements Serializable {
     @Getter
     @Setter
     private List<Book> chosenAccountsBooks;
+    @Getter
+    @Setter
+    private List<Act> allRoles;
 
     @PostConstruct
     public void init(){
@@ -64,6 +68,7 @@ public class UserController implements Serializable {
         filteredUsers = new ArrayList<>(users);
         filterBy = new ArrayList<>();
         setBorrowedBooks(users);
+        allRoles = actDao.getAllActs();
 
         FacesContext context = FacesContext.getCurrentInstance();
         if(context.getExternalContext().getSessionMap().containsKey("chosenAccountId")){

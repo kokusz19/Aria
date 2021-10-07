@@ -5,6 +5,7 @@ import aria.domain.dao.BorrowStatusDao;
 import aria.domain.dao.BorrowStatusToBorrowedBookDao;
 import aria.domain.dao.BorrowedBookDao;
 import aria.domain.ejb.Book;
+import aria.domain.ejb.BorrowStatus;
 import aria.domain.ejb.BorrowStatusToBorrowedBook;
 import aria.domain.ejb.BorrowedBook;
 import aria.web.HelperController;
@@ -53,6 +54,9 @@ public class BorrowedBookController implements Serializable {
     @Setter
     private List<BorrowedBook> filteredBorrowedBooks;
     @Getter
+    @Setter
+    private List<BorrowStatus> allStatus;
+    @Getter
     private List<FilterMeta> filterBy;
 
     @PostConstruct
@@ -65,6 +69,7 @@ public class BorrowedBookController implements Serializable {
         allBorrowedBook = borrowedBookDao.getForAccountId(userId);
         filterBy = new ArrayList<>();
         filteredBorrowedBooks = new ArrayList<>(allBorrowedBook);
+        allStatus = borrowStatusDao.getBorrowStatuses();
 
         List<Book> books = new ArrayList<>();
         for (BorrowedBook borrowedBook: allBorrowedBook) {

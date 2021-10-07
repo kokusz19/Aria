@@ -47,13 +47,13 @@
                     </f:facet>
                     <h:outputText value="#{allBorrowedBook.account.act.roleName}"/>
                 </p:column>
-                <p:column headerText="Date of borrow" filterBy="#{allBorrowedBook.dateOfBorrow}">
+                <p:column headerText="Date of borrow" filterMatchMode="contains" filterBy="#{allBorrowedBook.dateOfBorrow}">
                     <h:outputText value="#{allBorrowedBook.dateOfBorrow}"/>
                 </p:column>
-                <p:column headerText="Date to be returned" filterBy="#{allBorrowedBook.dateToBeReturned}">
+                <p:column headerText="Date to be returned" filterMatchMode="contains" filterBy="#{allBorrowedBook.dateToBeReturned}">
                     <h:outputText value="#{allBorrowedBook.dateToBeReturned}"/>
                 </p:column>
-                <p:column headerText="Date of return" filterBy="#{allBorrowedBook.dateOfReturn}">
+                <p:column headerText="Date of return" filterMatchMode="contains" filterBy="#{allBorrowedBook.dateOfReturn}">
                     <h:outputText value="#{allBorrowedBook.dateOfReturn}"/>
                 </p:column>
                 <p:column headerText="Status" field="status" filterBy="#{allBorrowedBook.currentStatus.borrowStatusName}">

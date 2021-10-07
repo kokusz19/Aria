@@ -42,13 +42,13 @@
                 <p:column headerText="E-mail" filterBy="#{myBorrowedBook.account.person.email}">
                     <h:outputText value="#{myBorrowedBook.account.person.email}"/>
                 </p:column>
-                <p:column headerText="Phone number" filterBy="#{myBorrowedBook.account.person.phoneNumber}">
+                <p:column headerText="Phone number" filterBy="#{myBorrowedBook.account.person.phoneNumber.replace('(', '').replace(')', '').replace('-', '').replace(' ', '')}">
                     <h:outputText value="#{myBorrowedBook.account.person.phoneNumber}"/>
                 </p:column>
                 <p:column headerText="Book name" style="text-align: left" filterBy="#{myBorrowedBook.book.bookTitle}">
                     <h:outputText value="#{myBorrowedBook.book.bookTitle}" />
                 </p:column>
-                <p:column headerText="Date of borrow" filterBy="#{myBorrowedBook.dateOfBorrow}">
+                <p:column headerText="Date of borrow" filterMatchMode="contains" filterBy="#{myBorrowedBook.dateOfBorrow}">
                     <h:outputText value="#{myBorrowedBook.dateOfBorrow}"/>
                 </p:column>
                 <p:column headerText="Status" field="status" filterBy="#{myBorrowedBook.currentStatus.borrowStatusName}">

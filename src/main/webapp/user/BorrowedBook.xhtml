@@ -27,28 +27,34 @@
                 <p:column style="width:2rem">
                     <p:rowToggler/>
                 </p:column>
-                <p:column headerText="Book name" filterable="false" style="text-align: left">
+                <p:column headerText="Book name"  filterMatchMode="contains" filterBy="#{allBorrowedBook.book.bookTitle}" style="text-align: left">
                     <h:outputText value="#{allBorrowedBook.book.bookTitle}" />
                 </p:column>
-                <p:column headerText="Date of borrow">
+                <p:column headerText="Date of borrow" filterMatchMode="contains" filterBy="#{allBorrowedBook.dateOfBorrow}">
                     <h:outputText value="#{allBorrowedBook.dateOfBorrow}"/>
                 </p:column>
-                <p:column headerText="Date to be returned">
+                <p:column headerText="Date to be returned" filterMatchMode="contains" filterBy="#{allBorrowedBook.dateToBeReturned}">
                     <h:outputText value="#{allBorrowedBook.dateToBeReturned}"/>
                 </p:column>
-                <p:column headerText="Date of return">
+                <p:column headerText="Date of return" filterMatchMode="contains" filterBy="#{allBorrowedBook.dateOfReturn}">
                     <h:outputText value="#{allBorrowedBook.dateOfReturn}"/>
                 </p:column>
-                <p:column headerText="Author(s)" filterable="false" style="text-align: left">
+                <p:column headerText="Author(s)" filterBy="#{allBorrowedBook.book.authorsString}" filterMatchMode="contains" style="text-align: left">
                     <h:outputText value="#{allBorrowedBook.book.authorsString}" />
                 </p:column>
-                <p:column headerText="Genre(s)" filterable="false" style="text-align: left">
+                <p:column headerText="Genre(s)" filterBy="#{allBorrowedBook.book.genresString}" filterMatchMode="contains" style="text-align: left">
                     <h:outputText value="#{allBorrowedBook.book.genresString}" />
                 </p:column>
-                <p:column headerText="ISBN" filterable="false" style="text-align: left">
+                <p:column headerText="ISBN" filterMatchMode="contains" filterBy="#{allBorrowedBook.book.isbn}" style="text-align: left">
                     <h:outputText value="#{allBorrowedBook.book.isbn}" />
                 </p:column>
-                <p:column headerText="Status" filterable="false" style="text-align: left">
+                <p:column headerText="Status" field="status" filterBy="#{allBorrowedBook.currentStatus.borrowStatusName}" style="text-align: left">
+                    <f:facet name="filter">
+                        <p:selectOneMenu onchange="PF('borrowedBookTable').filter()" converter="omnifaces.SelectItemsConverter">
+                            <f:selectItem itemLabel="All" itemValue="#{null}" noSelectionOption="true"/>
+                            <f:selectItems value="#{userBorrowedBookController.allStatus}" var="status" itemValue="#{status.borrowStatusName}" itemLabel="#{status.borrowStatusName}"/>
+                        </p:selectOneMenu>
+                    </f:facet>
                     <h:outputText value="#{allBorrowedBook.currentStatus.borrowStatusName}" />
                 </p:column>
                 <p:rowExpansion>

@@ -23,19 +23,25 @@
                 <p:column style="width:2rem" filterable="false">
                     <p:rowToggler/>
                 </p:column>
-                <p:column headerText="User ID" filterable="false">
+                <p:column style="width:5rem" headerText="User ID"  filterBy="#{user.accountId}" filterMatchMode="contains">
                     <h:outputText value="#{user.accountId}"/>
                 </p:column>
-                <p:column headerText="Login name" filterable="false">
+                <p:column headerText="Login name"  filterBy="#{user.loginName}" filterMatchMode="contains">
                     <h:outputText value="#{user.loginName}"/>
                 </p:column>
-                <p:column headerText="First name" filterable="false">
+                <p:column headerText="First name"  filterBy="#{user.person.firstName}" filterMatchMode="contains">
                     <h:outputText value="#{user.person.firstName}"/>
                 </p:column>
-                <p:column headerText="Last name" filterable="false">
+                <p:column headerText="Last name"  filterBy="#{user.person.lastName}" filterMatchMode="contains">
                     <h:outputText value="#{user.person.lastName}"/>
                 </p:column>
-                <p:column headerText="Role" filterable="false">
+                <p:column headerText="Role" field="roleName" filterBy="#{user.act.roleName}" filterMatchMode="exact">
+                    <f:facet name="filter">
+                        <p:selectOneMenu onchange="PF('userTable').filter()" converter="omnifaces.SelectItemsConverter">
+                            <f:selectItem itemLabel="All" itemValue="#{null}" noSelectionOption="true"/>
+                            <f:selectItems value="#{userController.allRoles}" var="role" itemValue="#{role.roleName}" itemLabel="#{role.roleName}"/>
+                        </p:selectOneMenu>
+                    </f:facet>
                     <h:outputText value="#{user.act.roleName}"/>
                 </p:column>
                 <p:rowExpansion>

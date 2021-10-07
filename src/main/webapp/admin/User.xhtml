@@ -16,7 +16,7 @@
                          globalFilterFunction="#{userController.globalFilterFunction}">
                 <f:facet name="header">
                     <span>Overview</span>
-                    <p:inputText onkeyup="PF('userTable').filter()" style="width:300px"
+                    <p:inputText id="globalFilter" onkeyup="PF('userTable').filter()" style="width:300px"
                                  placeholder="Search all fields using global function" />
                 </f:facet>
 

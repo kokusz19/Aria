@@ -2,17 +2,15 @@ package aria.web.user;
 
 import aria.domain.dao.*;
 import aria.domain.ejb.*;
+import aria.web.HelperController;
 import lombok.Setter;
 import lombok.Getter;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.util.LangUtils;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.SessionScoped;
-import javax.faces.application.FacesMessage;
-import javax.faces.application.NavigationHandler;
 import javax.faces.bean.ManagedBean;
-import javax.faces.context.FacesContext;
+import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -20,7 +18,7 @@ import java.util.List;
 import java.util.Locale;
 
 @ManagedBean(name = "userBookController", eager = true)
-@SessionScoped
+@ViewScoped
 public class BookController implements Serializable{
 
     @Inject
@@ -35,8 +33,14 @@ public class BookController implements Serializable{
     GenreToBookDao genreToBookDao;
     @Inject
     AuthorToBookDao authorToBookDao;
+    @Inject
+    HelperController helperController;
 
+    @Getter
+    @Setter
     private List<Book> books;
+    @Getter
+    @Setter
     private List<Book> filteredBooks;
     @Getter
     private List<FilterMeta> filterBy;
@@ -57,7 +61,7 @@ public class BookController implements Serializable{
         allAuthors = authorDao.getAuthors();
         allLanguages = languageDao.getLanguages();
 
-        books = new ArrayList<>(bookDao.getBooks());
+        books = bookDao.getBooks();
         for (Book book: books) {
             book.setGenres(genreToBookDao.getGenresForBookId(book.getBookId()));
             book.setGenresString(book.getGenres().toString());
@@ -69,19 +73,8 @@ public class BookController implements Serializable{
             book.setAuthorsString(book.getAuthorsString().replace("[", ""));
             book.setAuthorsString(book.getAuthorsString().replace("]", ""));
         }
-
         filterBy = new ArrayList<>();
         filteredBooks = new ArrayList<>(books);
-    }
-
-
-
-    public BookController() {
-    }
-
-    public List<Book> getBooks(){
-        init();
-        return new ArrayList<>(books);
     }
 
     public boolean globalFilterFunction(Object value, Object filter, Locale locale) {
@@ -91,18 +84,16 @@ public class BookController implements Serializable{
         }
 
         Book book = (Book) value;
-        boolean check = book.getAuthors().toString().trim().toLowerCase().contains(filterText)
+        boolean check = book.getBookTitle().toLowerCase().trim().contains(filterText)
+                || book.getAuthors().toString().trim().toLowerCase().contains(filterText)
                 || book.getBookId().toString().toLowerCase().trim().contains(filterText)
-                || book.getBookTitle().toLowerCase().trim().contains(filterText)
                 || book.getGenres().toString().trim().toLowerCase().contains(filterText)
                 || book.getIsbn().toString().toLowerCase().trim().contains(filterText)
-                || book.getLanguage().getLanguageName().toLowerCase().trim().contains(filterText);
-
+                || book.getLanguage().getLanguageName().toLowerCase().trim().contains(filterText)
+                || helperController.localDateFilterCheck(book.getPublishedAt(), filterText);
         return check;
     }
 
-    public void setFilteredBooks(List<Book> filteredBooks) { this.filteredBooks = filteredBooks; }
-    public List<Book> getFilteredBooks() {
-        return filteredBooks;
+    public BookController() {
     }
 }

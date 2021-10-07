@@ -12,58 +12,52 @@
             <ui:include src="/PageHeader.xhtml"/>
             <p:growl id="msg"/>
 
-            <p:dataTable var="book" value="#{userBookController.books}" widgetVar="bookTable"
-                         emptyMessage="No books found with given criteria"
-                         filteredValue="#{userBookController.filteredBooks}"
-                         globalFilterFunction="#{userBookController.globalFilterFunction}">
+            <p:dataTable var="book" value="#{userBookController.books}"
+                         widgetVar="bookTable"
+                         globalFilterFunction="#{userBookController.globalFilterFunction}"
+                         filteredValue="#{userBookController.filteredBooks}">
                 <f:facet name="header">
-                    Books
-                    <div class="p-d-flex p-jc-end">
-                        <h:outputText value="Books"/>
-                        <p:inputText id="globalFilter" onkeyup="PF('bookTable').filter()" style="width:300px"
-                                     placeholder="Search all fields using global function" />
-                    </div>
+                    <span>Books</span>
+                    <p:inputText id="globalFilter" onkeyup="PF('bookTable').filter()" style="width:300px;"
+                                  placeholder="Search all fields using global function" />
                 </f:facet>
 
                 <p:column style="width:2rem">
                     <p:rowToggler/>
                 </p:column>
-                <p:column headerText="Book name" filterable="false" style="text-align: left">
-                    <h:outputText value="#{book.bookTitle}" />
+                <p:column headerText="Book title" filterable="false">
+                    <h:outputText value="#{book.bookTitle}"/>
                 </p:column>
-                <p:column headerText="Author(s)" filterable="false" style="text-align: left">
-                    <h:outputText value="#{book.authorsString}" />
+                <p:column headerText="Author(s)" filterable="false">
+                    <h:outputText value="#{book.authorsString}"/>
                 </p:column>
-                <p:column headerText="Genre(s)" filterable="false" style="text-align: left">
-                    <h:outputText value="#{book.genresString}" />
+                <p:column headerText="Genre(s)" filterable="false">
+                    <h:outputText value="#{book.genresString}"/>
                 </p:column>
                 <p:rowExpansion>
                     <p:dataTable value="book">
-                        <p:column headerText="Book ID" filterable="false" width="5%" style="text-align: right">
-                            <h:outputText value="#{book.bookId}" />
+                        <p:column headerText="Book ID" filterable="false">
+                            <h:outputText value="#{book.bookId}" filterable="false"/>
                         </p:column>
-                        <p:column headerText="ISBN" filterable="false" style="text-align: left">
-                            <h:outputText value="#{book.isbn}" />
+                        <p:column headerText="ISBN" filterable="false">
+                            <h:outputText value="#{book.isbn}" filterable="false"/>
                         </p:column>
-                        <p:column headerText="Published at" filterable="false" style="text-align: left">
-                            <h:outputText value="#{book.publishedAt}" />
+                        <p:column headerText="Published at" filterable="false">
+                            <h:outputText value="#{book.publishedAt}" filterable="false"/>
                         </p:column>
-                        <p:column headerText="Max items" filterable="false" style="text-align: left">
-                            <h:outputText value="#{book.maxItems}" />
+                        <p:column headerText="Max items" filterable="false">
+                            <h:outputText value="#{book.maxItems}" filterable="false"/>
                         </p:column>
-                        <p:column headerText="Available items" filterable="false" style="text-align: left">
-                            <h:outputText value="#{book.availableItems}" />
+                        <p:column headerText="Available items" filterable="false">
+                            <h:outputText value="#{book.availableItems}"/>
                         </p:column>
-                        <p:column style="width:2rem">
-                            <p:linkButton icon="pi pi-shopping-cart" href="BorrowBook.xhtml" style="margin-right: 20px" >
-                                <f:param name="bookId" value="#{book.bookId}"/>
-                            </p:linkButton>
+                        <p:column>
+                            <p:linkButton outcome="BorrowBook.xhtml?bookId#{book.bookId}" icon="pi pi-shopping-cart"/>
                         </p:column>
                     </p:dataTable>
                 </p:rowExpansion>
-
                 <f:facet name="footer">
-                    <span class="p-text-bold">In total there are #{fn:length(userBookController.books)} book(s).</span>
+                    <span class="p-text-bold">In total there are #{fn:length(bookController.books)} book(s).</span>
                 </f:facet>
             </p:dataTable>
         </f:view>

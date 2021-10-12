@@ -131,26 +131,38 @@ public class BorrowBookController implements Serializable{
     }
 
     public void notify(long bookId){
+        Book tmpBook = bookDao.getForBookId(bookId);
+        List<Book> tmpListBook = new ArrayList<>();
+        tmpListBook.add(tmpBook);
+        helperController.generateStrings(tmpListBook);
+
         long accountId = Long.parseLong(FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("id").toString());
+        List<Notification> ownNotifications = notificationDao.getForAccountId(accountId);
 
-        Notification notification = new Notification();
-        notification.setBook(bookDao.getForBookId(bookId));
+        if (ownNotifications.stream().filter(n -> n.getBook().getBookId() == bookId).count() == 0) {
 
-        List<Book> bookList = new ArrayList<>();
-        bookList.add(notification.getBook());
-        helperController.generateStrings(bookList);
+            Notification notification = new Notification();
+            notification.setBook(bookDao.getForBookId(bookId));
+            notification.setAccount(accountDao.getForAccountId(accountId));
 
-        notification.setAccount(accountDao.getForAccountId(accountId));
+            List<Book> bookList = new ArrayList<>();
+            bookList.add(notification.getBook());
+            helperController.generateStrings(bookList);
 
-        notificationDao.createNotification(notification);
+            notificationDao.createNotification(notification);
 
-        String detail = "Notification has been set for " + notification.getBook().getAuthorsString() + " - " + notification.getBook().getBookTitle() + ".";
-        FacesContext context = FacesContext.getCurrentInstance();
-        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Notification", detail));
 
-        context.getExternalContext().getFlash().setKeepMessages(true);
+            String detail = "Notification has been set for " + notification.getBook().getAuthorsString() + " - " + notification.getBook().getBookTitle() + ".";
+            FacesContext context = FacesContext.getCurrentInstance();
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Notification", detail));
 
-        NavigationHandler navigationHandler = context.getApplication().getNavigationHandler();
-        navigationHandler.handleNavigation(context, null, "Book.xhtml?faces-redirect=true&includeViewParams=true");
+            context.getExternalContext().getFlash().setKeepMessages(true);
+
+            NavigationHandler navigationHandler = context.getApplication().getNavigationHandler();
+            navigationHandler.handleNavigation(context, null, "Book.xhtml?faces-redirect=true&includeViewParams=true");
+        } else{
+            String detail = "A notification has already been set for " + tmpBook.getAuthorsString() + " - " + tmpBook.getBookTitle() + ".";
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "Notification", detail));
+        }
     }
 }

@@ -76,7 +76,7 @@
 
             <p:row>
                 <p:column colspan="2">
-                    <p:commandButton action="#{borrowBookController.borrowBook}" value="Borrow book" rendered="#{borrowBookController.exist}" />
+                    <p:commandButton action="#{borrowBookController.borrowBook}" value="Borrow book" rendered="#{borrowBookController.exist}" update="form:growl"/>
                     <p:commandButton action="#{borrowBookController.notify(borrowBookController.bookId)}" value="Notify me!"  icon="pi pi-flag" update="form:growl" rendered="#{!borrowBookController.exist}"/>
                 </p:column>
             </p:row>

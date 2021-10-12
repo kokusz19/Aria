@@ -1,10 +1,7 @@
 package aria.web.user;
 
 import aria.domain.dao.*;
-import aria.domain.ejb.Book;
-import aria.domain.ejb.BorrowStatusToBorrowedBook;
-import aria.domain.ejb.BorrowedBook;
-import aria.domain.ejb.Notification;
+import aria.domain.ejb.*;
 import aria.web.HelperController;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,6 +21,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @ManagedBean(name = "borrowBookController", eager = true)
 @ViewScoped
@@ -92,17 +90,8 @@ public class BorrowBookController implements Serializable{
             borrowedBook.setAccount(accountDao.getForAccountId(accountId));
             borrowedBook.setBook(book);
             borrowedBook.setDateOfBorrow(LocalDateTime.now());
-            borrowedBookDao.createBorrowedBook(borrowedBook);
 
             book.setAvailableItems(book.getAvailableItems()-1);
-            bookDao.updateBook(book);
-
-            if(!notificationDao.getForAccountId(accountId).isEmpty()) {
-                for (Notification notification: notificationDao.getForAccountId(accountId))
-                    if (notification.getBook().getBookId() == bookId) {
-                        notificationDao.removeNotification(notification);
-                    }
-            }
 
             BorrowStatusToBorrowedBook borrowStatusToBorrowedBook = new BorrowStatusToBorrowedBook();
             borrowStatusToBorrowedBook.setBorrowedBook(borrowedBook);
@@ -111,14 +100,33 @@ public class BorrowBookController implements Serializable{
             else if(pickUpOrDeliver.equals("2"))
                 borrowStatusToBorrowedBook.setBorrowStatus(borrowStatusDao.getBorrowStatus(3));
             borrowStatusToBorrowedBook.setUpdateDate(LocalDateTime.now());
-            borrowStatusToBorrowedBookDao.createBorrowStatusToBorrowedBook(borrowStatusToBorrowedBook);
 
-            String detail = borrowedBook.getBook().getAuthorsString() + " - " + borrowedBook.getBook().getBookTitle() + " has been borrowed.";
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Borrowing", detail));
+            List<BorrowedBook> forAccount = borrowedBookDao.getForAccountId(accountId).stream().filter(e -> e.getBook().getBookId() == bookId).collect(Collectors.toList());
+            for (BorrowedBook bb: forAccount) {
+                BorrowStatus tmpStat = borrowStatusToBorrowedBookDao.getLatestStatusForBorrowedBookId(bb.getBorrowedBookId()).getBorrowStatus();
+                bb.setCurrentStatus(tmpStat);
+            }
+            long allClosed = forAccount.stream().filter(x->x.getCurrentStatus().getBorrowStatusId() == 7 || x.getCurrentStatus().getBorrowStatusId() == 8 || x.getCurrentStatus().getBorrowStatusId() == 9).count();
+            if(forAccount.size() == 0 || forAccount.size() == allClosed){
+                borrowedBookDao.createBorrowedBook(borrowedBook);
+                bookDao.updateBook(book);
+                if(!notificationDao.getForAccountId(accountId).isEmpty())
+                    for (Notification notification: notificationDao.getForAccountId(accountId))
+                        if (notification.getBook().getBookId() == bookId)
+                            notificationDao.removeNotification(notification);
+                borrowStatusToBorrowedBookDao.createBorrowStatusToBorrowedBook(borrowStatusToBorrowedBook);
 
-            context.getExternalContext().getFlash().setKeepMessages(true);
+                String detail = borrowedBook.getBook().getAuthorsString() + " - " + borrowedBook.getBook().getBookTitle() + " has been borrowed.";
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Borrowing", detail));
 
-            navigationHandler.handleNavigation(context, null, "Book.xhtml?faces-redirect=true&includeViewParams=true");
+                context.getExternalContext().getFlash().setKeepMessages(true);
+
+                navigationHandler.handleNavigation(context, null, "Book.xhtml?faces-redirect=true&includeViewParams=true");
+            } else{
+                String detail = "You already have " + borrowedBook.getBook().getAuthorsString() + " - " + borrowedBook.getBook().getBookTitle();
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "Borrowing", detail));
+            }
+
         }
     }
 

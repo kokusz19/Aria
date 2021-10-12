@@ -18,6 +18,7 @@ import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -62,6 +63,7 @@ public class BorrowedBookController implements Serializable {
     public void init(){
         allBorrowedBook = borrowedBookDao.getBorrowedBooks();
         for (BorrowedBook borrowedBook: allBorrowedBook) {
+            helperController.setStringBorrowedBookDates(borrowedBook);
             borrowedBook.setCurrentStatus(borrowStatusToBorrowedBookDao.getLatestStatusForBorrowedBookId(borrowedBook.getBorrowedBookId()).getBorrowStatus());
         }
 
@@ -82,7 +84,7 @@ public class BorrowedBookController implements Serializable {
         for (BorrowedBook borrowedBook: allBorrowedBook) {
             books.add(borrowedBook.getBook());
         }
-        bookController.generateStrings(books);
+        helperController.generateStrings(books);
     }
     public BorrowedBookController(){
 
@@ -113,9 +115,9 @@ public class BorrowedBookController implements Serializable {
                 || borrowedBook.getBook().getLanguage().getLanguageName().toLowerCase().contains(filterText)
                 || borrowedBook.getBook().getBookId().toString().toLowerCase().contains(filterText)
                 || borrowedBook.getCurrentStatus().getBorrowStatusName().toLowerCase().contains(filterText)
-                || helperController.localDateFilterCheck(borrowedBook.getDateOfBorrow(), filterText)
-                || helperController.localDateFilterCheck(borrowedBook.getDateOfReturn(), filterText)
-                || helperController.localDateFilterCheck(borrowedBook.getDateToBeReturned(), filterText);
+                || helperController.localDateTimeConverter(borrowedBook.getDateOfBorrow(), false).contains(filterText)
+                || helperController.localDateTimeConverter(borrowedBook.getDateOfReturn(), false).contains(filterText)
+                || helperController.localDateTimeConverter(borrowedBook.getDateToBeReturned(), false).contains(filterText);
 
         return check;
     }
@@ -129,12 +131,12 @@ public class BorrowedBookController implements Serializable {
         BorrowedBook borrowedBook = borrowedBookDao.getForBorrowedBookId(borrowedBookId);
 
         BorrowStatusToBorrowedBook tmp = new BorrowStatusToBorrowedBook();
-        tmp.setUpdateDate(LocalDate.now());
+        tmp.setUpdateDate(LocalDateTime.now());
         tmp.setBorrowedBook(borrowedBook);
 
         if(actionId == 1){
             // Hand over to user
-            borrowedBook.setDateToBeReturned(LocalDate.now().plusWeeks(2));
+            borrowedBook.setDateToBeReturned(LocalDateTime.now().plusWeeks(2));
             borrowedBookDao.updateBorrowedBook(borrowedBook);
             tmp.setBorrowStatus(borrowStatusDao.getBorrowStatus(2));
         } else if(actionId == 2){
@@ -152,7 +154,7 @@ public class BorrowedBookController implements Serializable {
             tmp.setBorrowStatus(borrowStatusDao.getBorrowStatus(4));
         } else if(actionId == 4){
             // Book returned
-            borrowedBook.setDateOfReturn(LocalDate.now());
+            borrowedBook.setDateOfReturn(LocalDateTime.now());
             borrowedBookDao.updateBorrowedBook(borrowedBook);
             tmp.setBorrowStatus(borrowStatusDao.getBorrowStatus(9));
 

@@ -7,6 +7,7 @@ import org.hibernate.annotations.Fetch;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 
 @Entity
@@ -29,7 +30,7 @@ public class BorrowStatusToBorrowedBook {
     @Getter
     @Setter
     @Column(name = "updateDate")
-    private LocalDate updateDate;
+    private LocalDateTime updateDate;
 }
 
 

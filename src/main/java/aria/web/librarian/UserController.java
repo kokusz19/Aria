@@ -167,7 +167,7 @@ public class UserController implements Serializable {
                 || account.getPerson().getAddress().toLowerCase().contains(filterText)
                 || account.getPerson().getEmail().toLowerCase().contains(filterText)
                 || account.getPerson().getPhoneNumber().toLowerCase().contains(filterText)
-                || helperController.localDateFilterCheck(account.getPerson().getDateOfBirth(), filterText);
+                || helperController.localDateTimeConverter(account.getPerson().getDateOfBirth(), false).contains(filterText);
 
         return check;
     }

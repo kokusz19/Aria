@@ -2,6 +2,7 @@ package aria.web.carrier;
 
 import aria.domain.dao.*;
 import aria.domain.ejb.*;
+import aria.web.HelperController;
 import aria.web.librarian.BookController;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -39,7 +41,7 @@ public class DeliveryController implements Serializable{
     @Inject
     AccountDao accountDao;
     @Inject
-    BookController bookController;
+    HelperController helperController;
 
     @Getter
     @Setter
@@ -47,6 +49,9 @@ public class DeliveryController implements Serializable{
     @Getter
     @Setter
     private List<BorrowedBook> myBorrowedBook;
+    @Getter
+    @Setter
+    private List<Book> myBooks;
     @Getter
     @Setter
     private List<BorrowedBook> filteredAllBorrowedBooks;
@@ -80,24 +85,29 @@ public class DeliveryController implements Serializable{
         List<Book> books = new ArrayList<>();
         allBorrowedBook = borrowedBookDao.getBorrowedBooks();
         for (BorrowedBook borrowedBook: allBorrowedBook) {
+            helperController.setStringBorrowedBookDates(borrowedBook);
             borrowedBook.setCurrentStatus(borrowStatusToBorrowedBookDao.getLatestStatusForBorrowedBookId(borrowedBook.getBorrowedBookId()).getBorrowStatus());
             books.add(borrowedBook.getBook());
         }
-        bookController.generateStrings(books);
+        helperController.generateStrings(books);
         allBorrowedBook = allBorrowedBook.stream().filter(b -> b.getCurrentStatus().getBorrowStatusId() == 4 || b.getCurrentStatus().getBorrowStatusId() == 5 || b.getCurrentStatus().getBorrowStatusId() == 6 || b.getCurrentStatus().getBorrowStatusId() == 10).collect(Collectors.toList());
         filteredAllBorrowedBooks = new ArrayList<>(allBorrowedBook);
         carriedBooks = carriedBookDao.getAllCarriedBooks();
         carriers = new TreeMap<Long, Account>();
         myCarriers = new TreeMap<Long, Account>();
         myBorrowedBook = new ArrayList<>();
+        myBooks = new ArrayList<>();
         for (CarriedBook tmpCarried: carriedBooks) {
             carriers.put(tmpCarried.getBorrowedBook().getBorrowedBookId(), tmpCarried.getCarrier());
             if(tmpCarried.getCarrier().getAccountId() == id) {
                 myCarriers.put(tmpCarried.getBorrowedBook().getBorrowedBookId(), tmpCarried.getCarrier());
+                helperController.setStringBorrowedBookDates(tmpCarried.getBorrowedBook());
                 tmpCarried.getBorrowedBook().setCurrentStatus(borrowStatusToBorrowedBookDao.getLatestStatusForBorrowedBookId(tmpCarried.getBorrowedBook().getBorrowedBookId()).getBorrowStatus());
                 myBorrowedBook.add(tmpCarried.getBorrowedBook());
+                myBooks.add(tmpCarried.getBorrowedBook().getBook());
             }
         }
+        helperController.generateStrings(myBooks);
 
         allStatuses = borrowStatusDao.getBorrowStatuses();
         allStatuses = allStatuses.stream().filter((s -> s.getBorrowStatusId() == 4 || s.getBorrowStatusId() == 5 || s.getBorrowStatusId() == 6 || s.getBorrowStatusId() == 10)).collect(Collectors.toList());
@@ -107,7 +117,7 @@ public class DeliveryController implements Serializable{
         BorrowedBook borrowedBook = borrowedBookDao.getForBorrowedBookId(borrowedBookId);
 
         BorrowStatusToBorrowedBook tmp = new BorrowStatusToBorrowedBook();
-        tmp.setUpdateDate(LocalDate.now());
+        tmp.setUpdateDate(LocalDateTime.now());
         tmp.setBorrowedBook(borrowedBook);
 
         if(actionId == 1){
@@ -122,7 +132,7 @@ public class DeliveryController implements Serializable{
         } else if(actionId == 2){
             // Delivered
             tmp.setBorrowStatus(borrowStatusDao.getBorrowStatus(6));
-            borrowedBook.setDateToBeReturned(LocalDate.now().plusWeeks(2));
+            borrowedBook.setDateToBeReturned(LocalDateTime.now().plusWeeks(2));
             borrowedBookDao.updateBorrowedBook(borrowedBook);
         } else if(actionId == 3){
             // Could not be delivered
@@ -152,7 +162,10 @@ public class DeliveryController implements Serializable{
                 || borrowedBook.getBook().getIsbn().toString().toLowerCase().contains(filterText)
                 || borrowedBook.getBook().getLanguage().getLanguageName().toLowerCase().contains(filterText)
                 || borrowedBook.getBook().getBookId().toString().toLowerCase().contains(filterText)
-                || borrowedBook.getCurrentStatus().getBorrowStatusName().toLowerCase().contains(filterText);
+                || borrowedBook.getCurrentStatus().getBorrowStatusName().toLowerCase().contains(filterText)
+                || helperController.localDateTimeConverter(borrowedBook.getDateOfBorrow(), false).contains(filterText)
+                || helperController.localDateTimeConverter(borrowedBook.getDateOfReturn(), false).contains(filterText)
+                || helperController.localDateTimeConverter(borrowedBook.getDateToBeReturned(), false).contains(filterText);
 
         if(carriers.containsKey(borrowedBook.getBorrowedBookId())){
             check = check || carriers.get(borrowedBook.getBorrowedBookId()).getPerson().getFirstName().toLowerCase().contains(filterText)

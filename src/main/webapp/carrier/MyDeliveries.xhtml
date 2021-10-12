@@ -48,8 +48,8 @@
                 <p:column headerText="Book name" style="text-align: left" filterBy="#{myBorrowedBook.book.bookTitle}">
                     <h:outputText value="#{myBorrowedBook.book.bookTitle}" />
                 </p:column>
-                <p:column headerText="Date of borrow" filterMatchMode="contains" filterBy="#{myBorrowedBook.dateOfBorrow}">
-                    <h:outputText value="#{myBorrowedBook.dateOfBorrow}"/>
+                <p:column headerText="Date of borrow" filterMatchMode="contains" filterBy="#{allBorrowedBook.stringDateOfBorrow}">
+                    <h:outputText value="#{myBorrowedBook.stringDateOfBorrow}"/>
                 </p:column>
                 <p:column headerText="Status" field="status" filterBy="#{myBorrowedBook.currentStatus.borrowStatusName}">
                     <f:facet name="filter">

@@ -30,14 +30,14 @@
                 <p:column headerText="Book name"  filterMatchMode="contains" filterBy="#{allBorrowedBook.book.bookTitle}" style="text-align: left">
                     <h:outputText value="#{allBorrowedBook.book.bookTitle}" />
                 </p:column>
-                <p:column headerText="Date of borrow" filterMatchMode="contains" filterBy="#{allBorrowedBook.dateOfBorrow}">
-                    <h:outputText value="#{allBorrowedBook.dateOfBorrow}"/>
+                <p:column headerText="Date of borrow" filterMatchMode="contains" filterBy="#{allBorrowedBook.stringDateOfBorrow}">
+                    <h:outputText value="#{allBorrowedBook.stringDateOfBorrow}"/>
                 </p:column>
-                <p:column headerText="Date to be returned" filterMatchMode="contains" filterBy="#{allBorrowedBook.dateToBeReturned}">
-                    <h:outputText value="#{allBorrowedBook.dateToBeReturned}"/>
+                <p:column headerText="Date to be returned" filterMatchMode="contains" filterBy="#{allBorrowedBook.stringDateToBeReturned}">
+                    <h:outputText value="#{allBorrowedBook.stringDateToBeReturned}"/>
                 </p:column>
-                <p:column headerText="Date of return" filterMatchMode="contains" filterBy="#{allBorrowedBook.dateOfReturn}">
-                    <h:outputText value="#{allBorrowedBook.dateOfReturn}"/>
+                <p:column headerText="Date of return" filterMatchMode="contains" filterBy="#{allBorrowedBook.stringDateOfReturn}">
+                    <h:outputText value="#{allBorrowedBook.stringDateOfReturn}"/>
                 </p:column>
                 <p:column headerText="Author(s)" filterBy="#{allBorrowedBook.book.authorsString}" filterMatchMode="contains" style="text-align: left">
                     <h:outputText value="#{allBorrowedBook.book.authorsString}" />

@@ -82,7 +82,7 @@ public class BookController implements Serializable{
 
         books = new ArrayList<>(bookDao.getBooks());
 
-        generateStrings(books);
+        helperController.generateStrings(books);
 
         filterBy = new ArrayList<>();
         filteredBooks = new ArrayList<>(books);
@@ -127,7 +127,7 @@ public class BookController implements Serializable{
 
     public List<Book> getBooks(){
         List<Book> localBooks = bookDao.getBooks();
-        generateStrings(localBooks);
+        helperController.generateStrings(localBooks);
         return new ArrayList<>(localBooks);
     }
 
@@ -144,7 +144,7 @@ public class BookController implements Serializable{
                 || book.getGenres().toString().trim().toLowerCase().contains(filterText)
                 || book.getIsbn().toString().toLowerCase().trim().contains(filterText)
                 || book.getLanguage().getLanguageName().toLowerCase().trim().contains(filterText)
-                || helperController.localDateFilterCheck(book.getPublishedAt(), filterText);
+                || helperController.localDateTimeConverter(book.getPublishedAt(), false).contains(filterText);
 
         return check;
     }
@@ -164,19 +164,5 @@ public class BookController implements Serializable{
         genres = null;
         authors = null;
         books = bookDao.getBooks();
-    }
-
-    public void generateStrings(List<Book> tmpBooks){
-        for (Book tmpBook: tmpBooks) {
-            tmpBook.setGenres(genreToBookDao.getGenresForBookId(tmpBook.getBookId()));
-            tmpBook.setGenresString(tmpBook.getGenres().toString());
-            tmpBook.setGenresString(tmpBook.getGenresString().replace("[", ""));
-            tmpBook.setGenresString(tmpBook.getGenresString().replace("]", ""));
-
-            tmpBook.setAuthors(authorToBookDao.getAuthorsForBookId(tmpBook.getBookId()));
-            tmpBook.setAuthorsString(tmpBook.getAuthors().toString());
-            tmpBook.setAuthorsString(tmpBook.getAuthorsString().replace("[", ""));
-            tmpBook.setAuthorsString(tmpBook.getAuthorsString().replace("]", ""));
-        }
     }
 }

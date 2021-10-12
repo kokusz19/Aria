@@ -16,6 +16,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Named
@@ -71,7 +72,7 @@ public class CreateController implements Serializable {
         message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Message", " Sikerült létrehozni!");
         newAccount = new Account();
         newAccount.setPerson(createPerson());
-        newAccount.setCreatedAt(LocalDate.now());
+        newAccount.setCreatedAt(LocalDateTime.now());
         newAccount.setPassword(BCrypt.withDefaults().hashToString(12, password.toCharArray()));
         newAccount.setAct(actDao.getAct(tipus));
         newAccount.setLoginName(loginName);

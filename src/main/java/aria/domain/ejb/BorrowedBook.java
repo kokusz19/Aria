@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -29,15 +30,27 @@ public class BorrowedBook {
     @Getter
     @Setter
     @Column(name = "dateOfBorrow")
-    private LocalDate dateOfBorrow;
+    private LocalDateTime dateOfBorrow;
     @Getter
     @Setter
     @Column(name = "dateOfReturn")
-    private LocalDate dateOfReturn;
+    private LocalDateTime dateOfReturn;
     @Getter
     @Setter
     @Column(name = "dateToBeReturned")
-    private LocalDate dateToBeReturned;
+    private LocalDateTime dateToBeReturned;
+    @Getter
+    @Setter
+    @Transient
+    private String stringDateOfBorrow;
+    @Getter
+    @Setter
+    @Transient
+    private String stringDateOfReturn;
+    @Getter
+    @Setter
+    @Transient
+    private String stringDateToBeReturned;
     @Getter
     @Setter
     @Transient

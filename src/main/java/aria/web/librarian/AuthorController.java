@@ -87,7 +87,7 @@ public class AuthorController implements Serializable{
         Author author = (Author) value;
         boolean check = author.getAuthorId().toString().contains(filterText)
                 || author.getFirstName().toLowerCase().concat(' ' + author.getLastName().toLowerCase()).contains(filterText)
-                || helperController.localDateFilterCheck(author.getDateOfBirth(), filterText);
+                || helperController.localDateTimeConverter(author.getDateOfBirth(), false).contains(filterText);
 
         return check;
     }

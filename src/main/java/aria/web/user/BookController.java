@@ -90,7 +90,7 @@ public class BookController implements Serializable{
                 || book.getGenres().toString().trim().toLowerCase().contains(filterText)
                 || book.getIsbn().toString().toLowerCase().trim().contains(filterText)
                 || book.getLanguage().getLanguageName().toLowerCase().trim().contains(filterText)
-                || helperController.localDateFilterCheck(book.getPublishedAt(), filterText);
+                || helperController.localDateTimeConverter(book.getPublishedAt(), false).contains(filterText);
         return check;
     }
 

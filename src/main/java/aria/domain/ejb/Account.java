@@ -6,6 +6,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -36,7 +37,7 @@ public class Account implements Serializable {
     @Getter
     @Setter
     @Column(name = "createdAt")
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
     @Getter
     @Setter
     @Transient

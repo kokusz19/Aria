@@ -19,6 +19,7 @@ import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Map;
 
 @ManagedBean(name = "borrowBookController", eager = true)
@@ -85,7 +86,7 @@ public class BorrowBookController implements Serializable{
             BorrowedBook borrowedBook = new BorrowedBook();
             borrowedBook.setAccount(accountDao.getForAccountId(accountId));
             borrowedBook.setBook(book);
-            borrowedBook.setDateOfBorrow(LocalDate.now());
+            borrowedBook.setDateOfBorrow(LocalDateTime.now());
             borrowedBookDao.createBorrowedBook(borrowedBook);
 
             book.setAvailableItems(book.getAvailableItems()-1);
@@ -104,7 +105,7 @@ public class BorrowBookController implements Serializable{
                 borrowStatusToBorrowedBook.setBorrowStatus(borrowStatusDao.getBorrowStatus(1));
             else if(pickUpOrDeliver.equals("2"))
                 borrowStatusToBorrowedBook.setBorrowStatus(borrowStatusDao.getBorrowStatus(3));
-            borrowStatusToBorrowedBook.setUpdateDate(LocalDate.now());
+            borrowStatusToBorrowedBook.setUpdateDate(LocalDateTime.now());
             borrowStatusToBorrowedBookDao.createBorrowStatusToBorrowedBook(borrowStatusToBorrowedBook);
 
             navigationHandler.handleNavigation(context, null, "Book.xhtml?faces-redirect=true&includeViewParams=true");

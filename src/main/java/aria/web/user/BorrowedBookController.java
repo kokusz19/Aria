@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -74,15 +75,16 @@ public class BorrowedBookController implements Serializable {
         List<Book> books = new ArrayList<>();
         for (BorrowedBook borrowedBook: allBorrowedBook) {
             books.add(borrowedBook.getBook());
+            helperController.setStringBorrowedBookDates(borrowedBook);
             borrowedBook.setCurrentStatus(borrowStatusToBorrowedBookDao.getLatestStatusForBorrowedBookId(borrowedBook.getBorrowedBookId()).getBorrowStatus());
         }
-        bookController.generateStrings(books);
+        helperController.generateStrings(books);
     }
 
     public void action(long borrowedBookId, int actionId) throws IOException {
         if(actionId == 1){
             BorrowedBook borrowedBook = borrowedBookDao.getForBorrowedBookId(borrowedBookId);
-            borrowedBook.setDateOfReturn(LocalDate.now());
+            borrowedBook.setDateOfReturn(LocalDateTime.now());
             borrowedBookDao.updateBorrowedBook(borrowedBook);
 
             Book book = borrowedBook.getBook();
@@ -92,7 +94,7 @@ public class BorrowedBookController implements Serializable {
             BorrowStatusToBorrowedBook borrowStatusToBorrowedBook = new BorrowStatusToBorrowedBook();
             borrowStatusToBorrowedBook.setBorrowedBook(borrowedBook);
             borrowStatusToBorrowedBook.setBorrowStatus(borrowStatusDao.getBorrowStatus(7));
-            borrowStatusToBorrowedBook.setUpdateDate(LocalDate.now());
+            borrowStatusToBorrowedBook.setUpdateDate(LocalDateTime.now());
             borrowStatusToBorrowedBookDao.createBorrowStatusToBorrowedBook(borrowStatusToBorrowedBook);
         }
         ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
@@ -123,9 +125,9 @@ public class BorrowedBookController implements Serializable {
                 || borrowedBook.getBook().getIsbn().toString().toLowerCase().contains(filterText)
                 || borrowedBook.getBook().getLanguage().getLanguageName().toLowerCase().contains(filterText)
                 || borrowedBook.getCurrentStatus().getBorrowStatusName().toLowerCase().contains(filterText)
-                || helperController.localDateFilterCheck(borrowedBook.getDateOfBorrow(), filterText)
-                || helperController.localDateFilterCheck(borrowedBook.getDateOfReturn(), filterText)
-                || helperController.localDateFilterCheck(borrowedBook.getDateToBeReturned(), filterText);
+                || helperController.localDateTimeConverter(borrowedBook.getDateOfBorrow(), false).contains(filterText)
+                || helperController.localDateTimeConverter(borrowedBook.getDateOfReturn(), false).contains(filterText)
+                || helperController.localDateTimeConverter(borrowedBook.getDateToBeReturned(), false).contains(filterText);
 
         return check;
     }

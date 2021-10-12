@@ -8,48 +8,46 @@
     <h1 align="center">Aria</h1>
 </h:head>
 <div align="center">
-    <h:form>
+    <h:form id="form">
+        <p:growl id="growl" showDetail="true" />
+
         <h:panelGrid columns="2" columnClasses="p-col-12 p-col-12">
 
-            <h:outputLabel for="username"  value="Felhasználónév:"/>
-            <p:inputText id="username" label="Felhasználónlv" value="#{createController.loginName}" required="true"/>
+            <h:outputLabel for="username"  value="Username:"/>
+            <p:inputText id="username" label="Username" value="#{createController.loginName}" required="true"/>
 
-            <h:outputLabel for="password" value="Jelszó:"/>
-            <p:password id="password" label="Jelszó"
+            <h:outputLabel for="password" value="Password:"/>
+            <p:password id="password" label="Password"
                         required="true"
                         value="#{createController.password}"
                         toggleMask="true" inline="true" feedback="true"/>
 
-            <h:outputLabel for="firstName" value="Keresztnév:"/>
-            <p:inputText id="firstName" label="Keresztnév" value="#{createController.firstName}" required="true"/>
+            <h:outputLabel for="firstName" value="First name:"/>
+            <p:inputText id="firstName" label="First name" value="#{createController.firstName}" required="true"/>
 
-            <h:outputLabel for="lastName" value="Vezetéknév:"/>
-            <p:inputText id="lastName" label="Vezetéknév" value="#{createController.lastName}" required="true"/>
+            <h:outputLabel for="lastName" value="Last name:"/>
+            <p:inputText id="lastName" label="Last name" value="#{createController.lastName}" required="true"/>
 
-            <h:outputLabel for="birth" value="Születési dátum:"/>
-            <p:datePicker id="birth" label="Születési dátum" value="#{createController.dateOfBirth}" required="true"/>
+            <h:outputLabel for="birth" value="Date of birth:"/>
+            <p:datePicker id="birth" label="Date of birth" value="#{createController.dateOfBirth}" required="true"/>
 
-            <h:outputLabel for="phoneNumber" value="Telefonszám:"/>
-            <p:inputMask  id="phoneNumber" label="Telefonszám"
+            <h:outputLabel for="phoneNumber" value="Phone number:"/>
+            <p:inputMask  id="phoneNumber" label="Phone number"
                          mask="(99) 999-9999" validateMask="true" autoClear="false"
                          value="#{createController.phoneNumber}"
                          required="true"/>
 
-            <h:outputLabel for="email" value="Email cím:"/>
-            <p:inputText id="email" label="Email" value="#{createController.email}" required="true"/>
+            <h:outputLabel for="email" value="E-mail address:"/>
+            <p:inputText id="email" label="E-mail address" value="#{createController.email}" required="true"/>
 
-            <h:outputLabel for="address" value="Cím:"/>
-            <p:inputText id="address" label="Cím" value="#{createController.address}" required="true" />
+            <h:outputLabel for="address" value="Address:"/>
+            <p:inputText id="address" label="Address" value="#{createController.address}" required="true" />
 
         </h:panelGrid>
         <p:commandButton action="#{createController.create}"
-                          value="Mentés" />
-
-        <p:messages id="messages" showDetail="true">
-            <p:autoUpdate/>
-        </p:messages>
+                          value="Create account" update="form:growl"/>
     </h:form>
-    <p:link outcome="/greet.xhtml">Vissza a kezdőoldalra!</p:link>
+    <p:link outcome="/greet.xhtml">Take me back to the homepage!</p:link>
 </div>
 
 </html>

@@ -8,11 +8,14 @@
 <h:head>
     <h1 align="center">Aria</h1>
 </h:head>
-<div align="center">
-    <h2 align="center">Kérem válasszon!</h2>
-        <p:linkButton outcome="login" value="Sign in" style="margin-right:20px;"/>
-
-        <p:linkButton outcome="signUp" value="Sign up" style="margin-right:20px;"/>
-
-</div>
+<h:body>
+    <h:form id="form">
+        <p:growl id="growl" showDetail="true" />
+        <div align="center">
+            <h2 align="center">Please choose from the below!</h2>
+            <p:linkButton outcome="login" value="Sign in" style="margin-right:20px;"/>
+            <p:linkButton outcome="signUp" value="Sign up" style="margin-right:20px;"/>
+        </div>
+    </h:form>
+</h:body>
 </html>

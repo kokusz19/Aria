@@ -12,6 +12,8 @@ import aria.domain.ejb.*;
 
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
+import javax.faces.application.NavigationHandler;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
@@ -81,15 +83,21 @@ public class CreateController implements Serializable {
                 personDao.createPerson(newAccount.getPerson());
                 accountDao.createUser(newAccount);
 
-                message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Message", " Sikerült létrehozni!");
-                PrimeFaces.current().dialog().showMessageDynamic(message);
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Registration", "Registration successful"));
                 clearTextBoxes();
+
+                FacesContext context = FacesContext.getCurrentInstance();
+                context.getExternalContext().getFlash().setKeepMessages(true);
+
+                NavigationHandler navigationHandler = context.getApplication().getNavigationHandler();
+                navigationHandler.handleNavigation(context, null, "greet.xhtml?faces-redirect=true&includeViewParams=true");
+
             } else {
-                message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Message", " Nem sikerült létrehozni, a megadott felhasználónév már foglalt!");
+                message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Message", " Registration failed, the username is already in use!");
                 PrimeFaces.current().dialog().showMessageDynamic(message);
             }
         } catch (Exception e) {
-            message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Message", " Nem sikerült létrehozni!");
+            message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Message", " Registration failed due to an unknown error!");
             PrimeFaces.current().dialog().showMessageDynamic(message);
         }
     }

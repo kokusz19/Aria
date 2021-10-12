@@ -7,48 +7,86 @@
       xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 <h:head>
     <title>Borrowing</title>
+    <style type="text/css">
+        /* reset on the showcase style*/
+        body .ui-panelgrid .ui-panelgrid-cell {
+            background-color: transparent;
+        }
+    </style>
 </h:head>
 <h:body>
     <h:form id="form">
         <ui:include src="/PageHeader.xhtml"/>
-        <p:growl id="msg"/>
+        <p:growl id="growl" showDetail="true"/>
 
         <h1>Borrowing #{borrowBookController.book.bookTitle}</h1>
 
-        <h:outputLabel value="!!! There is no available book of this currently. Please check back later or set a notification for it." rendered="#{!borrowBookController.exist}"/>
-
-        <p:panelGrid columns="2">
-            <p:outputLabel value="Title: "/>
-            <p:outputLabel value="#{borrowBookController.book.bookTitle}"/>
-
-            <p:outputLabel value="Author(s): "/>
-            <p:outputLabel value="#{borrowBookController.book.authorsString}"/>
-
-            <p:outputLabel value="Genre(s): "/>
-            <p:outputLabel value="#{borrowBookController.book.genresString}"/>
-
-            <p:outputLabel value="Available items: "/>
-            <p:outputLabel value="#{borrowBookController.book.availableItems}"/>
-
-            <p:outputLabel/>
-            <p:outputLabel/>
-
-            <p:selectOneMenu value="#{borrowBookController.pickUpOrDeliver}">
-                <f:selectItem itemValue="1" itemLabel="I'll pick it up" />
-                <f:selectItem itemValue="2" itemLabel="Deliver it" />
-            </p:selectOneMenu>
+        <p:panelGrid cellpadding="7" columnClasses="ui-grid-col-2,ui-grid-col-4"
+                     styleClass="ui-panelgrid-blank ui-fluid"
+                     style="border: 0px none; background-color: transparent;">
+            <p:row rendered="#{!borrowBookController.exist}">
+                <p:column colspan="2">
+                    <h:outputLabel value="!!! There is no available book of this currently !!!"/>
+                </p:column>
+            </p:row>
+            <p:row rendered="#{!borrowBookController.exist}">
+                <p:column colspan="2">
+                    <h:outputLabel value="Please check back later or set a notification for it."/>
+                </p:column>
+            </p:row>
 
             <p:row>
-                <p:column colspan="2" rendered="#{borrowBookController.exist}">
-                    <p:commandButton action="#{borrowBookController.borrowBook}" value="Borrow book"/>
+                <p:column><p:outputLabel/></p:column>
+                <p:column><p:outputLabel/></p:column>
+            </p:row>
+
+            <p:row>
+                <p:column><p:outputLabel value="Title:"/></p:column>
+                <p:column><p:outputLabel value="#{borrowBookController.book.bookTitle}"/></p:column>
+            </p:row>
+
+            <p:row>
+                <p:column><p:outputLabel value="Author(s):"/></p:column>
+                <p:column><p:outputLabel value="#{borrowBookController.book.authorsString}"/></p:column>
+            </p:row>
+
+            <p:row>
+                <p:column><p:outputLabel value="Genre(s):"/></p:column>
+                <p:column><p:outputLabel value="#{borrowBookController.book.genresString}"/></p:column>
+            </p:row>
+
+            <p:row>
+                <p:column><p:outputLabel value="Available items:"/></p:column>
+                <p:column><p:outputLabel value="#{borrowBookController.book.availableItems}"/></p:column>
+            </p:row>
+
+            <p:row>
+                <p:column><p:outputLabel/></p:column>
+                <p:column><p:outputLabel/></p:column>
+            </p:row>
+
+            <p:row  rendered="#{borrowBookController.exist}">
+                <p:column colspan="2">
+                    <p:selectOneMenu value="#{borrowBookController.pickUpOrDeliver}">
+                        <f:selectItem itemValue="1" itemLabel="I'll pick it up" />
+                        <f:selectItem itemValue="2" itemLabel="Deliver it" />
+                    </p:selectOneMenu>
                 </p:column>
-                <p:column colspan="2" rendered="#{!borrowBookController.exist}">
-                    <p:outputLabel value="The book is not available currently. Please check back later or set a notification for it."/>
-                    <p:commandButton value="Notify me!" action="#{borrowBookController.notify(borrowBookController.bookId)}" icon="pi pi-flag" update="form:msg"/>
+            </p:row>
+
+            <p:row>
+                <p:column colspan="2">
+                    <p:commandButton action="#{borrowBookController.borrowBook}" value="Borrow book" rendered="#{borrowBookController.exist}" />
+                    <p:commandButton action="#{borrowBookController.notify(borrowBookController.bookId)}" value="Notify me!"  icon="pi pi-flag" update="form:growl" rendered="#{!borrowBookController.exist}"/>
+                </p:column>
+            </p:row>
+
+            <p:row>
+                <p:column colspan="2">
+                    <p:linkButton outcome="Book.xhtml" value="Take me back to the books" style="margin-right:20px"/>
                 </p:column>
             </p:row>
         </p:panelGrid>
-        <p:linkButton outcome="Book.xhtml" value="Take me back to the books." style="margin-right:20px"/>
     </h:form>
 </h:body>
 </html>

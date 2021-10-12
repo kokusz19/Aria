@@ -5,6 +5,7 @@ import aria.domain.ejb.Book;
 import aria.domain.ejb.BorrowStatusToBorrowedBook;
 import aria.domain.ejb.BorrowedBook;
 import aria.domain.ejb.Notification;
+import aria.web.HelperController;
 import lombok.Getter;
 import lombok.Setter;
 import org.primefaces.PrimeFaces;
@@ -20,6 +21,8 @@ import javax.inject.Inject;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @ManagedBean(name = "borrowBookController", eager = true)
@@ -42,6 +45,8 @@ public class BorrowBookController implements Serializable{
     BorrowStatusToBorrowedBookDao borrowStatusToBorrowedBookDao;
     @Inject
     BorrowStatusDao borrowStatusDao;
+    @Inject
+    HelperController helperController;
 
     @Getter
     private Long bookId;
@@ -108,6 +113,11 @@ public class BorrowBookController implements Serializable{
             borrowStatusToBorrowedBook.setUpdateDate(LocalDateTime.now());
             borrowStatusToBorrowedBookDao.createBorrowStatusToBorrowedBook(borrowStatusToBorrowedBook);
 
+            String detail = borrowedBook.getBook().getAuthorsString() + " - " + borrowedBook.getBook().getBookTitle() + " has been borrowed.";
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Borrowing", detail));
+
+            context.getExternalContext().getFlash().setKeepMessages(true);
+
             navigationHandler.handleNavigation(context, null, "Book.xhtml?faces-redirect=true&includeViewParams=true");
         }
     }
@@ -117,11 +127,22 @@ public class BorrowBookController implements Serializable{
 
         Notification notification = new Notification();
         notification.setBook(bookDao.getForBookId(bookId));
+
+        List<Book> bookList = new ArrayList<>();
+        bookList.add(notification.getBook());
+        helperController.generateStrings(bookList);
+
         notification.setAccount(accountDao.getForAccountId(accountId));
 
         notificationDao.createNotification(notification);
 
-        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Notification has been set", "Notification has been set for your account."));
-        PrimeFaces.current().ajax().update("form:msg");
+        String detail = "Notification has been set for " + notification.getBook().getAuthorsString() + " - " + notification.getBook().getBookTitle() + ".";
+        FacesContext context = FacesContext.getCurrentInstance();
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Notification", detail));
+
+        context.getExternalContext().getFlash().setKeepMessages(true);
+
+        NavigationHandler navigationHandler = context.getApplication().getNavigationHandler();
+        navigationHandler.handleNavigation(context, null, "Book.xhtml?faces-redirect=true&includeViewParams=true");
     }
 }

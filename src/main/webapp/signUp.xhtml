@@ -15,7 +15,9 @@
         <h:panelGrid columns="2" columnClasses="p-col-12 p-col-12">
 
             <h:outputLabel for="username"  value="Username:"/>
-            <p:inputText id="username" label="Username" value="#{createController.loginName}" required="true"/>
+            <p:inputText id="username" label="Username" value="#{createController.loginName}" required="true">
+                <f:validateLength minimum="5" maximum="12"/>
+            </p:inputText>
 
             <h:outputLabel for="password" value="Password:"/>
             <p:password id="password" label="Password"
@@ -24,10 +26,14 @@
                         toggleMask="true" inline="true" feedback="true"/>
 
             <h:outputLabel for="firstName" value="First name:"/>
-            <p:inputText id="firstName" label="First name" value="#{createController.firstName}" required="true"/>
+            <p:inputText id="firstName" label="First name" value="#{createController.firstName}" required="true">
+                <f:validateLength minimum="3"/>
+            </p:inputText>
 
             <h:outputLabel for="lastName" value="Last name:"/>
-            <p:inputText id="lastName" label="Last name" value="#{createController.lastName}" required="true"/>
+            <p:inputText id="lastName" label="Last name" value="#{createController.lastName}" required="true">
+                <f:validateLength minimum="3"/>
+            </p:inputText>
 
             <h:outputLabel for="birth" value="Date of birth:"/>
             <p:datePicker id="birth" label="Date of birth" value="#{createController.dateOfBirth}" required="true"/>
@@ -39,10 +45,14 @@
                          required="true"/>
 
             <h:outputLabel for="email" value="E-mail address:"/>
-            <p:inputText id="email" label="E-mail address" value="#{createController.email}" required="true"/>
+            <p:inputText id="email" label="E-mail address" value="#{createController.email}" required="true" validatorMessage="E-mail does not match pattern.">
+                <f:validateRegex pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
+            </p:inputText>
 
             <h:outputLabel for="address" value="Address:"/>
-            <p:inputText id="address" label="Address" value="#{createController.address}" required="true" />
+            <p:inputText id="address" label="Address" value="#{createController.address}" required="true">
+                <f:validateLength minimum="8"/>
+            </p:inputText>
 
         </h:panelGrid>
         <p:commandButton action="#{createController.create}"

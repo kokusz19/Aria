@@ -20,6 +20,8 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Named
 @SessionScoped
@@ -79,7 +81,15 @@ public class CreateController implements Serializable {
         newAccount.setAct(actDao.getAct(tipus));
         newAccount.setLoginName(loginName);
         try {
-            if (accountDao.getForUsername(newAccount.getLoginName()) == null) {
+            String regex = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%]).{8,20}$";
+            Pattern pattern = Pattern.compile(regex);
+            Matcher matcher = pattern.matcher(password);
+            if(password.length() < 8){
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Password", "The password must be at least 8 characters long!"));
+            } else if(!matcher.matches()){
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Password", "The password must have at least 1 lower, 1 upper case character, 1 number, 1 special symbol!"));
+            }
+            else if (accountDao.getForUsername(newAccount.getLoginName()) == null) {
                 personDao.createPerson(newAccount.getPerson());
                 accountDao.createUser(newAccount);
 

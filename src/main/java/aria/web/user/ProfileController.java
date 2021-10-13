@@ -14,8 +14,13 @@ import javax.faces.application.NavigationHandler;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @ManagedBean(name = "profileController")
 @ViewScoped
@@ -59,7 +64,7 @@ public class ProfileController {
     public void changeEditPassword(){
         editPassword = !editPassword;
     }
-    public void savePassword(){
+    public void savePassword() throws IOException {
         String detail = "";
         FacesMessage.Severity severity = null;
 
@@ -68,21 +73,33 @@ public class ProfileController {
             severity = FacesMessage.SEVERITY_ERROR;
             detail = "Current password is not correct";
         }else{
-            if(!newPassword1.equals(newPassword2)){
+            String regex = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%]).{8,20}$";
+            Pattern pattern = Pattern.compile(regex);
+            Matcher matcher = pattern.matcher(newPassword1);
+            if(newPassword1.length() < 8){
+                severity = FacesMessage.SEVERITY_ERROR;
+                detail = "The new password must be at least 8 characters long!";
+            } else if(!matcher.matches()){
+                severity = FacesMessage.SEVERITY_ERROR;
+                detail = "The new password must have at least 1 lower, 1 upper case character, 1 number, 1 special symbol!";
+            } else if(!newPassword1.equals(newPassword2)){
                 severity = FacesMessage.SEVERITY_ERROR;
                 detail = "New passwords does not match";
-            }
-            else{
-                if(BCrypt.verifyer().verify(newPassword1.toCharArray(), account.getPassword()).verified){
+            } else if(BCrypt.verifyer().verify(newPassword1.toCharArray(), account.getPassword()).verified){
                     severity = FacesMessage.SEVERITY_ERROR;
                     detail = "New passwords matches the current password";
-                }else {
+            } else {
                     account.setPassword(BCrypt.withDefaults().hashToString(12, newPassword2.toCharArray()));
                     accountDao.updateUser(account);
                     severity = FacesMessage.SEVERITY_INFO;
                     detail = "New password has been set";
                     changeEditPassword();
-                }
+
+                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(severity, "Password", detail));
+                    FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
+
+                    ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
+                    ec.redirect(((HttpServletRequest) ec.getRequest()).getRequestURI());
             }
         }
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(severity, "Password", detail));

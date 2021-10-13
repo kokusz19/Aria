@@ -27,7 +27,7 @@ public class AccountDao implements Serializable {
         return query
                 .from(account)
                 .select(account)
-                .where(account.loginName.eq(username))
+                .where(account.loginName.toLowerCase().eq(username.toLowerCase()))
                 .fetchOne();
     }
 

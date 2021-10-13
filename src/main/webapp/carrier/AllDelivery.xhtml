@@ -65,7 +65,7 @@
                 </p:column>
 
                 <p:column headerText="Action" rendered="#{deliveryController.roleName.equals('carrier')}">
-                    <p:commandButton value="Deliver" action="#{deliveryController.action(allBorrowedBook.borrowedBookId, 1)}" rendered="#{allBorrowedBook.currentStatus.borrowStatusId == 4 || allBorrowedBook.currentStatus.borrowStatusId == 10}"/>
+                    <p:commandButton value="Deliver" action="#{deliveryController.action(allBorrowedBook.borrowedBookId, 1)}" rendered="#{allBorrowedBook.currentStatus.borrowStatusId == 4 || allBorrowedBook.currentStatus.borrowStatusId == 10}" update="form:growl"/>
                     <p:commandButton value="Delivered" action="#{deliveryController.action(allBorrowedBook.borrowedBookId, 2)}" icon="pi pi-file" update="form:growl" rendered="#{allBorrowedBook.currentStatus.borrowStatusId == 5 and deliveryController.carriers.get(allBorrowedBook.borrowedBookId).accountId == deliveryController.id}"/>
                     <p:commandButton value="Could not be delivered" action="#{deliveryController.action(allBorrowedBook.borrowedBookId, 3)}" icon="pi pi-file" update="form:growl" rendered="#{allBorrowedBook.currentStatus.borrowStatusId == 5 and deliveryController.carriers.get(allBorrowedBook.borrowedBookId).accountId == deliveryController.id}"/>
                     <h:outputText value="Carrier already assigned" rendered="#{allBorrowedBook.currentStatus.borrowStatusId == 5 and deliveryController.carriers.get(allBorrowedBook.borrowedBookId).accountId != deliveryController.id}"/>

@@ -119,7 +119,10 @@ public class DeliveryController implements Serializable{
         BorrowStatusToBorrowedBook tmp = new BorrowStatusToBorrowedBook();
         tmp.setUpdateDate(LocalDateTime.now());
         tmp.setBorrowedBook(borrowedBook);
+        helperController.generateStrings(tmp.getBorrowedBook().getBook());
 
+        String summary = "";
+        String detail = "";
         if(actionId == 1){
             // Delivering
             tmp.setBorrowStatus(borrowStatusDao.getBorrowStatus(5));
@@ -129,16 +132,27 @@ public class DeliveryController implements Serializable{
                 tmpCarriedBook.setCarrier(accountDao.getForAccountId(id));
                 carriedBookDao.createCarriedBook(tmpCarriedBook);
             }
+            summary = "Delivery accepted";
+            detail = detail.concat(tmp.getBorrowedBook().getAccount().getPerson().getFirstName() + " " + tmp.getBorrowedBook().getAccount().getPerson().getLastName() + "'s borrowing of " + tmp.getBorrowedBook().getBook().getAuthorsString() + " - " + tmp.getBorrowedBook().getBook().getBookTitle() + " has been accepted.");
         } else if(actionId == 2){
             // Delivered
             tmp.setBorrowStatus(borrowStatusDao.getBorrowStatus(6));
             borrowedBook.setDateToBeReturned(LocalDateTime.now().plusWeeks(2));
             borrowedBookDao.updateBorrowedBook(borrowedBook);
+            summary = "Delivered";
+            detail = detail.concat(tmp.getBorrowedBook().getAccount().getPerson().getFirstName() + " " + tmp.getBorrowedBook().getAccount().getPerson().getLastName() + "'s borrowing of " + tmp.getBorrowedBook().getBook().getAuthorsString() + " - " + tmp.getBorrowedBook().getBook().getBookTitle() + " has been delivered.");
         } else if(actionId == 3){
             // Could not be delivered
             tmp.setBorrowStatus(borrowStatusDao.getBorrowStatus(10));
+            summary = "Delivery failed";
+            detail = detail.concat(tmp.getBorrowedBook().getAccount().getPerson().getFirstName() + " " + tmp.getBorrowedBook().getAccount().getPerson().getLastName() + "'s borrowing of " + tmp.getBorrowedBook().getBook().getAuthorsString() + " - " + tmp.getBorrowedBook().getBook().getBookTitle() + " could not be delivered.");
         }
         borrowStatusToBorrowedBookDao.createBorrowStatusToBorrowedBook(tmp);
+
+        FacesContext context = FacesContext.getCurrentInstance();
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, summary, detail));
+
+        context.getExternalContext().getFlash().setKeepMessages(true);
 
         ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
         ec.redirect(((HttpServletRequest) ec.getRequest()).getRequestURI());

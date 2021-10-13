@@ -11,6 +11,8 @@
             <f:view>
                 <ui:include src="/PageHeader.xhtml"/>
 
+                <p:growl id="growl" showDetail="true"/>
+
                 <p:dataTable var="author" value="#{authorController.authors}" widgetVar="authorTable"
                              emptyMessage="No authors found"
                              filteredValue="#{authorController.filteredAuthors}"
@@ -36,7 +38,7 @@
                                 <p:datePicker id="birth" label="Date of birth" value="#{authorController.dateOfBirth}" />
                                 <br/>
 
-                                <p:commandButton value="Submit" action="#{authorController.addAuthor}" onclick="PF('dlg').hide();"/>
+                                <p:commandButton value="Submit" action="#{authorController.addAuthor}" onclick="PF('dlg').hide();" update="formDataTable:growl"/>
                             </p:dialog>
                         </div>
                     </f:facet>

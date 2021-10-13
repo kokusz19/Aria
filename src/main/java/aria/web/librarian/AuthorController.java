@@ -9,6 +9,7 @@ import org.primefaces.model.FilterMeta;
 import org.primefaces.util.LangUtils;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.application.NavigationHandler;
 import javax.faces.context.FacesContext;
 import javax.enterprise.context.SessionScoped;
@@ -62,12 +63,22 @@ public class AuthorController implements Serializable{
         author.setFirstName(firstName);
         author.setLastName(lastName);
         author.setDateOfBirth(dateOfBirth);
-        authorDao.createAuthor(author);
-        init();
+        List<Author> sameNames = authorDao.getForAuthorName(firstName, lastName);
+        if(sameNames.size() == 0 || sameNames.stream().filter(s->s.getDateOfBirth().getYear() == dateOfBirth.getYear() && s.getDateOfBirth().getMonthValue() == dateOfBirth.getMonthValue() && s.getDateOfBirth().getDayOfMonth() == dateOfBirth.getDayOfMonth()).count() == 0) {
+            authorDao.createAuthor(author);
 
-        FacesContext context = FacesContext.getCurrentInstance();
-        NavigationHandler navigationHandler = context.getApplication().getNavigationHandler();
-        navigationHandler.handleNavigation(context, null, "Author.xhtml?faces-redirect=true&includeViewParams=true");
+            String detail = "Author " + author.getFirstName() + "  " + author.getLastName() + " has been added.";
+            FacesContext context = FacesContext.getCurrentInstance();
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Author", detail));
+
+            context.getExternalContext().getFlash().setKeepMessages(true);
+
+            NavigationHandler navigationHandler = context.getApplication().getNavigationHandler();
+            navigationHandler.handleNavigation(context, null, "Author.xhtml?faces-redirect=true&includeViewParams=true");
+        } else{
+            String detail = "Author " + author.getFirstName() + "  " + author.getLastName() + " is already in the database";
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "Author", detail));
+        }
     }
 
     public AuthorController() {

@@ -25,7 +25,7 @@ public class LanguageDao implements Serializable {
         return query
                 .from(language)
                 .select(language)
-                .where(language.languageName.eq(languageName))
+                .where(language.languageName.toLowerCase().eq(languageName.toLowerCase()))
                 .fetchOne();
     }
 

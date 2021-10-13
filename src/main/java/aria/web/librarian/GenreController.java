@@ -8,6 +8,7 @@ import org.primefaces.model.FilterMeta;
 import org.primefaces.util.LangUtils;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.application.NavigationHandler;
 import javax.faces.context.FacesContext;
 import javax.enterprise.context.SessionScoped;
@@ -42,15 +43,24 @@ public class GenreController implements Serializable{
         filteredGenres = new ArrayList<>(genres);
     }
 
-    public void addGenre(){
+    public void addGenre() {
         Genre genre = new Genre();
         genre.setGenreName(newGenre);
-        genreDao.createGenre(genre);
-        init();
+        if (genreDao.getForGenreName(newGenre) == null) {
+            genreDao.createGenre(genre);
 
-        FacesContext context = FacesContext.getCurrentInstance();
-        NavigationHandler navigationHandler = context.getApplication().getNavigationHandler();
-        navigationHandler.handleNavigation(context, null, "Genre.xhtml?faces-redirect=true&includeViewParams=true");
+            String detail = "Genre " + newGenre + " has been added.";
+            FacesContext context = FacesContext.getCurrentInstance();
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Genre", detail));
+
+            context.getExternalContext().getFlash().setKeepMessages(true);
+
+            NavigationHandler navigationHandler = context.getApplication().getNavigationHandler();
+            navigationHandler.handleNavigation(context, null, "Genre.xhtml?faces-redirect=true&includeViewParams=true");
+        } else{
+            String detail = "Genre " + newGenre + "  is already in the database";
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "Genre", detail));
+        }
     }
 
     public GenreController() {

@@ -11,6 +11,8 @@
         <f:view>
             <ui:include src="/PageHeader.xhtml"/>
 
+            <p:growl id="growl" showDetail="true"/>
+
             <p:dataTable var="language" value="#{languageController.languages}" widgetVar="languageTable"
                          emptyMessage="No languages found with given criteria"
                          filteredValue="#{languageController.filteredLanguages}"
@@ -27,7 +29,7 @@
                             <h:outputText value="Name: "/>
                             <p:inputText value="#{languageController.newLanguage}" id="languageNameInputText" placeholder="language name"/>
                             <br/>
-                            <p:commandButton value="Submit" action="#{languageController.addLanguage}" onclick="PF('dlg').hide();"/>
+                            <p:commandButton value="Submit" action="#{languageController.addLanguage}" onclick="PF('dlg').hide();" update="formDataTable:growl"/>
                         </p:dialog>
                     </div>
                 </f:facet>

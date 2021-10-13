@@ -28,7 +28,16 @@ public class AuthorDao implements Serializable {
                 .where(author.authorId.eq(authorId))
                 .fetchOne();
     }
-
+    public List<Author> getForAuthorName(final String firstName, final String lastName) {
+        JPAQueryFactory query = new JPAQueryFactory(em);
+        QAuthor author = QAuthor.author;
+        return query
+                .from(author)
+                .select(author)
+                .where(author.firstName.toLowerCase().eq(firstName.toLowerCase()))
+                .where(author.lastName.toLowerCase().eq(lastName.toLowerCase()))
+                .fetch();
+    }
     public List<Author> getAuthors(){
         JPAQueryFactory query = new JPAQueryFactory(em);
         QAuthor author = QAuthor.author;

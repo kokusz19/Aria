@@ -11,6 +11,8 @@
             <f:view>
                 <ui:include src="/PageHeader.xhtml"/>
 
+                <p:growl id="growl" showDetail="true"/>
+
                 <p:dataTable var="genre" value="#{genreController.genres}" widgetVar="genreTable"
                              emptyMessage="No genres found with given criteria"
                              filteredValue="#{genreController.filteredGenres}"
@@ -27,7 +29,7 @@
                             <p:dialog header="Add genres" widgetVar="dlg" modal="true">
                                 <h:outputText value="Name: "/>
                                 <p:inputText value="#{genreController.newGenre}" id="genreNameInputText" placeholder="genre name"/>
-                                <p:commandButton value="Submit" action="#{genreController.addGenre}" onclick="PF('dlg').hide();"/>
+                                <p:commandButton value="Submit" action="#{genreController.addGenre}" onclick="PF('dlg').hide();" update="formDataTable:growl"/>
                             </p:dialog>
                         </div>
                     </f:facet>

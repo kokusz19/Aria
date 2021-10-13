@@ -26,7 +26,7 @@ public class GenreDao implements Serializable {
         return query
                 .from(genre)
                 .select(genre)
-                .where(genre.genreName.eq(genreName))
+                .where(genre.genreName.toLowerCase().eq(genreName.toLowerCase()))
                 .fetchOne();
     }
 

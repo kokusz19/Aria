@@ -8,6 +8,7 @@ import org.primefaces.model.FilterMeta;
 import org.primefaces.util.LangUtils;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.application.NavigationHandler;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -52,10 +53,21 @@ public class LanguageController implements Serializable{
     public void addLanguage() throws IOException {
         Language language = new Language();
         language.setLanguageName(newLanguage);
-        languageDao.createLanguage(language);
+        if(languageDao.getForLanguageName(newLanguage) == null) {
+            languageDao.createLanguage(language);
 
-        ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
-        ec.redirect(((HttpServletRequest) ec.getRequest()).getRequestURI());
+            String detail = "Language " + newLanguage + " has been added.";
+            FacesContext context = FacesContext.getCurrentInstance();
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Language", detail));
+
+            context.getExternalContext().getFlash().setKeepMessages(true);
+
+            ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
+            ec.redirect(((HttpServletRequest) ec.getRequest()).getRequestURI());
+        } else{
+            String detail = "Language " + newLanguage  + " is already in the database";
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "Language", detail));
+        }
     }
 
     public LanguageController() {

@@ -9,9 +9,11 @@
       xmlns:of="http://omnifaces.org/functions">
   <h:head/>
   <h:body>
-    <h:form rendered="#{pageHeaderController.actId != 1}">
+    <h:form rendered="#{pageHeaderController.actId != 1}" id="form">
       <f:view>
         <ui:include src="/PageHeader.xhtml"/>
+
+        <p:growl id="growl" showDetail="true"/>
 
         <p:dataTable var="book" value="#{bookController.books}" widgetVar="bookTable"
                      emptyMessage="No books found with given criteria"
@@ -51,7 +53,7 @@
                   <f:selectItems value="#{bookController.allLanguages}" var="tmpLanguage" itemValue="#{tmpLanguage}" itemLabel="#{tmpLanguage.languageName}" />
                 </p:selectOneMenu>
 
-                <p:commandButton action="#{bookController.addBook}" value="Submit" onclick="PF('dlg').hide();"/>
+                <p:commandButton action="#{bookController.addBook}" value="Submit" onclick="PF('dlg').hide();" update="form:growl"/>
               </p:dialog>
             </div>
           </f:facet>

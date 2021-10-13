@@ -9,6 +9,7 @@ import org.primefaces.model.FilterMeta;
 import org.primefaces.util.LangUtils;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.application.NavigationHandler;
 import javax.faces.bean.*;
 import javax.faces.context.FacesContext;
@@ -95,31 +96,48 @@ public class BookController implements Serializable{
         book.setBookTitle(title);
         book.setIsbn(ISBN);
         book.setPublishedAt(publishedAt);
-
         book.setGenres(genres);
         book.setAuthors(authors);
         book.setLanguage(language);
-        bookDao.createBook(book);
+        book.setAuthorsString(book.getAuthors().toString());
+        book.setAuthorsString(book.getAuthorsString().replace("[", ""));
+        book.setAuthorsString(book.getAuthorsString().replace("]", ""));
 
-        for (Genre genre: genres) {
-            GenreToBook genreToBook = new GenreToBook();
-            genreToBook.setBook(bookDao.getForBookId(book.getBookId()));
-            genreToBook.setGenre(genre);
-            genreToBookDao.createGenreToBook(genreToBook);
+        List<Book> sameTitle = bookDao.getForBookTitle(book.getBookTitle());
+        helperController.generateStrings(sameTitle);
+        String detail = "";
+        if (sameTitle.size() == 0 || sameTitle.stream().filter(b -> b.getAuthorsString().equals(book.getAuthorsString())).count() == 0) {
+            bookDao.createBook(book);
+
+            for (Genre genre : genres) {
+                GenreToBook genreToBook = new GenreToBook();
+                genreToBook.setBook(bookDao.getForBookId(book.getBookId()));
+                genreToBook.setGenre(genre);
+                genreToBookDao.createGenreToBook(genreToBook);
+            }
+
+            for (Author author : authors) {
+                AuthorToBook authorToBook = new AuthorToBook();
+                authorToBook.setBook(bookDao.getForBookId(book.getBookId()));
+                authorToBook.setAuthor(author);
+                authorToBookDao.createAuthorToBook(authorToBook);
+            }
+
+            clearSpaces();
+
+            detail = book.getAuthorsString() + " - " + book.getBookTitle() + " has been added successfully.";
+            FacesContext context = FacesContext.getCurrentInstance();
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Book addition", detail));
+
+            context.getExternalContext().getFlash().setKeepMessages(true);
+
+            NavigationHandler navigationHandler = context.getApplication().getNavigationHandler();
+            navigationHandler.handleNavigation(context, null, "Book.xhtml?faces-redirect=true&includeViewParams=true");
+        } else{
+            detail = book.getAuthorsString() + " - " + book.getBookTitle() + " is already in the database.";
+            FacesContext context = FacesContext.getCurrentInstance();
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "Book addition", detail));
         }
-
-        for (Author author: authors) {
-            AuthorToBook authorToBook = new AuthorToBook();
-            authorToBook.setBook(bookDao.getForBookId(book.getBookId()));
-            authorToBook.setAuthor(author);
-            authorToBookDao.createAuthorToBook(authorToBook);
-        }
-
-        clearSpaces();
-
-        FacesContext context = FacesContext.getCurrentInstance();
-        NavigationHandler navigationHandler = context.getApplication().getNavigationHandler();
-        navigationHandler.handleNavigation(context, null, "Book.xhtml?faces-redirect=true&includeViewParams=true");
     }
 
     public BookController() {

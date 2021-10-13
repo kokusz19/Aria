@@ -30,6 +30,15 @@ public class BookDao implements Serializable {
                 .where(book.bookId.eq(bookId))
                 .fetchOne();
     }
+    public List<Book> getForBookTitle(final String bookTitle) {
+        JPAQueryFactory query = new JPAQueryFactory(em);
+        QBook book = QBook.book;
+        return query
+                .from(book)
+                .select(book)
+                .where(book.bookTitle.eq(bookTitle))
+                .fetch();
+    }
 
     public List<Book> getBooks(){
         JPAQueryFactory query = new JPAQueryFactory(em);

@@ -16,6 +16,7 @@ import org.primefaces.model.FilterMeta;
 import org.primefaces.util.LangUtils;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.application.NavigationHandler;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
@@ -82,12 +83,13 @@ public class BorrowedBookController implements Serializable {
     }
 
     public void action(long borrowedBookId, int actionId) throws IOException {
-        if(actionId == 1){
+        if(actionId == 1){ // Cancelled by user
             BorrowedBook borrowedBook = borrowedBookDao.getForBorrowedBookId(borrowedBookId);
             borrowedBook.setDateOfReturn(LocalDateTime.now());
             borrowedBookDao.updateBorrowedBook(borrowedBook);
 
             Book book = borrowedBook.getBook();
+            helperController.generateStrings(book);
             book.setAvailableItems(book.getAvailableItems()+1);
             bookDao.updateBook(book);
 
@@ -96,6 +98,11 @@ public class BorrowedBookController implements Serializable {
             borrowStatusToBorrowedBook.setBorrowStatus(borrowStatusDao.getBorrowStatus(7));
             borrowStatusToBorrowedBook.setUpdateDate(LocalDateTime.now());
             borrowStatusToBorrowedBookDao.createBorrowStatusToBorrowedBook(borrowStatusToBorrowedBook);
+
+            String detail = "Borrowing of " + book.getAuthorsString() + " - " + book.getBookTitle() + " has been cancelled.";
+            FacesContext context = FacesContext.getCurrentInstance();
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Cancelled", detail));
+            context.getExternalContext().getFlash().setKeepMessages(true);
         }
         ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
         ec.redirect(((HttpServletRequest) ec.getRequest()).getRequestURI());

@@ -132,9 +132,7 @@ public class BorrowBookController implements Serializable{
 
     public void notify(long bookId){
         Book tmpBook = bookDao.getForBookId(bookId);
-        List<Book> tmpListBook = new ArrayList<>();
-        tmpListBook.add(tmpBook);
-        helperController.generateStrings(tmpListBook);
+        helperController.generateStrings(tmpBook);
 
         long accountId = Long.parseLong(FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("id").toString());
         List<Notification> ownNotifications = notificationDao.getForAccountId(accountId);
@@ -144,10 +142,7 @@ public class BorrowBookController implements Serializable{
             Notification notification = new Notification();
             notification.setBook(bookDao.getForBookId(bookId));
             notification.setAccount(accountDao.getForAccountId(accountId));
-
-            List<Book> bookList = new ArrayList<>();
-            bookList.add(notification.getBook());
-            helperController.generateStrings(bookList);
+            helperController.generateStrings(notification.getBook());
 
             notificationDao.createNotification(notification);
 

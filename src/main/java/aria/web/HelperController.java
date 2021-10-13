@@ -76,5 +76,15 @@ public class HelperController implements Serializable {
             tmpBook.setAuthorsString(tmpBook.getAuthorsString().replace("[", ""));
             tmpBook.setAuthorsString(tmpBook.getAuthorsString().replace("]", ""));
         }
+    } public void generateStrings(Book tmpBook){
+            tmpBook.setGenres(genreToBookDao.getGenresForBookId(tmpBook.getBookId()));
+            tmpBook.setGenresString(tmpBook.getGenres().toString());
+            tmpBook.setGenresString(tmpBook.getGenresString().replace("[", ""));
+            tmpBook.setGenresString(tmpBook.getGenresString().replace("]", ""));
+
+            tmpBook.setAuthors(authorToBookDao.getAuthorsForBookId(tmpBook.getBookId()));
+            tmpBook.setAuthorsString(tmpBook.getAuthors().toString());
+            tmpBook.setAuthorsString(tmpBook.getAuthorsString().replace("[", ""));
+            tmpBook.setAuthorsString(tmpBook.getAuthorsString().replace("]", ""));
     }
 }

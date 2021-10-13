@@ -7,9 +7,11 @@
       xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 <h:head/>
 <h:body>
-    <h:form>
+    <h:form id="form">
         <f:view>
             <ui:include src="/PageHeader.xhtml"/>
+
+            <p:growl id="growl" showDetail="true"/>
 
             <p:dataTable var="allBorrowedBook" value="#{userBorrowedBookController.allBorrowedBook}" widgetVar="borrowedBookTable"
                          emptyMessage="No books found with given criteria"

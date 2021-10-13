@@ -7,9 +7,12 @@
       xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 <h:head/>
 <h:body>
-    <h:form rendered="#{pageHeaderController.actId == 3}">
+    <h:form rendered="#{pageHeaderController.actId == 3}" id="form">
         <f:view>
             <ui:include src="/PageHeader.xhtml"/>
+
+            <p:growl id="growl" showDetail="true"/>
+
             <p:dataTable var="user" value="#{userController.users}"
                          filteredValue="#{userController.filteredUsers}"
                          widgetVar="userTable"
@@ -64,10 +67,10 @@
                         <p:column headerText="Demote">
                             <h:outputText rendered="#{user.act.actId == 3}" value="Can't demote an admin"/>
                             <h:outputText rendered="#{user.act.actId == 1}" value="Can't demote a default user"/>
-                            <p:commandButton value="Demote" action="#{userController.demotePromote(user.accountId, 1)}" rendered="#{user.act.actId != 3 and user.act.actId != 1}" icon="pi pi-search"/>
+                            <p:commandButton value="Demote" action="#{userController.demotePromote(user.accountId, 1)}" rendered="#{user.act.actId != 3 and user.act.actId != 1}" icon="pi pi-search" update="form:growl"/>
                         </p:column>
                         <p:column headerText="Promote">
-                            <p:commandButton value="Promote" action="#{userController.demotePromote(user.accountId, 2)}" rendered="#{user.act.actId != 3}" icon="pi pi-search"/>
+                            <p:commandButton value="Promote" action="#{userController.demotePromote(user.accountId, 2)}" rendered="#{user.act.actId != 3}" icon="pi pi-search" update="form:growl"/>
                             <h:outputText rendered="#{user.act.actId == 3}" value="Can't promote an admin"/>
                         </p:column>
                     </p:dataTable>

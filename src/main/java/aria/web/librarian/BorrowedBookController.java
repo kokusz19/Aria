@@ -129,16 +129,22 @@ public class BorrowedBookController implements Serializable {
 
     public void action(long borrowedBookId, int actionId){
         BorrowedBook borrowedBook = borrowedBookDao.getForBorrowedBookId(borrowedBookId);
+        helperController.generateStrings(borrowedBook.getBook());
 
         BorrowStatusToBorrowedBook tmp = new BorrowStatusToBorrowedBook();
         tmp.setUpdateDate(LocalDateTime.now());
         tmp.setBorrowedBook(borrowedBook);
 
+        String detail = "";
         if(actionId == 1){
             // Hand over to user
             borrowedBook.setDateToBeReturned(LocalDateTime.now().plusWeeks(2));
             borrowedBookDao.updateBorrowedBook(borrowedBook);
             tmp.setBorrowStatus(borrowStatusDao.getBorrowStatus(2));
+
+            detail = borrowedBook.getBook().getAuthorsString() + "  " + borrowedBook.getBook().getBookTitle() + " has been handed over to " + borrowedBook.getAccount().getPerson().getFirstName() + " " + borrowedBook.getAccount().getPerson().getLastName() + ".";
+            FacesContext context = FacesContext.getCurrentInstance();
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Handover", detail));
         } else if(actionId == 2){
             // Remove booking
             borrowedBook.setDateToBeReturned(null);
@@ -149,9 +155,17 @@ public class BorrowedBookController implements Serializable {
             book.setAvailableItems(book.getAvailableItems()+1);
             bookDao.updateBook(book);
             tmp.setBorrowStatus(borrowStatusDao.getBorrowStatus(8));
+
+            detail = borrowedBook.getAccount().getPerson().getFirstName() + " " + borrowedBook.getAccount().getPerson().getLastName() + "'s booking on " + borrowedBook.getBook().getAuthorsString() + " - " + borrowedBook.getBook().getBookTitle() + " has been removed.";
+            FacesContext context = FacesContext.getCurrentInstance();
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "Removed", detail));
         } else if(actionId == 3){
             // Hand over to carrier
             tmp.setBorrowStatus(borrowStatusDao.getBorrowStatus(4));
+
+            detail = borrowedBook.getBook().getAuthorsString() + " - " + borrowedBook.getBook().getBookTitle() + " has been packed for the carrier.";
+            FacesContext context = FacesContext.getCurrentInstance();
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Packed", detail));
         } else if(actionId == 4){
             // Book returned
             borrowedBook.setDateOfReturn(LocalDateTime.now());
@@ -161,9 +175,16 @@ public class BorrowedBookController implements Serializable {
             Book book = borrowedBook.getBook();
             book.setAvailableItems(book.getAvailableItems()+1);
             bookDao.updateBook(book);
+
+            detail = borrowedBook.getBook().getAuthorsString() + " - " + borrowedBook.getBook().getBookTitle() + " has been returned by " + borrowedBook.getAccount().getPerson().getFirstName() + " " + borrowedBook.getAccount().getPerson().getLastName()+".";
+            FacesContext context = FacesContext.getCurrentInstance();
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Packed", detail));
         }
         borrowStatusToBorrowedBookDao.createBorrowStatusToBorrowedBook(tmp);
+
+
         FacesContext context = FacesContext.getCurrentInstance();
+        context.getExternalContext().getFlash().setKeepMessages(true);
         NavigationHandler navigationHandler = context.getApplication().getNavigationHandler();
         navigationHandler
                 .handleNavigation(context, null, "BorrowedBook.xhtml?faces-redirect=true&includeViewParams=true");

@@ -13,6 +13,7 @@ import org.primefaces.model.FilterMeta;
 import org.primefaces.util.LangUtils;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 import javax.faces.bean.ViewScoped;
@@ -126,22 +127,44 @@ public class UserController implements Serializable {
     public void demotePromote(long accountId, int action) throws IOException {
         if (action == 2) {
             Account account = accountDao.getForAccountId(accountId);
-            if(account.getAct().getActId() == 1)
+            String detail = account.getPerson().getFirstName() + " " + account.getPerson().getLastName() + " has been promoted to ";
+            if(account.getAct().getActId() == 1){
                 account.setAct(actDao.getAct(4));
-            else if(account.getAct().getActId() == 4)
+                detail = detail.concat("carrier.");
+            }
+            else if(account.getAct().getActId() == 4) {
                 account.setAct(actDao.getAct(2));
-            else
+                detail = detail.concat("librarian.");
+            }
+            else {
                 account.setAct(actDao.getAct(account.getAct().getActId() + 1));
+                detail = detail.concat("admin.");
+            }
+            FacesContext context = FacesContext.getCurrentInstance();
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Promoted", detail));
+
+            context.getExternalContext().getFlash().setKeepMessages(true);
+
             accountDao.updateUser(account);
         }
         else if(action == 1){
             Account account = accountDao.getForAccountId(accountId);
-            if(account.getAct().getActId() == 2)
+            String detail = account.getPerson().getFirstName() + " " + account.getPerson().getLastName() + " has been demoted to ";
+            if(account.getAct().getActId() == 2) {
                 account.setAct(actDao.getAct(4));
-            else if(account.getAct().getActId() == 4)
+                detail = detail.concat("carrier.");
+            } else if(account.getAct().getActId() == 4) {
                 account.setAct(actDao.getAct(1));
-            else
+                detail = detail.concat("default user.");
+            } else {
                 account.setAct(actDao.getAct(account.getAct().getActId() - 1));
+                detail = detail.concat("librarian.");
+            }
+            FacesContext context = FacesContext.getCurrentInstance();
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Demoted", detail));
+
+            context.getExternalContext().getFlash().setKeepMessages(true);
+
             accountDao.updateUser(account);
         }
         ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();

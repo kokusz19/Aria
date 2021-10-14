@@ -5,7 +5,15 @@
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:p="http://primefaces.org/ui"
       xmlns:fn="http://java.sun.com/jsp/jstl/functions">
-    <h:head/>
+    <h:head>
+        <title>Genres</title>
+        <style type="text/css">
+            /* reset on the showcase style*/
+            body .ui-panelgrid .ui-panelgrid-cell {
+                background-color: transparent;
+            }
+        </style>
+    </h:head>
     <h:body>
         <h:form id="formDataTable" rendered="#{pageHeaderController.actId != 1}">
             <f:view>
@@ -26,10 +34,26 @@
                                          placeholder="Search all fields using global function" />
                             <p:commandButton type="button" onclick="PF('dlg').show();" icon="pi pi-plus-circle"/>
 
-                            <p:dialog header="Add genres" widgetVar="dlg" modal="true">
-                                <h:outputText value="Name: "/>
-                                <p:inputText value="#{genreController.newGenre}" id="genreNameInputText" placeholder="genre name"/>
-                                <p:commandButton value="Submit" action="#{genreController.addGenre}" onclick="PF('dlg').hide();" update="formDataTable:growl"/>
+                            <p:dialog header="Add genres" widgetVar="dlg" modal="true" width="300">
+                                <p:panelGrid cellpadding="7"
+                                             styleClass="ui-panelgrid-blank ui-fluid"
+                                             style="border: 0px none; background-color: transparent;">
+                                    <p:row>
+                                        <p:column>
+                                            <h:outputText value="Name:"/>
+                                        </p:column>
+                                        <p:column colspan="2">
+                                            <p:inputText value="#{genreController.newGenre}" required="true" rendered="true" id="genreNameInputText" placeholder="genre name">
+                                                <f:validateLength minimum="4"/>
+                                            </p:inputText>
+                                        </p:column>
+                                    </p:row>
+                                    <p:row>
+                                        <p:column colspan="3">
+                                            <p:commandButton value="Submit" action="#{genreController.addGenre}" onclick="PF('dlg').hide();" update="formDataTable:growl"/>
+                                        </p:column>
+                                    </p:row>
+                                </p:panelGrid>
                             </p:dialog>
                         </div>
                     </f:facet>

@@ -7,7 +7,15 @@
       xmlns:fn="http://java.sun.com/jsp/jstl/functions"
       xmlns:o="http://omnifaces.org/ui"
       xmlns:of="http://omnifaces.org/functions">
-  <h:head/>
+  <h:head>
+    <title>Authors</title>
+    <style type="text/css">
+      /* reset on the showcase style*/
+      body .ui-panelgrid .ui-panelgrid-cell {
+        background-color: transparent;
+      }
+    </style>
+  </h:head>
   <h:body>
     <h:form rendered="#{pageHeaderController.actId != 1}" id="form">
       <f:view>
@@ -27,33 +35,78 @@
                            placeholder="Search all fields using global function" />
               <p:commandButton type="button" onclick="PF('dlg').show();" icon="pi pi-plus-circle"/>
 
-              <p:dialog header="Add a book" widgetVar="dlg" modal="true">
-                <h:outputText value="Title: "/>
-                <p:inputText label="Title: " value="#{bookController.title}" /><br/>
-                <h:outputText value="ISBN: "/>
-                <p:inputText label="ISBN:" value="#{bookController.ISBN}" /><br/>
-                <h:outputText value="Published at: "/>
-                <p:datePicker label="Published at: " value="#{bookController.publishedAt}" /><br/>
-
-                <h:outputText value="Max item: "/>
-                <p:inputText label="Max item:: " value="#{bookController.maxItem}" /><br/>
-
-                <p:selectCheckboxMenu title="Genre(s)" value="#{bookController.genres}" label="Genre(s)" style="min-width: 15rem"
-                                      multiple="true" filter="true" filterMatchMode="startsWith" panelStyle="width: 30rem" scrollHeight="250">
-                  <f:selectItems value="#{bookController.allGenres}"/>
-                </p:selectCheckboxMenu><br/>
-
-                <p:selectCheckboxMenu title="Author(s)" value="#{bookController.authors}" label="Author(s)" style="min-width: 15rem"
-                                      multiple="true" filter="true" filterMatchMode="startsWith" panelStyle="width: 30rem" scrollHeight="250">
-                  <f:selectItems value="#{bookController.allAuthors}"/>
-                </p:selectCheckboxMenu><br/>
-
-                <p:selectOneMenu value="#{bookController.language}" converter="omnifaces.SelectItemsConverter">
-                  <f:selectItem itemValue="" itemLabel="Choose one" />
-                  <f:selectItems value="#{bookController.allLanguages}" var="tmpLanguage" itemValue="#{tmpLanguage}" itemLabel="#{tmpLanguage.languageName}" />
-                </p:selectOneMenu>
-
-                <p:commandButton action="#{bookController.addBook}" value="Submit" onclick="PF('dlg').hide();" update="form:growl"/>
+              <p:dialog header="Add a book" widgetVar="dlg" modal="true" width="400">
+                <p:panelGrid cellpadding="7"
+                             styleClass="ui-panelgrid-blank ui-fluid"
+                             style="border: 0px none; background-color: transparent;">
+                  <p:row>
+                    <p:column colspan="2">
+                      <h:outputText value="Title:"/>
+                    </p:column>
+                    <p:column colspan="3">
+                      <p:inputText label="Title:" value="#{bookController.title}" required="true">
+                        <f:validateLength minimum="2"/>
+                      </p:inputText>
+                    </p:column>
+                  </p:row>
+                  <p:row>
+                    <p:column colspan="2">
+                      <h:outputText value="ISBN:"/>
+                    </p:column>
+                    <p:column colspan="3">
+                      <p:inputNumber label="ISBN:" value="#{bookController.ISBN}" required="true" decimalPlaces="0" thousandSeparator="">
+                        <f:validateLength minimum="13" maximum="13"/>
+                      </p:inputNumber>
+                    </p:column>
+                  </p:row>
+                  <p:row>
+                    <p:column colspan="2">
+                      <h:outputText value="Published at:"/>
+                    </p:column>
+                    <p:column colspan="3">
+                      <p:datePicker label="Published at:" value="#{bookController.publishedAt}" required="true"/>
+                    </p:column>
+                  </p:row>
+                  <p:row>
+                    <p:column colspan="2">
+                      <h:outputText value="Max item:"/>
+                    </p:column>
+                    <p:column colspan="3">
+                      <p:inputNumber label="Max item:" value="#{bookController.maxItem}" required="true" decimalPlaces="0" minValue="1" emptyValue="empty" thousandSeparator="" leadingZero="keep">
+                        <f:validateLength maximum="4"/>
+                      </p:inputNumber>
+                    </p:column>
+                  </p:row>
+                  <p:row>
+                    <p:column colspan="5">
+                      <p:selectCheckboxMenu title="Genre(s)" value="#{bookController.genres}" label="Genre(s)" style="min-width: 15rem"
+                                            multiple="true" filter="true" filterMatchMode="startsWith" panelStyle="width: 30rem" scrollHeight="250" required="true">
+                        <f:selectItems value="#{bookController.allGenres}"/>
+                      </p:selectCheckboxMenu>
+                    </p:column>
+                  </p:row>
+                  <p:row>
+                    <p:column colspan="5">
+                      <p:selectCheckboxMenu title="Author(s)" value="#{bookController.authors}" label="Author(s)" style="min-width: 15rem"
+                                            multiple="true" filter="true" filterMatchMode="startsWith" panelStyle="width: 30rem" scrollHeight="250" required="true">
+                        <f:selectItems value="#{bookController.allAuthors}"/>
+                      </p:selectCheckboxMenu>
+                    </p:column>
+                  </p:row>
+                  <p:row>
+                    <p:column colspan="5">
+                      <p:selectOneMenu value="#{bookController.language}" converter="omnifaces.SelectItemsConverter" required="true">
+                        <f:selectItem itemValue="" itemLabel="Choose one" />
+                        <f:selectItems value="#{bookController.allLanguages}" var="tmpLanguage" itemValue="#{tmpLanguage}" itemLabel="#{tmpLanguage.languageName}" />
+                      </p:selectOneMenu>
+                    </p:column>
+                  </p:row>
+                  <p:row>
+                    <p:column colspan="5">
+                      <p:commandButton action="#{bookController.addBook}" value="Submit" onclick="PF('dlg').hide();" update="form:growl"/>
+                    </p:column>
+                  </p:row>
+                </p:panelGrid>
               </p:dialog>
             </div>
           </f:facet>

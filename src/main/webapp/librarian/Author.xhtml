@@ -5,7 +5,15 @@
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:p="http://primefaces.org/ui"
       xmlns:fn="http://java.sun.com/jsp/jstl/functions">
-    <h:head/>
+    <h:head>
+        <title>Authors</title>
+        <style type="text/css">
+            /* reset on the showcase style*/
+            body .ui-panelgrid .ui-panelgrid-cell {
+                background-color: transparent;
+            }
+        </style>
+    </h:head>
     <h:body>
         <h:form id="formDataTable" rendered="#{pageHeaderController.actId != 1}">
             <f:view>
@@ -25,20 +33,44 @@
                                          placeholder="Search all fields using global function" />
                             <p:commandButton type="button" onclick="PF('dlg').show();" style="align-content: right" icon="pi pi-plus-circle"/>
 
-                            <p:dialog header="Add authors" widgetVar="dlg" modal="true">
-                                <h:outputText value="First Name: "/>
-                                <p:inputText value="#{authorController.firstName}" id="authorFirstNameInputText" placeholder="First name"/>
-                                <br/>
-
-                                <h:outputText value="Last Name: "/>
-                                <p:inputText value="#{authorController.lastName}" id="authorLastNameInputText" placeholder="Last name"/>
-                                <br/>
-
-                                <h:outputLabel for="birth" value="Date of birth: "/>
-                                <p:datePicker id="birth" label="Date of birth" value="#{authorController.dateOfBirth}" />
-                                <br/>
-
-                                <p:commandButton value="Submit" action="#{authorController.addAuthor}" onclick="PF('dlg').hide();" update="formDataTable:growl"/>
+                            <p:dialog header="Add authors" widgetVar="dlg" modal="true" width="400">
+                                <p:panelGrid cellpadding="7"
+                                             styleClass="ui-panelgrid-blank ui-fluid"
+                                             style="border: 0px none; background-color: transparent;">
+                                    <p:row>
+                                        <p:column>
+                                            <h:outputText value="First Name:"/>
+                                        </p:column>
+                                        <p:column colspan="2">
+                                            <p:inputText value="#{authorController.firstName}" required="true" rendered="true" id="authorFirstNameInputText" placeholder="First name">
+                                                <f:validateLength minimum="3"/>
+                                            </p:inputText>
+                                        </p:column>
+                                    </p:row>
+                                    <p:row>
+                                        <p:column>
+                                            <h:outputText value="Last Name: "/>
+                                        </p:column>
+                                        <p:column colspan="2">
+                                            <p:inputText value="#{authorController.lastName}" required="true" rendered="true" id="authorLastNameInputText" placeholder="Last name">
+                                                <f:validateLength minimum="3"/>
+                                            </p:inputText>
+                                        </p:column>
+                                    </p:row>
+                                    <p:row>
+                                        <p:column>
+                                            <h:outputLabel for="birth" value="Date of birth: "/>
+                                        </p:column>
+                                        <p:column colspan="2">
+                                            <p:datePicker id="birth" label="Date of birth" required="true" rendered="true" value="#{authorController.dateOfBirth}" />
+                                        </p:column>
+                                    </p:row>
+                                    <p:row>
+                                        <p:column colspan="3">
+                                            <p:commandButton value="Submit" action="#{authorController.addAuthor}" onclick="PF('dlg').hide();" update="formDataTable:growl"/>
+                                        </p:column>
+                                    </p:row>
+                                </p:panelGrid>
                             </p:dialog>
                         </div>
                     </f:facet>

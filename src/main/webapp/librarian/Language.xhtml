@@ -5,51 +5,74 @@
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:p="http://primefaces.org/ui"
       xmlns:fn="http://java.sun.com/jsp/jstl/functions">
-<h:head/>
-<h:body>
-    <h:form id="formDataTable" rendered="#{pageHeaderController.actId != 1}">
-        <f:view>
-            <ui:include src="/PageHeader.xhtml"/>
+    <h:head>
+        <title>Languages</title>
+        <style type="text/css">
+            /* reset on the showcase style*/
+            body .ui-panelgrid .ui-panelgrid-cell {
+                background-color: transparent;
+            }
+        </style>
+    </h:head>
+    <h:body>
+        <h:form id="formDataTable" rendered="#{pageHeaderController.actId != 1}">
+            <f:view>
+                <ui:include src="/PageHeader.xhtml"/>
 
-            <p:growl id="growl" showDetail="true"/>
+                <p:growl id="growl" showDetail="true"/>
 
-            <p:dataTable var="language" value="#{languageController.languages}" widgetVar="languageTable"
-                         emptyMessage="No languages found with given criteria"
-                         filteredValue="#{languageController.filteredLanguages}"
-                         globalFilterFunction="#{languageController.globalFilterFunction}"
-                         id="glanguageDataTable">
-                <f:facet name="header">
-                    <div class="p-d-flex p-jc-end">
-                        <h:outputText value="Languages"/>
-                        <p:inputText id="globalFilter" onkeyup="PF('languageTable').filter()" style="width:300px"
-                                     placeholder="Search all fields using global function" />
-                        <p:commandButton type="button" onclick="PF('dlg').show();" icon="pi pi-plus-circle"/>
+                <p:dataTable var="language" value="#{languageController.languages}" widgetVar="languageTable"
+                             emptyMessage="No languages found with given criteria"
+                             filteredValue="#{languageController.filteredLanguages}"
+                             globalFilterFunction="#{languageController.globalFilterFunction}"
+                             id="glanguageDataTable">
+                    <f:facet name="header">
+                        <div class="p-d-flex p-jc-end">
+                            <h:outputText value="Languages"/>
+                            <p:inputText id="globalFilter" onkeyup="PF('languageTable').filter()" style="width:300px"
+                                         placeholder="Search all fields using global function" />
+                            <p:commandButton type="button" onclick="PF('dlg').show();" icon="pi pi-plus-circle"/>
 
-                        <p:dialog header="Add languages" widgetVar="dlg" modal="true">
-                            <h:outputText value="Name: "/>
-                            <p:inputText value="#{languageController.newLanguage}" id="languageNameInputText" placeholder="language name"/>
-                            <br/>
-                            <p:commandButton value="Submit" action="#{languageController.addLanguage}" onclick="PF('dlg').hide();" update="formDataTable:growl"/>
-                        </p:dialog>
-                    </div>
-                </f:facet>
+                            <p:dialog header="Add languages" widgetVar="dlg" modal="true" width="300">
+                                <p:panelGrid cellpadding="7"
+                                             styleClass="ui-panelgrid-blank ui-fluid"
+                                             style="border: 0px none; background-color: transparent;">
+                                    <p:row>
+                                        <p:column>
+                                            <h:outputText value="Name:"/>
+                                        </p:column>
+                                        <p:column colspan="2">
+                                            <p:inputText value="#{languageController.newLanguage}" rendered="true" id="languageNameInputText" placeholder="language name">
+                                                <f:validateLength minimum="4"/>
+                                            </p:inputText>
+                                        </p:column>
+                                    </p:row>
+                                    <p:row>
+                                        <p:column colspan="3">
+                                            <p:commandButton value="Submit" action="#{languageController.addLanguage}" onclick="PF('dlg').hide();" update="formDataTable:growl"/>
+                                        </p:column>
+                                    </p:row>
+                                </p:panelGrid>
+                            </p:dialog>
+                        </div>
+                    </f:facet>
 
-                <p:column id="columnLanguageId" headerText="Language ID" filterable="false" width="10%" style="text-align: right">
-                    <h:outputText value="#{language.languageId}" />
-                </p:column>
-                <p:column id="columnLanguageName" headerText="Language name" filterable="false" width="90%" style="text-align: left">
-                    <h:outputText value="#{language.languageName}" />
-                </p:column>
+                    <p:column id="columnLanguageId" headerText="Language ID" filterable="false" width="10%" style="text-align: right">
+                        <h:outputText value="#{language.languageId}" />
+                    </p:column>
+                    <p:column id="columnLanguageName" headerText="Language name" filterable="false" width="90%" style="text-align: left">
+                        <h:outputText value="#{language.languageName}" />
+                    </p:column>
 
-                <f:facet name="footer">
-                    <span class="p-text-bold">In total there are #{fn:length(languageController.languages)} language(s).</span>
-                </f:facet>
-            </p:dataTable>
-        </f:view>
-    </h:form>
-    <h:form rendered="#{pageHeaderController.actId == 1}">
-        <h:outputLabel value="You do not have the right access!"/>
-        <h:commandButton action="/user/HomePage.xhtml?faces-redirect=true" value="default page" rendered="#{pageHeaderController.actId == 1}"/>
-    </h:form>
-</h:body>
+                    <f:facet name="footer">
+                        <span class="p-text-bold">In total there are #{fn:length(languageController.languages)} language(s).</span>
+                    </f:facet>
+                </p:dataTable>
+            </f:view>
+        </h:form>
+        <h:form rendered="#{pageHeaderController.actId == 1}">
+            <h:outputLabel value="You do not have the right access!"/>
+            <h:commandButton action="/user/HomePage.xhtml?faces-redirect=true" value="default page" rendered="#{pageHeaderController.actId == 1}"/>
+        </h:form>
+    </h:body>
 </html>

@@ -39,6 +39,7 @@ public class PageHeaderController implements Serializable{
         FacesContext context = FacesContext.getCurrentInstance();
         NavigationHandler navigationHandler = context.getApplication().getNavigationHandler();
         context.getExternalContext().getSessionMap().remove("id");
+        context.getExternalContext().invalidateSession();
         navigationHandler
                 .handleNavigation(context, null, url+"?faces-redirect=true&includeViewParams=true");
 
